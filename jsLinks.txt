@@ -1,0 +1,8 @@
+<script type="text/javascript" src="/includes.js/prototype-1.6.0.3.js"></script>
+<script type="text/javascript" src="/includes.js/general.js">
+<script type="text/javascript" src="/includes.js/calendarObject.js">
+<script type="text/javascript" src="/includes.js/formObject.js">
+<script type="text/javascript" src="/includes.js/menuObject.js">
+<script type="text/javascript" src="/includes.js/containerObject.js">
+<script type="text/javascript" src="/includes.js/tableObject.js">
+<script type="text/javascript" src="/includes.js/ajax.js">
