@@ -542,7 +542,7 @@ class utilObject {
 								else {
 									$valueReplace=$valueNameDefault;
 									//echo "error: $valueName<br>";//xxxf
-									//$base->debugObj->printDebug($base->paramsAry,1,'xxxf');//xxxf
+									//$base->DebugObj->printDebug($base->paramsAry,1,'xxxf');//xxxf
 								}
 								//- below doesnt totally work - could be sglqt from prior value
 								if (strlen($valueReplace) == NULL && $lastValueName != 'sglqt'){
@@ -551,7 +551,7 @@ class utilObject {
 									$convertError=true;
 									$base->errorProfileAry['converterror']='error';
 									//echo "set error on $valueName<br>";//xxxd
-									//$base->debugObj->displayStack();//xxxd
+									//$base->DebugObj->displayStack();//xxxd
 								}
 						}
 						//echo "change: $oldValueName to $valueReplace<br>";//xxxf
@@ -709,7 +709,7 @@ class utilObject {
 									$convertError=true;
 									$base->errorProfileAry['converterror']='error';
 									//echo "set error on $valueName<br>";//xxxd
-									//$base->debugObj->displayStack();//xxxd
+									//$base->DebugObj->displayStack();//xxxd
 								}
 							if (strlen($valueReplace) == 0){$valueReplace=$valueNameDefault;}
 						}
@@ -847,10 +847,10 @@ class utilObject {
 			$day=$currentDateAry['mday'];
 			$currentDate=$year.'-'.$month.'-'.$day;
 			//
-			$baseUrl=$base->clientObj->getHtmlBase(&$base);
+			$baseUrl=$base->ClientObj->getHtmlBase(&$base);
 			$baseUrlSym=str_replace(':','innercolon',$baseUrl);
 			$tst=strpos($colValue,'http',0);
-			//$base->fileObj->writeLog('debug1',"colvalue: $colValue, baseurlsym: $baseUrlSym",&$base);//xxxf
+			//$base->FileObj->writeLog('debug1',"colvalue: $colValue, baseurlsym: $baseUrlSym",&$base);//xxxf
 			$newColValue=$this->replaceStr($colValue,'%dblqt%','"',&$base);
 			$newColValue=$this->replaceStr($newColValue,'%sglqt%',"'",&$base);
 			$newColValue=$this->replaceStr($newColValue,'%br%','<br>',&$base);
@@ -1221,21 +1221,21 @@ class utilObject {
 //================================================
 	function validateUserCompanyDeprecated($paramsAry,$base){
 		$userAry = $_SESSION['userobj']->getCurrentUserAry();
-		//$this->debugObj->printDebug($userAry,1,'uary');//xxx
-		//$this->debugObj->printDebug($this->jobProfileAry,1,'uary');//xxx
+		//$this->DebugObj->printDebug($userAry,1,'uary');//xxx
+		//$this->DebugObj->printDebug($this->jobProfileAry,1,'uary');//xxx
 		$userName = $userAry['username'];
 		$userCompanyNo = $userAry['companyprofileid'];
 		$jobCompanyNo = $base->jobProfileAry['companyprofileid'];
 		$allUsersAllowed_file = $base->jobProfileAry['allusersallowed'];
 		//- problem: below may want to have menu element security
-		$allUsersAllowed=$base->utlObj->returnFormattedData($allUsersAllowed_file,'boolean','internal');
+		$allUsersAllowed=$base->UtlObj->returnFormattedData($allUsersAllowed_file,'boolean','internal');
 		$accessAllCompanies_file=$userAry['accessallcompanies'];
-		//$base->debugObj->printDebug($userAry,1,'user');//xxx
-		$accessAllCompanies=$base->utlObj->returnFormattedData($accessAllCompanies_file,'boolean','internal');
+		//$base->DebugObj->printDebug($userAry,1,'user');//xxx
+		$accessAllCompanies=$base->UtlObj->returnFormattedData($accessAllCompanies_file,'boolean','internal');
 		$companyAllowsAccessToAll_file=$base->jobProfileAry['companyallowsaccesstoall'];
-		$companyAllowsAccessToAll=$base->utlObj->returnFormattedData($companyAllowsAccessToAll_file,'boolean','internal');
-		//$base->debugObj->printDebug($base->jobProfileAry,1,'job');//xxx
-		//$base->debugObj->printDebug($userAry,1,'user');//xxx
+		$companyAllowsAccessToAll=$base->UtlObj->returnFormattedData($companyAllowsAccessToAll_file,'boolean','internal');
+		//$base->DebugObj->printDebug($base->jobProfileAry,1,'job');//xxx
+		//$base->DebugObj->printDebug($userAry,1,'user');//xxx
 		//echo "user: $userCompanyNo, job: $jobCompanyNo<br>";//xxx
 		//echo "jp:allusersallowed: $allUsersAllowed, up:accessallcompanies: $accessAllCompanies, cp:companyallowsaccesstoall: $companyAllowsAccessToAll<br>";//xxx
 		$componentCheck=$paramsAry['componentcheck'];
@@ -1252,9 +1252,9 @@ class utilObject {
 		$okToContinue=true;
 		/*
 		$userDeptAry=$_SESSION['userobj']->getCurrentDeptAry();
-		//$this->debugObj->printDebug($userDeptAry,1,'userdeptary');//xxx
+		//$this->DebugObj->printDebug($userDeptAry,1,'userdeptary');//xxx
 		$jobDeptAry=$base->deptProfileAry;
-		//$base->debugObj->printDebug($jobDeptAry,1,'jobdeptary');//xxx
+		//$base->DebugObj->printDebug($jobDeptAry,1,'jobdeptary');//xxx
 		$noDept=count($jobDeptAry['main']);
 		if ($noDept > 0){
 			$okToContinue=false;
@@ -1399,7 +1399,7 @@ class utilObject {
 				$returnAry=getdate($theDate_i);
 				$returnAry['date_v1']=date("m/d/Y",$theDate_i);
 		} // end if dateisok
-		//$base->debugObj->printDebug($returnAry,1,'xxxdateary');
+		//$base->DebugObj->printDebug($returnAry,1,'xxxdateary');
 		return $returnAry;
 	}
 //===========================================
@@ -1528,12 +1528,12 @@ class utilObject {
 			//- need to look if it is overlay or something!!!
 			if(isset($_SESSION['sessionobj'])){
 				$sessionAry=$_SESSION['sessionobj']->getSessionAry($sessionName);
-				//$base->debugObj->printDebug($sessionAry,1,"sessionname: $sessionName");//xxx
+				//$base->DebugObj->printDebug($sessionAry,1,"sessionname: $sessionName");//xxx
 				//array_merge($base->paramsAry,$sessionAry);
 				//xxxd !!! below may need modification - change params of a session, change session????
 				$cnt=count($sessionAry);
 				//echo "sessionname: $sessionName<br>";//xxxd
-				$base->fileObj->writeLog('debug',"read in $cnt session records for $sessionName",&$base);
+				$base->FileObj->writeLog('debug',"read in $cnt session records for $sessionName",&$base);
 				if ($cnt>0){
 					foreach ($sessionAry as $key=>$value){
 						//echo "key: $key, value: $value<br>";//xxxd
@@ -1634,13 +1634,13 @@ class utilObject {
   }
 //=======================================
 	function rebuildViewJoin($base){
-		$base->debugObj->printDebug("debug001Obj:rebuildView",0); //xx (h)
+		$base->DebugObj->printDebug("debug001Obj:rebuildView",0); //xx (h)
 		$dbTableProfileId=$base->paramsAry['dbtableprofileid'];
 		$query="select * from dbcolumnprofileview where dbtableprofileid=$dbTableProfileId";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array('delimit1'=>'dbcolumnname');
-		$dataAry=$base->utlObj->tableToHashAryV3($result,$passAry);
-		//$base->debugObj->printDebug($dataAry,1,'dtaary');//xxx
+		$dataAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+		//$base->DebugObj->printDebug($dataAry,1,'dtaary');//xxx
 		$foreignFieldsAry=array();
 		$foreignFiltersAry=array();
 		$errorsFound=false;
@@ -1653,15 +1653,15 @@ class utilObject {
 			$columnName=$columnNameAry[0];
 			$dbTableName=$columnAry['dbtablename'];
 			$foreignField_raw=$columnAry['dbcolumnforeignfield'];
-			$foreignField=$base->utlObj->returnFormattedData($foreignField_raw,'boolean','internal',&$base);
+			$foreignField=$base->UtlObj->returnFormattedData($foreignField_raw,'boolean','internal',&$base);
 			$noViewLink_raw=$columnAry['dbcolumnnoviewlink'];
-			$noViewLink=$base->utlObj->returnFormattedData($noViewLink_raw,'boolean','internal',&$base);
+			$noViewLink=$base->UtlObj->returnFormattedData($noViewLink_raw,'boolean','internal',&$base);
 //----- foreign field
 			if ($foreignField){
 				$foreignKeyName=$columnAry['dbcolumnforeignkeyname'];
 				$foreignKeyAry=$dataAry[$foreignKeyName];
 				$foreignKeyNoViewLink_raw=$foreignKeyAry['dbcolumnnoviewlink'];
-				$foreignKeyNoViewLink=$base->utlObj->returnFormattedData($foreignKeyNoViewLink_raw,'boolean','internal',&$base);
+				$foreignKeyNoViewLink=$base->UtlObj->returnFormattedData($foreignKeyNoViewLink_raw,'boolean','internal',&$base);
 				if (!$foreignKeyNoViewLink){
 					$foreignTable=$foreignKeyAry['dbcolumnforeigntable'];
 					//- below is rare that they are different only example is jobxref table
@@ -1674,7 +1674,7 @@ class utilObject {
 					if ($mainTable == NULL){$mainTable=$dbTableName;}
 					//$foreignFiltersAry[$foreignTable][$foreignKeyName]=$mainTable;//old
 					$parentSelector_raw=$foreignKeyAry['dbcolumnparentselector'];
-					$parentSelector=$base->utlObj->returnFormattedData($parentSelector_raw,'boolean','internal',&$base);
+					$parentSelector=$base->UtlObj->returnFormattedData($parentSelector_raw,'boolean','internal',&$base);
 					if (!array_key_exists($foreignKeyName,$joinAry)){
 						$joinAry[$foreignKeyName]=1;
 						$foreignKeyNameAry=explode('_',$foreignKeyName);
@@ -1693,7 +1693,7 @@ class utilObject {
 		}
 		$viewStmt="create view $dbTableName".'view'." as ";
 		$viewStmt.=" select ";
-//$base->debugObj->printDebug($foreignFieldsAry,1,'xxx');
+//$base->DebugObj->printDebug($foreignFieldsAry,1,'xxx');
 		$selectList="$dbTableName.*";
 		$tableList="$dbTableName";
 //- foreignfieldsary put in display
@@ -1742,21 +1742,21 @@ class utilObject {
 			$dbTableNameView=$dbTableName.'view';
 			$query="select * from pg_views where viewname='$dbTableNameView'";
 			//echo "query: $query";//xxx
-			$result=$base->dbObj->queryTable($query,'read',&$base);
+			$result=$base->DbObj->queryTable($query,'read',&$base);
 			$passAry=array();
-			$checkAry=$base->utlObj->tableToHashAryV3($result,$passAry);
-			//$base->debugObj->printDebug($checkAry,1,'chk');//xxx
+			$checkAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+			//$base->DebugObj->printDebug($checkAry,1,'chk');//xxx
 			$noFileColumns=count($checkAry);
 			//echo "nofilecolumns: $noFileColumns";//xxx
 			if ($noFileColumns>0){
 				//echo "drop it";//xxx
 				//echo "drop stmt: $dropViewStmt<br>";//xxx
-				$base->dbObj->queryTable($dropViewStmt,'maint',&$base);
+				$base->DbObj->queryTable($dropViewStmt,'maint',&$base);
 			}
-			$base->dbObj->queryTable($viewStmt,'maint',&$base);
+			$base->DbObj->queryTable($viewStmt,'maint',&$base);
 			//echo "view stmt: $viewStmt<br>";//xxx
 		}		
-		$base->debugObj->printDebug("-rtn:rebuildView",0);
+		$base->DebugObj->printDebug("-rtn:rebuildView",0);
 	}
 //========================================================
 	function reorderAlbum($base){
@@ -1770,9 +1770,9 @@ class utilObject {
 	function reorderAlbumInt($albumProfileId,$incrNo,$base){
 		if ($incrNo == null){$incrNo=5;}
 		$query="select pictureprofileid, picturename, pictureno from pictureprofile where albumprofileid=$albumProfileId order by pictureno";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array();
-		$workAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$workAryNo=count($workAry);
 		$pictureCtr=$incrNo;
 		for ($theLp=0;$theLp<$workAryNo;$theLp++){
@@ -1784,13 +1784,13 @@ class utilObject {
 			}
 			$pictureCtr=$pictureCtr+$incrNo;
 		}
-		//$base->debugObj->printDebug($workAry,1,'xxxfworkary');
+		//$base->DebugObj->printDebug($workAry,1,'xxxfworkary');
 		$noToUpdate=count($writeRowsAry);
 		if ($noToUpdate>0){
-			//$base->debugObj->printDebug($writeRowsAry,1,'xxxfwriterowsary');//xxxf
+			//$base->DebugObj->printDebug($writeRowsAry,1,'xxxfwriterowsary');//xxxf
 			$dbControlsAry=array('dbtablename'=>'pictureprofile');
 			$dbControlsAry['writerowsary']=$writeRowsAry;
-			$base->dbObj->writeToDb($dbControlsAry,&$base);
+			$base->DbObj->writeToDb($dbControlsAry,&$base);
 		}
 	}
 //==============================================================

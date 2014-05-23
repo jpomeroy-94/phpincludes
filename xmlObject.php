@@ -1,9 +1,9 @@
 <?php
-class xmlObject {
+class XmlObject {
 	var $calls = 0;
 	var $statusMsg = '';
 //========================================
-	function xmlObject() {
+	function XmlObject() {
 		$this->incCalls();
 		$this->statusMsg='plugin Object is fired up and ready for work!';
 	}
@@ -124,11 +124,11 @@ function array2xml($array, $level=1) {
 		$tst=str_replace('<','{',$xml);
 		$tst=str_replace('>','}',$tst);
 		//xxxf - below does not work on hub
-		$xmlObj=simplexml_load_string($xml);
+		$XmlObj=simplexml_load_string($xml);
 		//echo "<br>xmlobj:<br>";
-		//var_dump($xmlObj);exit();
-		//echo "<br>xmlobj: $xmlObj<br>xml: $tst<br>";//xxxf
-		return $xmlObj;
+		//var_dump($XmlObj);exit();
+		//echo "<br>xmlobj: $XmlObj<br>xml: $tst<br>";//xxxf
+		return $XmlObj;
 	}
 //=======================================
 	function xml2AryOther($xml,$base){
@@ -142,16 +142,16 @@ function array2xml($array, $level=1) {
 //=======================================
 	function xml2Ary($xml,$base){
 		//$xmlAry=$this->xml2ArySlow($xml,&$base);
-		$xmlObj=$this->xml2Obj($xml,&$base);
+		$XmlObj=$this->xml2Obj($xml,&$base);
 		$xmlAry=array();
-		$xmlAry=$this->getXmlAry($xmlObj,&$base);
+		$xmlAry=$this->getXmlAry($XmlObj,&$base);
 		return $xmlAry;
 	}
 //==========================================
-	function getXmlAry($xmlObj,$base){
+	function getXmlAry($XmlObj,$base){
 		$ctr=0;
 		$xmlAry=array();
-		foreach ($xmlObj->children() as $node1Obj){
+		foreach ($XmlObj->children() as $node1Obj){
 			$node1Name=$node1Obj->getName();
 			$chk=trim($node1Obj);
 			$node1Len=strlen($chk);
@@ -202,10 +202,10 @@ function array2xml($array, $level=1) {
 	}
 //=======================================
 	function xml2ArySlow($xml,$base){
-		//$xmlObj=$this->xml2Obj($xml,&$base);
+		//$XmlObj=$this->xml2Obj($xml,&$base);
 		$xml="<one><two>twodata</two><three>threedata</three><four><five>fivedata</five></four></one>";
 		$xmlAry=array();
-		//$xmlAry=$this->getXmlAry($xmlObj,&$base);
+		//$xmlAry=$this->getXmlAry($XmlObj,&$base);
 		//echo "xml: $xml<br>";//xxxf
 		$xmlAry=explode('<',$xml);
 		$thePathAry=array();
@@ -245,7 +245,7 @@ function array2xml($array, $level=1) {
 				$action="write data $theData to path $thePath".'/'."$theDirName";
 				$lastEntryWasData=true;
 			}
-			//$base->debugObj->printDebug($thePathAry,1,'xxxf');
+			//$base->DebugObj->printDebug($thePathAry,1,'xxxf');
 			echo "thedir: $theDirName, thedata: $theData, $action<br>";//xxxf	
 		}
 		exit();//xxxf

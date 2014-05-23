@@ -1,10 +1,10 @@
 <?php
-class clientObject {
+class ClientObject {
 	var $statusMsg;
 	var $callNo = 0;
 	var $systemAry = array();
 //=============================================
-	function clientObject($base) {
+	function ClientObject($base) {
 		$this->incCalls();
 		$this->statusMsg='file Object is fired up and ready for work!';
 		$this->setClientData();
@@ -15,7 +15,7 @@ class clientObject {
 	}
 //============================================
 	function setClientData(){
-		//-cant do it here $base->debugObj->printDebug("clientObj:setCLientData)",0);
+		//-cant do it here $base->DebugObj->printDebug("ClientObj:setCLientData)",0);
 		$curDir=getcwd();
 		//echo "curdir: $curDir<br>";
 		switch ($curDir){
@@ -252,14 +252,14 @@ class clientObject {
 	function getBasePath($base){return $this->systemAry['baselocal'];}
 //=============================================================
 	function getClientConn($domainName,$base){
-		$base->debugObj->printDebug("clientObj:getClientConn)",0);
+		$base->DebugObj->printDebug("ClientObj:getClientConn)",0);
 		//echo "client: getclientconn(domainname): $domainName<br>";//xxx
 		if ($domainName=='default'){
 			$domainName=$this->systemAry['domainname'];
 		}
 		$workAry=$this->getClientData($domainName,&$base);
 		//echo "inside domainname: $domainName<br>";//xxx
-		//$base->debugObj->printDebug($workAry,1,'xxx');
+		//$base->DebugObj->printDebug($workAry,1,'xxx');
 		//exit('xxx');
 		$dbUserName=$workAry['dbusername'];
 		$dbName=$workAry['dbname'];
@@ -275,7 +275,7 @@ class clientObject {
 				echo "dbname: $dbName<br>";
 				echo "dbhostinsert: $dbHostInsert<br>";
 				echo "user: $dbUserName<br>";
-				$base->debugObj->displayStack();
+				$base->DebugObj->displayStack();
 			}
 		}
 		else {
@@ -283,24 +283,24 @@ class clientObject {
 		}
 		//echo "thedbconn: $theDbConn<br>";//xxxdd
 		//if ($theDbConn == NULL){exit();}
-		$base->debugObj->printDebug("-rtn:getClientConn",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:getClientConn",0); //xx (f)
 		return $theDbConn;
 	}
 //=========================================================
 	function queryClientDbTable($query,$dbConn,$queryType,$base){
-		$base->debugObj->printDebug("clientObj:queryClientDbTable)",0);
+		$base->DebugObj->printDebug("ClientObj:queryClientDbTable)",0);
 		//$queryType='read';
 		//echo "queryclientdbtable/query: $query<br>";//xxxf
-		//$base->debugObj->displayStack();
-		$result=$base->dbObj->queryTableAnyDb($query,$queryType,$dbConn,$base,$prio=0);
+		//$base->DebugObj->displayStack();
+		$result=$base->DbObj->queryTableAnyDb($query,$queryType,$dbConn,$base,$prio=0);
 		//echo 'done<br>';//xxxf
-		$base->debugObj->printDebug("-rtn:queryClientDbTable",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:queryClientDbTable",0); //xx (f)
 		return $result;	
 	}
 //=============================================================
 	function queryClientDbTableRead($query,$dbConn,$queryType,$passAry,$base){
 			$result=$this->queryClientDbTable($query,$dbConn,'read',&$base);
-			$returnAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+			$returnAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 			return $returnAry;
 	}
 //=============================================================

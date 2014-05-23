@@ -1,9 +1,9 @@
 <?php
-class sessionObject{
+class SessionObject{
 	var $sessionAry = array();
 	var $sessionDirName;
 	//=====================================
-	function sessionObject(){
+	function SessionObject(){
 		//echo 'so: init<br>';//xxxf
 		$this->sessionDirName='default';
 		$sessionAry[$this->sessionDirName]=array();
@@ -11,7 +11,7 @@ class sessionObject{
 	//=====================================
 	function displayDebug($base){
 		echo "<br>--- displaydebug ---<br>";
-		$base->debugObj->printDebug($this->sessionAry,1,'sessionaryxxxf');
+		$base->DebugObj->printDebug($this->sessionAry,1,'sessionaryxxxf');
 	}
 	//=====================================
 	function displayDebug2(){
@@ -49,7 +49,7 @@ class sessionObject{
 	//=====================================
 	function displayTestAry($base){
 		echo "so: displaytestary<br>";//xxxf
-		$base->debugObj->printDebug($this->testAry,1,'xxxftestary');
+		$base->DebugObj->printDebug($this->testAry,1,'xxxftestary');
 	}
 	//=====================================
 	function clearDir($dirName){

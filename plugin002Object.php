@@ -1,17 +1,17 @@
 <?php
-class plugin002Object {
+class Plugin002Object {
 	var $statusMsg;
 	var $callNo = 0;
 	var $delim = '!!';
 	var $base;
 	var $theCtr=0;
 //========================================
-	function plugin002Object() {
+	function Plugin002Object() {
 		$this->incCalls();
 		$this->statusMsg='plugin Object is fired up and ready for work!';
 	}
 	function buildFormFromDbTable($base){
-		$base->debugObj->printDebug("plugin002Obj:buildFormFromDbTable('base')",0);
+		$base->DebugObj->printDebug("Plugin002Obj:buildFormFromDbTable('base')",0);
 		$dbTableName=$base->paramsAry['tablename'];
 		$selectorName1=$base->paramsAry['selectorname1'];
 		$selectorName2=$base->paramsAry['selectorname2'];
@@ -61,11 +61,11 @@ class plugin002Object {
 		if ($insertjobname != ""){$this->buildWebFormSetups($insertjobname,$listjobname,$insertJobExFieldsAry,'insert_db_from_form',&$base);}
 //- run buildWebFormSetups for table delete
 		if ($deletejobname != ""){$this->buildWebFormSetups($deletejobname,$listjobname,array(),'delete_db_from_form',&$base);}
-		$base->debugObj->printDebug("-rtn:buildFormFromDbTable",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:buildFormFromDbTable",0); //xx (f)
 	}
 	//======================================= deprecated because uses dbtablemetaprofile
 		function deprecatedbuildWebTableSetups($jobname,$updatejobname,$insertjobname,$deletejobname,$allowFieldsAry,$base){
-		$base->debugObj->printDebug("plugin002Obj:buildWebTableSetups($jobname,$updatejobname,$insertjobname,$allowFieldsAry,'base')",0); //xx (h)
+		$base->DebugObj->printDebug("Plugin002Obj:buildWebTableSetups($jobname,$updatejobname,$insertjobname,$allowFieldsAry,'base')",0); //xx (h)
 //---------------------------------------------get init stuff
 		$firstField=$allowFieldsAry['0'];
 		if ($firstField == '*'){$allFlg=true;}
@@ -77,34 +77,34 @@ class plugin002Object {
 //--------------------------------------------get table definitions
 		$dbControlsAry=array();
 		$dbControlsAry=array('dbtablename'=>$tableName);
-		$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+		$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
 		$tableMetaStuffAry=$dbControlsAry['dbtablemetaary'];
 		$noTableStuff=count($tableMetaStuffAry);
 //-------------------------------------delete htmlprofile,htmlelementprofile
 		$query="select htmlprofileid from htmlprofileview where jobname='$jobname'";
-		$result=$base->dbObj->queryTable($query,'select',&$base);
-		$workAry=$base->utlObj->tableToHashAryV3($result);
+		$result=$base->DbObj->queryTable($query,'select',&$base);
+		$workAry=$base->UtlObj->tableToHashAryV3($result);
 		foreach ($workAry as $ctr=>$rowAry){
 			$htmlProfileId=$rowAry['htmlprofileid'];
 			$query="delete from htmlelementprofile where htmlprofileid=$htmlProfileId";
-			$result=$base->dbObj->queryTable($query,'delete',&$base);
+			$result=$base->DbObj->queryTable($query,'delete',&$base);
 			$query="delete from htmlprofile where htmlprofileid=$htmlProfileId";
-			$result=$base->dbObj->queryTable($query,'delete',&$base);
+			$result=$base->DbObj->queryTable($query,'delete',&$base);
 		}
 //------------------------------------delete tableprofile,columnprofile
 		$query="select tableprofileid from tableprofileview where jobname='$jobname'";
-		$result=$base->dbObj->queryTable($query,'select',&$base);
-		$workAry=$base->utlObj->tableToHashAryV3($result);
+		$result=$base->DbObj->queryTable($query,'select',&$base);
+		$workAry=$base->UtlObj->tableToHashAryV3($result);
 		foreach ($workAry as $ctr=>$rowAry){
 			$tableProfileId=$rowAry['tableprofileid'];
 			$query="delete from columnprofile where tableprofileid=$tableProfileId";
-			$result=$base->dbObj->queryTable($query,'delete',&$base);
+			$result=$base->DbObj->queryTable($query,'delete',&$base);
 			$query="delete from tableprofile where tableprofileid=$tableProfileId";
-			$result=$base->dbObj->queryTable($query,'delete',&$base);
+			$result=$base->DbObj->queryTable($query,'delete',&$base);
 		}
 //---------------------------------------delete jobprofile
 		$query="delete from jobprofile where jobname='$jobname'";
-		$result=$base->dbObj->queryTable($query,'delete',&$base);
+		$result=$base->DbObj->queryTable($query,'delete',&$base);
 //-------------------------------------insert jobprofile
 	$dbControlsAry=array();
 	$dbControlsAry['writerowsary']=array();
@@ -112,10 +112,10 @@ class plugin002Object {
 	$dbControlsAry['dbtablename']='jobprofile';
 	$dbControlsAry['selectornameary']=array('0'=>'jobname');
 	$dbControlsAry['keyname']='jobprofileid';
-	$successfulUpdate=$base->dbObj->writeToDb($dbControlsAry,&$base);
+	$successfulUpdate=$base->DbObj->writeToDb($dbControlsAry,&$base);
 	$dbControlsAry['selectorary']=array('jobname'=>$jobname);
 	$dbControlsAry['useselect']=true;
-	$workAry=$base->dbObj->readFromDb($dbControlsAry,&$base);
+	$workAry=$base->DbObj->readFromDb($dbControlsAry,&$base);
 	$jobProfileId=$workAry[0]['jobprofileid'];
 //-------------------------------------insert htmlprofile
    	$dbControlsAry=array();
@@ -131,10 +131,10 @@ class plugin002Object {
 	$rowAry['htmltitle']=$jobname;
 	$dbControlsAry['writerowsary'][]=$rowAry;
 	$dbControlsAry['dbtablename']='htmlprofile';
-	$writeUpdateFlag=$base->dbObj->writeToDb($dbControlsAry,&$base);
+	$writeUpdateFlag=$base->DbObj->writeToDb($dbControlsAry,&$base);
 	$dbControlsAry['useselect']=true;
 	$dbControlsAry['selectorary']=array('jobprofileid'=>$jobProfileId);
-	$rowsAry=$base->dbObj->readFromDb($dbControlsAry,&$base);
+	$rowsAry=$base->DbObj->readFromDb($dbControlsAry,&$base);
 	$htmlProfileId=$rowsAry[0]['htmlprofileid'];
 	//---- init of rows to write
 	$dbControlsAry=array();
@@ -217,7 +217,7 @@ class plugin002Object {
 	$dbControlsAry['writerowsary'][]=$rowAry;
 //------------------------------------write htmlelementprofile rows
 	$dbControlsAry['dbtablename']='htmlelementprofile';
-	$successfulUpdate=$base->dbObj->writeToDb($dbControlsAry,&$base);
+	$successfulUpdate=$base->DbObj->writeToDb($dbControlsAry,&$base);
 //------------------------------------- insert tableprofile
 	$dbControlsAry=array();
 	$dbControlsAry['writerowsary']=array();
@@ -231,15 +231,15 @@ class plugin002Object {
 	//$rowAry['tablewidth']='100%';
 	$dbControlsAry['writerowsary'][]=$rowAry;
 	$dbControlsAry['dbtablename']='tableprofile';
-	//$base->debugObj->printDebug($dbControlsAry,1,'dbca');//xxx
-	//$base->debugObj->setPrio(-1,-1);//xxx
-	$wroteOk=$base->dbObj->writeToDb($dbControlsAry,&$base);
+	//$base->DebugObj->printDebug($dbControlsAry,1,'dbca');//xxx
+	//$base->DebugObj->setPrio(-1,-1);//xxx
+	$wroteOk=$base->DbObj->writeToDb($dbControlsAry,&$base);
 	//echo "wroteok: $wroteOk";//xxx
-	//$base->debugObj->printDebug($base->errorProfileAry,1,'error');//xxx
+	//$base->DebugObj->printDebug($base->errorProfileAry,1,'error');//xxx
 	$dbControlsAry['useselect']=true;
 	$dbControlsAry['selectorary']=array('jobprofileid'=>$jobProfileId,'tablename'=>'basictable');
-	$rowsAry=$base->dbObj->readFromDb($dbControlsAry,&$base);
-	//$base->debugObj->printDebug($rowsAry,1,'ra');//xxx
+	$rowsAry=$base->DbObj->readFromDb($dbControlsAry,&$base);
+	//$base->DebugObj->printDebug($rowsAry,1,'ra');//xxx
 	$tableProfileId=$rowsAry[0]['tableprofileid'];
 //------------------------------ insert columnprofile (allowFieldsAry)
 		$columnNo=0;
@@ -247,7 +247,7 @@ class plugin002Object {
 		else {$useAry=$allowFieldsAry;}
 		$dbControlsAry=array();
 		$dbControlsAry['dbtablename']='columnprofile';
-		$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+		$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
 		$dbControlsAry['writerowsary']=array();
 		foreach ($useAry as $name=>$dmy){
 			if (array_key_exists($name,$tableMetaStuffAry)){
@@ -284,12 +284,12 @@ class plugin002Object {
 		$rowAry['joblink']=$deletejobname;
 		$rowAry['urlname']='del';
 		$dbControlsAry['writerowsary'][]=$rowAry;
-		$writeStatus=$base->dbObj->writeToDb($dbControlsAry,&$base);
-		$base->debugObj->printDebug("-rtn:buildWebTableSetups",0); //xx (f)
+		$writeStatus=$base->DbObj->writeToDb($dbControlsAry,&$base);
+		$base->DebugObj->printDebug("-rtn:buildWebTableSetups",0); //xx (f)
 	}
 //======================================= deprecated because uses dbtablemetaprofile   
 	function deprecatedbuildWebFormSetups($jobName,$redirectJobName,$exFieldsAry,$operationName,$base){
-		$base->debugObj->printDebug("plugin002Obj:buildWebFormSetups($jobName,$redirectJobName,$exFieldsAry,$operationName,'base')",0); //xx (h)
+		$base->DebugObj->printDebug("Plugin002Obj:buildWebFormSetups($jobName,$redirectJobName,$exFieldsAry,$operationName,'base')",0); //xx (h)
 //-----------------------------------------------do init stuff
 		$tableName=$base->paramsAry['tablename'];
 //-----------------------------------------------get table stuff 
@@ -297,36 +297,36 @@ class plugin002Object {
 		$noTableStuff=count($tableMetaStuffAry);
 //---------------------------------------delete formprofile,formelementprofile
 		$query="select formprofileid from formprofileview where jobname='$jobName'";
-		$result=$base->dbObj->queryTable($query,'select',&$base);
-		$workAry=$base->utlObj->tableToHashAryV3($result);
+		$result=$base->DbObj->queryTable($query,'select',&$base);
+		$workAry=$base->UtlObj->tableToHashAryV3($result);
 		foreach ($workAry as $ctr=>$retrievedRowAry){
 			$formProfileId=$retrievedRowAry['formprofileid'];
 			$query="delete from formelementprofile where formprofileid=$formProfileId";
-			$result=$base->dbObj->queryTable($query,'delete',&$base);
+			$result=$base->DbObj->queryTable($query,'delete',&$base);
 			$query="delete from formprofile where formprofileid=$formProfileId";
-			$result=$base->dbObj->queryTable($query,'delete',&$base);
+			$result=$base->DbObj->queryTable($query,'delete',&$base);
 		}
 //---------------------------------------delete htmlelementprofile, htmlprofile
 		$query="select htmlprofileid from htmlprofileview where jobname='$jobName'";
-		$result=$base->dbObj->queryTable($query,'select',&$base);
-		$workAry=$base->utlObj->tableToHashAryV3($result);
+		$result=$base->DbObj->queryTable($query,'select',&$base);
+		$workAry=$base->UtlObj->tableToHashAryV3($result);
 		foreach ($workAry as $ctr=>$rowAry){
 			$htmlProfileId=$rowAry['htmlprofileid'];
 			$query="delete from htmlelementprofile where htmlprofileid=$htmlProfileId";
-			$result=$base->dbObj->queryTable($query,'delete',&$base);
+			$result=$base->DbObj->queryTable($query,'delete',&$base);
 			$query="delete from htmlprofile where htmlprofileid=$htmlProfileId";
-			$result=$base->dbObj->queryTable($query,'delete',&$base);
+			$result=$base->DbObj->queryTable($query,'delete',&$base);
 		}
 //-------------------------------------------insert/update jobprofile
 	$dbControlsAry=array();
 	$dbControlsAry['writerowsary']=array();
 	$dbControlsAry['writerowsary'][]=array('jobname'=>$jobName);
 	$dbControlsAry['dbtablename']='jobprofile';
-	$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
-	$writeStatus=$base->dbObj->writeToDb($dbControlsAry,&$base);
+	$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
+	$writeStatus=$base->DbObj->writeToDb($dbControlsAry,&$base);
 	$dbControlsAry['selectorary']=array('jobname'=>$jobName);
 	$dbControlsAry['useselect']=true;
-	$rowsAry=$base->dbObj->readFromDb($dbControlsAry,&$base);
+	$rowsAry=$base->DbObj->readFromDb($dbControlsAry,&$base);
 	$jobProfileId=$rowsAry[0]['jobprofileid'];
 //--------------------------------------------insert htmlprofile
 	$dbControlsAry=array();
@@ -337,10 +337,10 @@ class plugin002Object {
 	$dbControlsAry['writerowsary']=array();
 	$dbControlsAry['writerowsary'][]=array('jobprofileid'=>$jobProfileId,'htmlname'=>'basicform.htm','htmltitle'=>$jobName);
 	$dbControlsAry['dbtablename']='htmlprofile';
-	$writeStatus=$base->dbObj->writeToDb($dbControlsAry,&$base);
+	$writeStatus=$base->DbObj->writeToDb($dbControlsAry,&$base);
 	$dbControlsAry['selectorary']=array('jobprofileid'=>$jobProfileId);
 	$dbControlsAry['useselect']=true;
-	$rowsAry=$base->dbObj->readFromDb($dbControlsAry,&$base);
+	$rowsAry=$base->DbObj->readFromDb($dbControlsAry,&$base);
 	$htmlProfileId=$rowsAry[0]['htmlprofileid'];
 //--------------------------------------------- insert htmlelementprofile
 	$name='returntolist';
@@ -355,17 +355,17 @@ class plugin002Object {
 	$rowAry['htmlelementname']=$name;
 	$dbControlsAry['writerowsary'][]=$rowAry;
 	$dbControlsAry['dbtablename']='htmlelementprofile';
-	$writeStatus=$base->dbObj->writeToDb($dbControlsAry,&$base);
+	$writeStatus=$base->DbObj->writeToDb($dbControlsAry,&$base);
 //---------------------------------------------insert formprofile
 	$dbControlsAry=array();
 	$dbControlsAry['writerowsary']=array();
 // removed 'selectorname'=$selectorName
 	$dbControlsAry['writerowsary'][]=array('jobprofileid'=>$jobProfileId,'formno'=>1,'formname'=>'basicform','tablename'=>$tableName,'redirect'=>$redirectJobName,'formoperation'=>$operationName,'formtableformat'=>'2');
 	$dbControlsAry['dbtablename']='formprofile';
-	$writeStatus=$base->dbObj->writeToDb($dbControlsAry,&$base);
+	$writeStatus=$base->DbObj->writeToDb($dbControlsAry,&$base);
 	$dbControlsAry['selectorary']=array('jobprofileid'=>$jobProfileId);
 	$dbControlsAry['useselect']=true;
-	$rowsAry=$base->dbObj->readFromDb($dbControlsAry,&$base);
+	$rowsAry=$base->DbObj->readFromDb($dbControlsAry,&$base);
 //----------------------------------------------insert formelementprofile 
 	$formProfileId=$rowsAry[0]['formprofileid'];
 	$formName='basicform';
@@ -454,18 +454,18 @@ class plugin002Object {
 		$formElementLabel=$requestValue;
 //need to put in form name
 		$dbControlsAry['writerowsary'][]=array('formprofileid'=>$formProfileId,'formno'=>1,'formelementno'=>$formElementNo,'formelementname'=>$formElementName,'formelementtype'=>'button','formelementsubtype'=>'submit','formelementlabel'=>$formElementLabel);
-		$writtenRowsAry=$base->dbObj->writeToDb($dbControlsAry,&$base);
-		$base->debugObj->printDebug("-rtn:plugin002Obj:buildWebFormSetups",0); //xx (f)
+		$writtenRowsAry=$base->DbObj->writeToDb($dbControlsAry,&$base);
+		$base->DebugObj->printDebug("-rtn:Plugin002Obj:buildWebFormSetups",0); //xx (f)
  }
  //======================================= 
 	function getTableMetaStuff($dbTableName,$flag,$base){
-		$base->debugObj->printDebug("plugin002Obj:getTableMetaStuff($dbTableName,'base')",0);
+		$base->DebugObj->printDebug("Plugin002Obj:getTableMetaStuff($dbTableName,'base')",0);
 		$dbControlsAry=array('dbtablename'=>$dbTableName);
-		$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+		$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
 		$dbTableReturnAry=$dbControlsAry['dbtablemetaary'];
 		$returnAry=array();
  		$query="select * from $dbTableName";
-		$res=$base->dbObj->queryTable($query,'retrieve',&$base);
+		$res=$base->DbObj->queryTable($query,'retrieve',&$base);
 	 	$noFields = pg_num_fields($res);
  	 	for ($ctr = 0; $ctr < $noFields; $ctr++) {
   	 	$fieldName = pg_field_name($res, $ctr);
@@ -489,12 +489,12 @@ class plugin002Object {
 				}
 			}
 	 	}
-		$base->debugObj->printDebug("-rtn:getTableMetaStuff",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:getTableMetaStuff",0); //xx (f)
 		return $returnAry;
 	}
 	//=======================================
 	function runBashCommand($applicationPassedAry,$base){
-		$base->debugObj->printDebug("plugin002Obj:runBashCommand($applicationPassedAry,'base')",0);
+		$base->DebugObj->printDebug("Plugin002Obj:runBashCommand($applicationPassedAry,'base')",0);
 		$command=$applicationPassedAry['pluginargs'];
 		$type='r';
 		$handle=popen("$command",$type);
@@ -516,15 +516,15 @@ class plugin002Object {
             $outputFormatted[$rowNo]=$valueAry;
             }
             $applicationPassedAry=array('outputformatted'=>$outputFormatted);
-            $base->debugObj->printDebug("-rtn:runBashCommand",0); //xx (f)
+            $base->DebugObj->printDebug("-rtn:runBashCommand",0); //xx (f)
             return $applicationPassedAry;
 	}
 	//=======================================
 	function storeBashCommandResults($applicationPassedAry,$base){
-		$base->debugObj->printDebug("plugin002Obj:storeBashCommandResults($applicationPassedAry,'base')",0);
+		$base->DebugObj->printDebug("Plugin002Obj:storeBashCommandResults($applicationPassedAry,'base')",0);
 		$resultsTableName=$applicationPassedAry['pluginargs'];
 		$dbControlsAry=array('dbtablename'=>$resultsTableName);
-		$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+		$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
 		$dbTableMetaAry=$dbControlsAry['dbtablemetaary'];
 		$outputFormatted=$applicationPassedAry['outputformatted'];
 		$writeRowsAry=array();
@@ -547,22 +547,22 @@ class plugin002Object {
 			}
 		}
 		$dbControlsAry['writerowsary']=$writeRowsAry;
-		//$base->debugObj->printDebug($dbControlsAry,1,'dbca');//xxx
-		//$base->debugObj->setPrio(-1,-1);//xxx
-		$successfullUpdate=$base->dbObj->writeToDb($dbControlsAry,&$base);
-		//$base->debugObj->setPrio(0,0);//xxx
-		$base->debugObj->printDebug("-rtn:storeBashCommandResults",0); //xx (f)
+		//$base->DebugObj->printDebug($dbControlsAry,1,'dbca');//xxx
+		//$base->DebugObj->setPrio(-1,-1);//xxx
+		$successfullUpdate=$base->DbObj->writeToDb($dbControlsAry,&$base);
+		//$base->DebugObj->setPrio(0,0);//xxx
+		$base->DebugObj->printDebug("-rtn:storeBashCommandResults",0); //xx (f)
 		return $applicationPassedAry;
 	}
 	//======================================= soon to be deprecated
 	function deprecatedmoveElementPos($base){
-		$base->debugObj->printDebug("plugin002Obj:moveFormElementPos('base')",0); //xx (h)
+		$base->DebugObj->printDebug("Plugin002Obj:moveFormElementPos('base')",0); //xx (h)
 		$formProfileId=$base->paramsAry['formprofileid'];
 		$selectFormElementProfileId=$base->paramsAry['formelementprofileid'];
 		$direction=$base->paramsAry['direction'];
 		$query="select formelementno,formelementprofileid,formelementname,formprofileid from formelementprofile where formprofileid=$formProfileId order by formelementno";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
-		$formNoAry=$base->utlObj->tableToHashAryV3($result);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
+		$formNoAry=$base->UtlObj->tableToHashAryV3($result);
 		$lastFormElementProfileId=0;
 		$noRows=count($formNoAry);
 		$bypass=false;
@@ -587,12 +587,12 @@ class plugin002Object {
 		} // end for
 		$dbControlsAry=array('dbtablename'=>'formelementprofile');
 		$dbControlsAry['writerowsary']=$formNoAry;
-		$base->dbObj->writeToDb($dbControlsAry,&$base);
-		$base->debugObj->printDebug("-rtn:moveFormElementPos",0); //xx (f)
+		$base->DbObj->writeToDb($dbControlsAry,&$base);
+		$base->DebugObj->printDebug("-rtn:moveFormElementPos",0); //xx (f)
 	}
 	//======================================= replaces moveElementPos($base);
 	function moveElementCtr($base){
-		$base->debugObj->printDebug("plugin002Obj:moveElementCtr('base')",0); //xx (h)
+		$base->DebugObj->printDebug("Plugin002Obj:moveElementCtr('base')",0); //xx (h)
 		$dbTableName=$base->paramsAry['dbtablename'];
 		$parentDbTableName=$base->paramsAry['parentdbtablename'];
 		$dbTablePrefix=str_replace('profile','',$dbTableName);
@@ -604,7 +604,7 @@ class plugin002Object {
 		if ($increment<1){$increment=1;}
 		if (array_key_exists('parentkeyid2',$base->paramsAry)){
 			$parentKeyId2=$base->paramsAry['parentkeyid2'];
-			$parentKeyId2_sqlformat = $base->utlObj->returnFormattedData ($parentKeyId2,'numeric','sql');
+			$parentKeyId2_sqlformat = $base->UtlObj->returnFormattedData ($parentKeyId2,'numeric','sql');
 			$parentKeyName2=$base->paramsAry['parentkeyname2'];	
 			if ($parentKeyId2_sqlformat == 'NULL' || $parentKeyId2_sqlformat == NULL){
 				$insertParentKey2=" and $parentKeyName2 is NULL";
@@ -614,8 +614,8 @@ class plugin002Object {
 		} 
 		else { $insertParentKey2='';}
 		$query="select ".$parentDbTableName."id,".$dbTablePrefix."no,".$dbTablePrefix."profileid,".$dbTablePrefix."name from ".$dbTableName." where ".$parentDbTablePrefix."profileid=$parentKeyId $insertParentKey2 order by ".$dbTablePrefix."no";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
-		$elementNoAry=$base->utlObj->tableToHashAryV3($result);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
+		$elementNoAry=$base->UtlObj->tableToHashAryV3($result);
 		$lastElementProfileId=0;
 		$noRows=count($elementNoAry);
 		$bypass=false;
@@ -640,54 +640,54 @@ class plugin002Object {
 		} // end for rowctr
 		$dbControlsAry=array('dbtablename'=>$dbTableName);
 		$dbControlsAry['writerowsary']=$elementNoAry;
-		$base->dbObj->writeToDb($dbControlsAry,&$base);
-		$base->debugObj->printDebug("-rtn:moveFormElementPos",0); //xx (f)
+		$base->DbObj->writeToDb($dbControlsAry,&$base);
+		$base->DebugObj->printDebug("-rtn:moveFormElementPos",0); //xx (f)
 	}
 	//=======================================
 	function cloneJob($base){
-		$base->debugObj->printDebug("plugin002Obj:cloneJob('base')",0); //xx (h)
+		$base->DebugObj->printDebug("Plugin002Obj:cloneJob('base')",0); //xx (h)
 		$paramsAry=$base->paramsAry;
 		$sourceJobName=$paramsAry['sourcejobname'];
 		$newJobName=$paramsAry['newjobname'];
 	    $dbControlsAry=array('dbtablename'=>'jobprofile');
 	    $dbControlsAry['selectorary']=array('jobname'=>$sourceJobName);
    		$dbControlsAry['useselect']=true;
-    	$dataAry=$base->dbObj->readFromDb($dbControlsAry,&$base);
+    	$dataAry=$base->DbObj->readFromDb($dbControlsAry,&$base);
     	$sourceJobProfileId=$dataAry[0]['jobprofileid'];
     	//echo "sourcejobname: $sourceJobName, sourcejobprofileid: $sourceJobProfileId<br>";//xxx
-    	//$base->debugObj->printDebug($dataAry,1,'dataary');//xxx
+    	//$base->DebugObj->printDebug($dataAry,1,'dataary');//xxx
 		$query="select * from jobprofile where jobname='$newJobName'";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
-		$tstAry=$base->utlObj->tableToHashAryV3($result);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
+		$tstAry=$base->UtlObj->tableToHashAryV3($result);
 		$noFiles=count($tstAry);
 		if ($noFiles>0){echo "$newJobName: is already on file!";}
 		else {$this->doCloning($sourceJobProfileId,$newJobName,&$base);}
-		$base->debugObj->printDebug("-rtn:cloneJob",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:cloneJob",0); //xx (f)
 	}
 	//========================================
 	function doCloning($sourceJobProfileId,$newJobName,&$base){
-		$base->debugObj->printDebug("plugin002Obj:doCloning($sourceJobProfileId,$newJobName,&'base')",0); //xx (h)
+		$base->DebugObj->printDebug("Plugin002Obj:doCloning($sourceJobProfileId,$newJobName,&'base')",0); //xx (h)
 	//--- copy/clone jobprofile old to new
 		$query="select * from jobprofile where jobprofileid=$sourceJobProfileId";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array();
-		$writeRowsAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$writeRowsAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		unset($writeRowsAry[0]['jobprofileid']);
 		$writeRowsAry[0]['jobname']=$newJobName;
 		$dbControlsAry=array('dbtablename'=>'jobprofile');
 		$dbControlsAry['writerowsary']=$writeRowsAry;
-		$base->dbObj->writeToDb($dbControlsAry,&$base);
+		$base->DbObj->writeToDb($dbControlsAry,&$base);
 		$dbTableName='jobprofile';$selColName='jobname';$selColValue=$newJobName;$keyColName='jobprofileid';
 		$newJobProfileIdAry=$this->getRowKeys($dbTableName,$selColName,$selColValue,$keyColName,&$base);
 		$newJobProfileId=$newJobProfileIdAry[0];
-		//$base->debugObj->printDebug($newJobProfileIdAry,1,'njpa');//xxx
+		//$base->DebugObj->printDebug($newJobProfileIdAry,1,'njpa');//xxx
 		//echo "newjobprofileid: $newJobProfileId<br>";//xxx
  	//----------------------------------- copy/clone htmlprofile need to fix for multiple html records!!!
  		//- get it
  		$dbTableName='htmlprofile';
  		$selectColName='jobprofileid';$selectColValue=$sourceJobProfileId;
  		//echo "source sourcejobprofileid: $sourceJobProfileId<br>";//xxx
- 		//$base->debugObj->setPrio(-1,-1);//xxx
+ 		//$base->DebugObj->setPrio(-1,-1);//xxx
   		$writeRowsAry=$this->getCloneData($dbTableName,$selectColName,$selectColValue,&$base);
    		$sourceHtmlProfileIdAry=array();
   		foreach ($writeRowsAry as $rowNo=>$rowValueAry){
@@ -695,17 +695,17 @@ class plugin002Object {
   		}
  		//-change it
 		$updateColumnName='jobprofileid';$updateColumnValue=$newJobProfileId;$delColumnName='htmlprofileid';
-		//$base->debugObj->printDebug($writeRowsAry,1,'wra1');//xxx
+		//$base->DebugObj->printDebug($writeRowsAry,1,'wra1');//xxx
 		$writeRowsAry=$this->changeCloneData($writeRowsAry,$updateColumnName,$updateColumnValue,$delColumnName,&$base);
-		//$base->debugObj->printDebug($writeRowsAry,1,'wra2');//xxx
+		//$base->DebugObj->printDebug($writeRowsAry,1,'wra2');//xxx
   		//-write it
  		$dbControlsAry=array('dbtablename'=>$dbTableName);
  		$dbControlsAry['writerowsary']=$writeRowsAry;
- 		$base->dbObj->writeToDb($dbControlsAry,&$base);
+ 		$base->DbObj->writeToDb($dbControlsAry,&$base);
   		//- get key for it
  		$selColName='jobprofileid';$selColValue=$newJobProfileId;$keyColName='htmlprofileid';
 		$newHtmlProfileIdAry=$this->getRowKeys($dbTableName,$selColName,$selColValue,$keyColName,&$base);
-		//$base->debugObj->setPrio(-1,-1);//xxx
+		//$base->DebugObj->setPrio(-1,-1);//xxx
  	//---------------------------- copy/clone htmlelementprofile
  		//- get them
  		$noRows=count($sourceHtmlProfileIdAry);
@@ -721,7 +721,7 @@ class plugin002Object {
  	 			//-write them
  				$dbControlsAry=array('dbtablename'=>$dbTableName);
  				$dbControlsAry['writerowsary']=$writeRowsAry;
- 				$base->dbObj->writeToDb($dbControlsAry,&$base);
+ 				$base->DbObj->writeToDb($dbControlsAry,&$base);
  			}
  		}
  	//---------------------------- copy/clone tableprofile xx - has an error
@@ -741,7 +741,7 @@ class plugin002Object {
 			//- write it
  			$dbControlsAry=array('dbtablename'=>$dbTableName);
  			$dbControlsAry['writerowsary']=$writeRowsAry;
- 			$base->dbObj->writeToDb($dbControlsAry,&$base);
+ 			$base->DbObj->writeToDb($dbControlsAry,&$base);
 			//- get keys for it
  			$selColName='jobprofileid';$selColValue=$newJobProfileId;$keyColName='tableprofileid';
 			$newTableProfileIdAry=$this->getRowKeys($dbTableName,$selColName,$selColValue,$keyColName,&$base);
@@ -761,7 +761,7 @@ class plugin002Object {
 			 		//-write them
 		 			$dbControlsAry=array('dbtablename'=>$dbTableName);
 		 			$dbControlsAry['writerowsary']=$writeRowsAry;
-		 			$base->dbObj->writeToDb($dbControlsAry,&$base);
+		 			$base->DbObj->writeToDb($dbControlsAry,&$base);
 		 		} // end if norows>0
 			} // end for		 		
  		} // end if id != ''
@@ -782,7 +782,7 @@ class plugin002Object {
 			//- write it
  			$dbControlsAry=array('dbtablename'=>$dbTableName);
  			$dbControlsAry['writerowsary']=$writeRowsAry;
- 			$base->dbObj->writeToDb($dbControlsAry,&$base);
+ 			$base->DbObj->writeToDb($dbControlsAry,&$base);
 			//- get keys for it
  			$selColName='jobprofileid';$selColValue=$newJobProfileId;$keyColName='menuprofileid';
 			$newTableProfileIdAry=$this->getRowKeys($dbTableName,$selColName,$selColValue,$keyColName,&$base);
@@ -802,7 +802,7 @@ class plugin002Object {
 			 		//-write them
 		 			$dbControlsAry=array('dbtablename'=>$dbTableName);
 		 			$dbControlsAry['writerowsary']=$writeRowsAry;
-		 			$base->dbObj->writeToDb($dbControlsAry,&$base);
+		 			$base->DbObj->writeToDb($dbControlsAry,&$base);
 		 		} // end if norows>0
 			} // end for		 		
  		} // end if id != ''
@@ -821,7 +821,7 @@ class plugin002Object {
  		//- write it
   			$dbControlsAry=array('dbtablename'=>$dbTableName);
  			$dbControlsAry['writerowsary']=$writeRowsAry;
- 			$base->dbObj->writeToDb($dbControlsAry,&$base);
+ 			$base->DbObj->writeToDb($dbControlsAry,&$base);
   		//- get key for it
  			$selColName='jobprofileid';$selColValue=$newJobProfileId;$keyColName='formprofileid';
 			$newFormProfileIdAry=$this->getRowKeys($dbTableName,$selColName,$selColValue,$keyColName,&$base);
@@ -841,7 +841,7 @@ class plugin002Object {
  				//-write them
  					$dbControlsAry=array('dbtablename'=>$dbTableName);
  					$dbControlsAry['writerowsary']=$writeRowsAry;
- 					$base->dbObj->writeToDb($dbControlsAry,&$base);
+ 					$base->DbObj->writeToDb($dbControlsAry,&$base);
  				} // end if norows>0
  	//---------------------------------- copy/clone formdataprofile
 				//- get them
@@ -855,33 +855,33 @@ class plugin002Object {
  					//-write them
  					$dbControlsAry=array('dbtablename'=>$dbTableName);
  					$dbControlsAry['writerowsary']=$writeRowsAry;
- 					$base->dbObj->writeToDb($dbControlsAry,&$base);
+ 					$base->DbObj->writeToDb($dbControlsAry,&$base);
  				} // end if norows>0
  			} // end if id != ''
  		} // end for
- 		$base->debugObj->printDebug("-rtn:doCloning",0); //xx (f)
+ 		$base->DebugObj->printDebug("-rtn:doCloning",0); //xx (f)
  	}
 	//----------------------------------------
 	function getCloneData($dbTableName,$selColName,$selColValue,$base){
-		$base->debugObj->printDebug("plugin002Obj:getCloneData($dbTableName,$selColName,$selColValue,'base')",0); //xx (h)
+		$base->DebugObj->printDebug("Plugin002Obj:getCloneData($dbTableName,$selColName,$selColValue,'base')",0); //xx (h)
 		$query="select * from $dbTableName where $selColName=$selColValue";
- 		$result=$base->dbObj->queryTable($query,'read',&$base);
+ 		$result=$base->DbObj->queryTable($query,'read',&$base);
  		$passAry=array();
  		//$passAry['delim1']='columnname';
- 		$writeRowsAry=$base->utlObj->tableToHashAryV3($result,$passAry);
- 		$base->debugObj->printDebug("-rtn:getCloneData",0); //xx (f)
+ 		$writeRowsAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+ 		$base->DebugObj->printDebug("-rtn:getCloneData",0); //xx (f)
  		return $writeRowsAry;
 	}
 	//----------------------------------------
 	function changeCloneData($dataAry,$updateColumnName,$updateColumnValue,$delColumnName,$base){
-		$base->debugObj->printDebug("plugin002Obj:changeCloneData($dataAry,$updateColumnName,$updateColumnValue,$delColumnName,'base')",0); //xx (h)
+		$base->DebugObj->printDebug("Plugin002Obj:changeCloneData($dataAry,$updateColumnName,$updateColumnValue,$delColumnName,'base')",0); //xx (h)
 		foreach ($dataAry as $rowNo=>$valueAry){
 			//- get rid of keyid so will not overlay old, but build new
  			unset($dataAry[$rowNo][$delColumnName]);
  			//- change the updatecolumn with the updatename
  			$dataAry[$rowNo][$updateColumnName]=$updateColumnValue;	
  		}
- 		$base->debugObj->printDebug("-rtn:changeCloneData",0); //xx (f)	
+ 		$base->DebugObj->printDebug("-rtn:changeCloneData",0); //xx (f)	
 		return $dataAry;
 	}
 	//----------------------------------------
@@ -890,11 +890,11 @@ class plugin002Object {
 		$fileName=$companyName.'_jobs.txt';
 		$dirPath=$base->systemAry['tmplocal'];
 		$filePath=$dirPath.'/'.$fileName;
-		$restoreFileAry=$base->fileObj->getFileArray($filePath);
-		$base->fileObj->initLog('companyrestore.log',&$base);
-		$base->fileObj->writeLog('companyrestore.log','log for restore of '.$fileName,&$base);
+		$restoreFileAry=$base->FileObj->getFileArray($filePath);
+		$base->FileObj->initLog('companyrestore.log',&$base);
+		$base->FileObj->writeLog('companyrestore.log','log for restore of '.$fileName,&$base);
 		$keyValuesAry=array();
-		//$base->debugObj->printDebug($restoreFileAry,1,'xxxrfa');
+		//$base->DebugObj->printDebug($restoreFileAry,1,'xxxrfa');
 		//exit();
 		foreach ($restoreFileAry as $ctr=>$runLine){
 			$runLineWork=str_replace(":hover","%colonhover%",$runLine);
@@ -963,7 +963,7 @@ class plugin002Object {
 			if ($newKeyValue == NULL){
 				$newKeyValue='NULL';
 				$errorMsg=$this->theCtr.') ERROR: null value for conversion of ' . $convStrgAry;
-				$base->fileObj->writeLog('companyrestore.log',$errorMsg,&$base);
+				$base->FileObj->writeLog('companyrestore.log',$errorMsg,&$base);
 			}
 			$queryAry[$ctr]=$newKeyValue;
 		}
@@ -974,20 +974,20 @@ class plugin002Object {
 	//----------------------------------------
 	function restoreFromBackupDoRead($dbKeyName,$query,$base){
 		//echo "do read: $query<br>";
-		$base->fileObj->writeLog('companyrestore.log',$query,&$base);
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$base->FileObj->writeLog('companyrestore.log',$query,&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array();
-		$workAry=$base->utlObj->tableToHashAryV3($result,$passAry,&$base);
+		$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry,&$base);
 		$dbKeyValue=$workAry['0'][$dbKeyName];
 		//$dbKeyValue=rand(1,99999);//xxx
-		$base->fileObj->writeLog($this->theCtr.') companyrestore.log','read keyid: '.$dbKeyValue,&$base);
+		$base->FileObj->writeLog($this->theCtr.') companyrestore.log','read keyid: '.$dbKeyValue,&$base);
 		//echo "...key read: $dbKeyValue<br>";
 		return $dbKeyValue;	
 	}
 	//----------------------------------------
 	function restoreFromBackupDoQuery($query,$base){
-		$base->fileObj->writeLog('companyrestore.log',$query,&$base);
-		$base->dbObj->queryTable($query,'updatenoconversion',&$base);
+		$base->FileObj->writeLog('companyrestore.log',$query,&$base);
+		$base->DbObj->queryTable($query,'updatenoconversion',&$base);
 		//echo "do query: $query<br>";//xxx
 	}
 	//----------------------------------------
@@ -1001,7 +1001,7 @@ class plugin002Object {
 		$companyString.=$this->buildJobBackups($companyName,$jobOverride,&$base);
 		$tmpLocal=$base->systemAry['tmplocal'];
 		$fullPath="$tmpLocal/$companyName".'_jobs.txt';
-		$base->fileObj->writeFile($fullPath,$companyString,&$base);
+		$base->FileObj->writeFile($fullPath,$companyString,&$base);
 		//echo 'xxx1';
 		$base->errorProfileAry['returnmsg']="<pre>$fullPath has been written</pre>";
 	}
@@ -1010,9 +1010,9 @@ class plugin002Object {
 		if ($jobOverride != 'none'){$overrideInsert=" and jobname='$jobOverride'";}
 		else {$overrideInsert=NULL;}
 		$query="select * from jobprofileview where companyname='$companyName' $overrideInsert order by jobdeleteorder";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array('delimit1'=>'jobname');
-		$jobDeletesAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$jobDeletesAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$returnStrg="comment:delete jobs for company: $companyName";
 		foreach ($jobDeletesAry as $jobName=>$jobAry){
 			$returnStrg.="\n";
@@ -1040,9 +1040,9 @@ class plugin002Object {
 		$returnStrg.="\n";
 		$returnStrg.="comment:do insert and reads for all jobs for company: $companyName";	
 		$query="select * from jobprofileview where companyname='$companyName' $overrideInsert order by jobrestoreorder";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array('delimit1'=>'jobname');
-		$jobRestoresAry=$base->utlObj->tableToHashAryV3($result,$passAry,&$base);
+		$jobRestoresAry=$base->UtlObj->tableToHashAryV3($result,$passAry,&$base);
 		foreach ($jobRestoresAry as $jobName=>$jobAry){
 			$returnStrg.="\n";
 			$returnStrg.="comment:do insert and reads on all tables for job: $jobName";	
@@ -1054,10 +1054,10 @@ class plugin002Object {
 //-----------------------------------------
 	function deprecatedbuildCompanyRead($companyName,&$base){
 		$query="select * from companyprofile where companyname='$companyName'";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array('delimit1'=>'companyname');
-		$workAry=$base->utlObj->tableToHashAryV3($result,$passAry,&$base);
-		//$base->debugObj->printDebug($workAry,1,'xxxwary');
+		$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry,&$base);
+		//$base->DebugObj->printDebug($workAry,1,'xxxwary');
 		$companyProfileId=$workAry[$companyName]['companyprofileid'];
 		$companyReadString="readqry:companyprofile:companyprofileid:$companyProfileId:select companyprofileid from companyprofile where companyname='$companyName'\n";
 		return $companyReadString;
@@ -1065,9 +1065,9 @@ class plugin002Object {
 //------------------------------------------
 	function buildUserReads($companyName,&$base){
 		$query="select userprofileid,username from userprofileview where companyname='$companyName'";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array();
-		$workAry=$base->utlObj->tableToHashAryV3($result,$passAry,&$base);
+		$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry,&$base);
 		$returnStrg=NULL;
 		foreach ($workAry as $ctr=>$userAry){
 			$userProfileId=$userAry['userprofileid'];
@@ -1081,9 +1081,9 @@ class plugin002Object {
 //-----------------------------------------
 	function buildOperReads($base){
 		$query="select operationprofileid,operationname from operationprofile";	
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array();
-		$workAry=$base->utlObj->tableToHashAryV3($result,$passAry,&$base);
+		$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry,&$base);
 		$returnStrg=NULL;
 		foreach ($workAry as $ctr=>$operAry){
 			$operationName=$operAry['operationname'];
@@ -1097,13 +1097,13 @@ class plugin002Object {
 //-----------------------------------------
 	function deprecatedbuildJobDelete($jobName,$jobAry,&$base){
 		$query="select * from dbtableprofile where dbtabletype='jobtable' order by dbtabledeleteorder";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array('delimit1'=>'dbtablename');
-		$workAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$jobString=NULL;
 		foreach ($workAry as $dbTableName=>$dbTableAry){
 			$dbControlsAry=array('dbtablename'=>$dbTableName);
-			$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+			$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
 			$parentColName=$dbControlsAry['parentselectorname'];
 			$parentTableName=$dbControlsAry['dbtablemetaary'][$parentColName]['dbcolumnforeigntable'];
 			if ($dbTableName == 'jobprofile'){
@@ -1131,18 +1131,18 @@ class plugin002Object {
 	//-----------------------------------------
 	function buildJobInsertRead($jobName,$jobAry,&$base){
 		$query="select * from dbtableprofile where dbtabletype='jobtable' order by dbtableupdateorder";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array('delimit1'=>'dbtablename');
-		$dbTablesAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$dbTablesAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$jobString=NULL;
 		foreach ($dbTablesAry as $dbTableName=>$dbTableAry){
 			$dbControlsAry=array('dbtablename'=>$dbTableName);
-			$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+			$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
 			$dbTableNameView=$dbTableName.'view';
 			$query="select * from $dbTableNameView where jobname='$jobName'";
-			$result=$base->dbObj->queryTable($query,'read',&$base);
+			$result=$base->DbObj->queryTable($query,'read',&$base);
 			$passAry=array();
-			$dataWorkAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+			$dataWorkAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 //- title stuff
 			$columnsWorkAry=array();
 			$theComma=NULL;
@@ -1152,16 +1152,16 @@ class plugin002Object {
 			$selectorAry=array();
 			foreach ($dbControlsAry['dbtablemetaary'] as $dbColumnName=>$dbColumnAry){
 					$dbColumnType=$dbColumnAry['dbcolumntype'];
-					$dbColumnKey=$base->utlObj->returnFormattedData($dbColumnAry['dbcolumnkey'],'boolean','internal');
-					$dbColumnForeignKey=$base->utlObj->returnFormattedData($dbColumnAry['dbcolumnforeignkey'],'boolean','internal');
+					$dbColumnKey=$base->UtlObj->returnFormattedData($dbColumnAry['dbcolumnkey'],'boolean','internal');
+					$dbColumnForeignKey=$base->UtlObj->returnFormattedData($dbColumnAry['dbcolumnforeignkey'],'boolean','internal');
 					$dbColumnForeignTable=$dbColumnAry['dbcolumnforeigntable'];
-					$dbColumnForeignField=$base->utlObj->returnFormattedData($dbColumnAry['dbcolumnforeignfield'],'boolean','internal');
+					$dbColumnForeignField=$base->UtlObj->returnFormattedData($dbColumnAry['dbcolumnforeignfield'],'boolean','internal');
 					$dbColumnMainTable=$dbColumnAry['dbcolumnmaintable'];
 					$dbColumnForeignColumnName=$dbColumnAry['dbcolumnforeigncolumnname'];
 					if ($dbColumnMainTable != NULL && $dbColumnMainTable != $dbTableName){
 						$dbColumnForeignField=true;
 					}
-					$dbColumnSelector=$base->utlObj->returnFormattedData($dbColumnAry['dbcolumnselector'],'boolean','internal');
+					$dbColumnSelector=$base->UtlObj->returnFormattedData($dbColumnAry['dbcolumnselector'],'boolean','internal');
 					if (!$dbColumnKey && !$dbColumnForeignField){
 							$columnNames.=$theComma.$dbColumnName;
 							$theComma=",";
@@ -1184,7 +1184,7 @@ class plugin002Object {
 				$theAnd=NULL;
 				foreach ($selectorAry as $selectorColumnName=>$selectorColumnControlType){
 					if ($selectorColumnControlType == 'basic'){
-						$selectorColumnValue_sql=$base->utlObj->returnFormattedData($dbColumnDataAry[$selectorColumnName],$dbControlsAry['dbtablemetaary'][$selectorColumnName]['dbcolumntype'],'sql');	
+						$selectorColumnValue_sql=$base->UtlObj->returnFormattedData($dbColumnDataAry[$selectorColumnName],$dbControlsAry['dbtablemetaary'][$selectorColumnName]['dbcolumntype'],'sql');	
 					}
 					else {
 						$columnKeyValue=$dbColumnDataAry[$selectorColumnName];
@@ -1206,7 +1206,7 @@ class plugin002Object {
 						$columnData_lessraw=str_replace(chr(0xd),'',$columnData_temp2);
 						//- dont autoconvert if varchar to save the %xxx% stuff
 						if ($columnType == 'varchar'){$columnData="'$columnData_lessraw'";}
-						else {$columnData=$base->utlObj->returnFormattedData($columnData_lessraw,$columnType,'sql');}
+						else {$columnData=$base->UtlObj->returnFormattedData($columnData_lessraw,$columnType,'sql');}
 					}
 					else {
 //- all foreign references are numeric per my definition!!!
@@ -1229,8 +1229,8 @@ class plugin002Object {
 	}
 	//----------------------------------------
 	function changeCompany($base){
-		$base->debugObj->printDebug("plugin002Obj:changeCompanyJob('base')",0); //xx (h)
-		//$base->debugObj->printDebug($base->paramsAry,1,'para');//xxx
+		$base->DebugObj->printDebug("Plugin002Obj:changeCompanyJob('base')",0); //xx (h)
+		//$base->DebugObj->printDebug($base->paramsAry,1,'para');//xxx
 		$writeRowsAry=array();
 		$updateAry=array();
 		$jobProfileId=$base->paramsAry['jobprofileid'];
@@ -1242,30 +1242,30 @@ class plugin002Object {
    			$dbControlsAry=array('dbtablename'=>'jobprofile');
 		    $writeRowsAry[0]=$updateAry;
      		$dbControlsAry['writerowsary']=$writeRowsAry;
-     		//$base->debugObj->printDebug($dbControlsAry,1,'wra');//xxx
-     		//$base->debugObj->setPrio(-1,-1);//xxx
-    		$successBool=$base->dbObj->writeToDb($dbControlsAry,&$base);
-    		//$base->debugObj->setPrio(0,0);//xxx
+     		//$base->DebugObj->printDebug($dbControlsAry,1,'wra');//xxx
+     		//$base->DebugObj->setPrio(-1,-1);//xxx
+    		$successBool=$base->DbObj->writeToDb($dbControlsAry,&$base);
+    		//$base->DebugObj->setPrio(0,0);//xxx
 		}
- 		$base->debugObj->printDebug("-rtn:changeCompanyJob",0); //xx (f)	
+ 		$base->DebugObj->printDebug("-rtn:changeCompanyJob",0); //xx (f)	
 	}
 	//----------------------------------------
 	function getRowKeys($dbTableName,$selColName,$selColValue,$keyColName,$base){
-		$base->debugObj->printDebug("plugin002Obj:getRowKey($dbTableName,$selColName,$selColValue,$keyColName,'base')",0); //xx (h)
+		$base->DebugObj->printDebug("Plugin002Obj:getRowKey($dbTableName,$selColName,$selColValue,$keyColName,'base')",0); //xx (h)
 		$query="select $keyColName from $dbTableName where $selColName='$selColValue'";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array();
-		$dataAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$dataAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		 foreach ($dataAry as $rowNo=>$rowValueAry){
      		$profileId=$dataAry[$rowNo][$keyColName];
      		$returnAry[]=$profileId;	
       	}
-		$base->debugObj->printDebug("-rtn:getRowKey",0); //xx (f) 
+		$base->DebugObj->printDebug("-rtn:getRowKey",0); //xx (f) 
      	return $returnAry;
 	}
 //--------------------------------------------------
 	function deleteJob($base){
-		$base->debugObj->printDebug("plugin002Obj:deleteJob('base')",0); //xx (h)
+		$base->DebugObj->printDebug("Plugin002Obj:deleteJob('base')",0); //xx (h)
 		$deleteJobProfileId=$base->paramsAry['jobtodelete'];
 //-
 		if ($deleteJobProfileId != ''){
@@ -1275,30 +1275,30 @@ class plugin002Object {
 	}
 //--------------------------------------------------
 	function changeMessagestatus($base){
-		//$base->debugObj->printDebug($base->paramsAry,1,'params');//xxx
+		//$base->DebugObj->printDebug($base->paramsAry,1,'params');//xxx
 		$messageStatus=$base->paramsAry['status'];
 		$urbanEcoMessagesId=$base->paramsAry['urbanecomessagesid'];
 		if ($messageStatus != NULL && $urbanEcoMessagesId != NULL){
 			$query="update urbanecomessages set messagestatus='save' where urbanecomessagesid=$urbanEcoMessagesId";
-			$base->dbObj->queryTable($query,'update',&$base);
+			$base->DbObj->queryTable($query,'update',&$base);
 		}
 	}
 //--------------------------------------------------
 	function setBoolean($base){
-		//$base->debugObj->printDebug($base->paramsAry,1,'params');//xxx
+		//$base->DebugObj->printDebug($base->paramsAry,1,'params');//xxx
 		$dbTableName=$base->paramsAry['dbtablename'];
 		$dbTableColumnName=$base->paramsAry['dbtablecolumnname'];
 		$direction=$base->paramsAry['direction'];
 		if ($direction == 0){$updateInsert=" set $dbTableColumnName=FALSE";}
 		else {$updateInsert=" set $dbTableColumnName=TRUE";}
 		$dbControlsAry=array('dbtablename'=>$dbTableName);
-		$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+		$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
 		$keyName=$dbControlsAry['keyname'];
 		$keyValue=$base->paramsAry[$keyName];
 		if ($keyName != NULL && $keyValue != NULL){
 			$query="update $dbTableName $updateInsert where $keyName=$keyValue";
 			//echo "<br>query: $query<br>";
-			$base->dbObj->queryTable($query,'update',&$base);
+			$base->DbObj->queryTable($query,'update',&$base);
 		}
 	}
 	//----------------------------------------
@@ -1320,48 +1320,48 @@ class plugin002Object {
 			if ($deleteFormProfileId > 0){
 				$query="delete from formelementprofile where formprofileid=$deleteFormProfileId";
 				$rtnMsg.="$query\n";
-				$base->dbObj->queryTable($query,'delete',&$base);
+				$base->DbObj->queryTable($query,'delete',&$base);
 				$query="delete from formdataprofile where formprofileid=$deleteFormProfileId";
 				$rtnMsg.="$query\n";
-				$base->dbObj->queryTable($query,'delete',&$base);
+				$base->DbObj->queryTable($query,'delete',&$base);
 				$query="delete from formprofile where jobprofileid=$deleteJobProfileId";
 				$rtnMsg.="$query\n";
-				$base->dbObj->queryTable($query,'delete',&$base);
+				$base->DbObj->queryTable($query,'delete',&$base);
 			}
 		}
 		foreach ($deleteTableProfileIdAry as $rowNo=>$deleteTableProfileId){
 			if ($deleteTableProfileId>0){
 				$query="delete from columnprofile where tableprofileid=$deleteTableProfileId";
 				$rtnMsg.="$query\n";
-				$base->dbObj->queryTable($query,'delete',&$base);
+				$base->DbObj->queryTable($query,'delete',&$base);
 				$query="delete from tableprofile where tableprofileid=$deleteTableProfileId";
 				$rtnMsg.="$query\n";
-				$base->dbObj->queryTable($query,'delete',&$base);
+				$base->DbObj->queryTable($query,'delete',&$base);
 			}
 		}
 		foreach ($deleteHtmlProfileIdAry as $rowNo=>$deleteHtmlProfileId){
 			if ($deleteHtmlProfileId>0){
 				$query="delete from htmlelementprofile where htmlprofileid=$deleteHtmlProfileId";
 				$rtnMsg.="$query\n";
-				$base->dbObj->queryTable($query,'delete',&$base);
+				$base->DbObj->queryTable($query,'delete',&$base);
 				$query="delete from htmlprofile where htmlprofileid=$deleteHtmlProfileId";
 				$rtnMsg.="$query\n";
-				$base->dbObj->queryTable($query,'delete',&$base);
+				$base->DbObj->queryTable($query,'delete',&$base);
 			}
 		}
 		$query="delete from joboperationxref where jobprofileid=$deleteJobProfileId";
 		$rtnMsg.="$query\n";
-		$base->dbObj->queryTable($query,'delete',&$base);
+		$base->DbObj->queryTable($query,'delete',&$base);
 		$query="delete from jobprofile where jobprofileid=$deleteJobProfileId";
 		$rtnMsg.="$query\n";
-		$base->dbObj->queryTable($query,'delete',&$base);
+		$base->DbObj->queryTable($query,'delete',&$base);
 		$rtnMsg.="</pre>";
 		$base->errorProfileAry['returnmsg']=$rtnMsg;
-		$base->debugObj->printDebug("-rtn:deleteJob",0); //xx (f)	
+		$base->DebugObj->printDebug("-rtn:deleteJob",0); //xx (f)	
 	}
 	//=======================================
 	function insertMenu($paramFeed,$base){
-		$base->debugObj->printDebug("insertMenu($paramFeed,'base')",0); //xx (h)
+		$base->DebugObj->printDebug("insertMenu($paramFeed,'base')",0); //xx (h)
 		$menuName=$paramFeed['param_1'];
 		$menuAry=$base->menuProfileAry[$menuName];
 		$menuElementsAry=$base->menuElementProfileAry[$menuName];
@@ -1394,7 +1394,7 @@ class plugin002Object {
 				//echo "menuname: $menuName, menutype: $menuType is invalid!!!<br>";
 			break;
 		}
-		$base->debugObj->printDebug("-rtn:insertMenu",0); //xx (f)	
+		$base->DebugObj->printDebug("-rtn:insertMenu",0); //xx (f)	
 		return $returnAry;
 	}
 	//---------------------------------------//xxxf
@@ -1406,9 +1406,9 @@ class plugin002Object {
 		$menuName=$menuAry['menuname'];
 		$menuType=$menuAry['menutype'];
 		$menuPrevEvent=$menuAry['menupreviousevent'];
-		$menuPrevEvent=$base->utlObj->returnFormattedString($menuPrevEvent,&$base);
+		$menuPrevEvent=$base->UtlObj->returnFormattedString($menuPrevEvent,&$base);
 		$menuNextEvent=$menuAry['menunextevent'];
-		$menuNextEvent=$base->utlObj->returnFormattedString($menuNextEvent,&$base);
+		$menuNextEvent=$base->UtlObj->returnFormattedString($menuNextEvent,&$base);
 		//echo "menuname: $menuName<br>";//xxx
 //- class
 		$menuClass=$menuAry['menuclass'];
@@ -1459,7 +1459,7 @@ class plugin002Object {
 		}
 //- event
 		$menuEvent_raw=$menuAry['menuevent'];
-		$menuEvent=$base->utlObj->returnFormattedString($menuEvent_raw,&$base);
+		$menuEvent=$base->UtlObj->returnFormattedString($menuEvent_raw,&$base);
 //- start building menu
 //- heading
 		$returnAry[]="\n<!-- start albummenu: $menuName -->\n";
@@ -1471,14 +1471,14 @@ class plugin002Object {
 		$allDone=false;
 		$noElements=count($sortOrder);
 		if ($menuMaxElements >0 && $menuMaxElements>$noElements){$menuMaxElements=0;}
-		//$base->debugObj->printDebug($menuElementsAry,1,'mea3');//xxx
-		//$base->debugObj->printDebug($sortOrder,1,'sortorder');//xxx
+		//$base->DebugObj->printDebug($menuElementsAry,1,'mea3');//xxx
+		//$base->DebugObj->printDebug($sortOrder,1,'sortorder');//xxx
 //- loop through menu rows
 		$firstTime=true;
 		for ($rowCtr=1;$rowCtr<=$noElements;$rowCtr++){
 			$menuElementCtr=$sortOrder[$rowCtr];
 			$menuElementAry=$menuElementsAry[$menuElementCtr];
-			//$base->debugObj->printDebug($menuElementAry,1,'mea2');//xxx
+			//$base->DebugObj->printDebug($menuElementAry,1,'mea2');//xxx
 			$menuElementName=$menuElementAry['menuelementname'];
 			if ($rowCtr==1){
 				$lastId=$menuElementAry['menuelementid'];
@@ -1490,7 +1490,7 @@ class plugin002Object {
 				$allDone=true;
 			}
 			$menuElementUrl_raw=$menuElementAry['menuelementurl'];
-			$menuElementUrl=$base->utlObj->returnFormattedString($menuElementUrl_raw,&$base);
+			$menuElementUrl=$base->UtlObj->returnFormattedString($menuElementUrl_raw,&$base);
 //- get class
 			$menuElementClass=$menuElementAry['menuelementclass'];
 			$menuElementClass_td=$menuElementClass.'_td';
@@ -1539,9 +1539,9 @@ class plugin002Object {
 			$menuElementIdTdInsert="id=\"$menuElementId_td\"";
 //- get label and modify and add events if needed
 			$menuElementLabel_raw=$menuElementAry['menuelementlabel'];
-			$menuElementLabel=$base->utlObj->returnFormattedString($menuElementLabel_raw,&$base);
+			$menuElementLabel=$base->UtlObj->returnFormattedString($menuElementLabel_raw,&$base);
 			$menuElementEventAttributes_raw=$menuElementAry['menuelementeventattributes'];
-			$menuElementEventAttributes=$base->utlObj->returnFormattedString($menuElementEventAttributes_raw,&$base);
+			$menuElementEventAttributes=$base->UtlObj->returnFormattedString($menuElementEventAttributes_raw,&$base);
 			$useMenuElementLabel_div="<div $useMenuElementClassInsert $menuElementIdInsert $menuAltInsert $menuElementEventAttributes>$menuElementLabel</div>";
 			$menuElementLabel_div="<div $menuElementClassInsert $menuElementIdInsert $menuAltInsert $menuElementEventAttributes>$menuElementLabel</div>";
 			$menuElementType=$menuElementAry['menuelementtype'];
@@ -1549,7 +1549,7 @@ class plugin002Object {
 //- change label positions with !!xxx!!
 			if (strpos($menuElementLabel,'!!',0) !== false) {
 				$doLabelInsert=true;
-				$menuLineAry=$base->htmlObj->convertHtmlLine($menuElementLabel,&$base);
+				$menuLineAry=$base->HtmlObj->convertHtmlLine($menuElementLabel,&$base);
 				//echo "menulineary: $menuLineAry<br>";//xxx
 			} // end if strpos!!
 			else {$doLabelInsert=false;}
@@ -1563,7 +1563,7 @@ class plugin002Object {
 			$workAry['menuelementid']=$menuElementId;
 			$jsMenuElementAry[$menuElementNo]=$workAry;			
 			//echo "name: $menuElementName, type: $menuElementType<br>";//xxx
-			//$base->debugObj->printDebug($menuElementAry,1,'mea');//xxx
+			//$base->DebugObj->printDebug($menuElementAry,1,'mea');//xxx
 //- menu delimeter
 			if (!$firstTime && $menuDelimiter != NULL){
 				$returnAry[]="<tr><td class=\"menudelimiter\"><div class=\"menudelimiter\">$menuDelimiter</div></td></tr>\n";
@@ -1577,7 +1577,7 @@ class plugin002Object {
 			case 'url':
 				//echo "url label: $menuElementLabel, class: $useMenuElementClass<br>";//xxx
 				$htmlElementAry=array();
-				//$base->debugObj->printDebug($albumAry,1,'xxxf');
+				//$base->DebugObj->printDebug($albumAry,1,'xxxf');
 				//exit();
 				$pictureName=$albumSortAry[($rowCtr-1)];
 				$imagePath=$albumAry[$pictureName]['picturedirectory'];
@@ -1602,8 +1602,8 @@ class plugin002Object {
 				$htmlElementAry['joblink']=$menuElementUrl;	
 				$htmlElementAry['htmlelementeventattributes']=$menuElementEventAttributes;
 				$htmlElementAry['htmlelementtarget']=$menuElementTarget;
-				$workAry=$base->htmlObj->buildUrl($htmlElementAry,&$base);
-				$menuElementUrl_html=$base->utlObj->returnFormattedData($menuElementUrl,'url','html',&$base);
+				$workAry=$base->HtmlObj->buildUrl($htmlElementAry,&$base);
+				$menuElementUrl_html=$base->UtlObj->returnFormattedData($menuElementUrl,'url','html',&$base);
 				if (!$allDone){
 					$returnAry[]='<tr>';
 					$returnAry[]="<td $useMenuElementClassInsert>\n";
@@ -1618,7 +1618,7 @@ class plugin002Object {
 			case 'table':
 				$tableName=$menuElementAry['menuelementname'];
 				$paramFeed=array('param_1'=>$tableName);
-				$menuElementDisplayAry=$base->tagObj->insertTable($paramFeed,&$base);
+				$menuElementDisplayAry=$base->TagObj->insertTable($paramFeed,&$base);
 				$returnAry[]="<tr><td $useMenuElementClassInsert>";
 				$returnAry=array_merge($returnAry,$menuElementDisplayAry);
 				$returnAry[]="</td></tr>";
@@ -1634,7 +1634,7 @@ class plugin002Object {
 			case 'map':
 				$mapProfileId=$menuElementAry['mapprofileid'];
 				$mapName=$base->mapProfileAry['main'][$mapProfileId]['mapname'];
-				$menuElementDisplayAry=$base->htmlObj->buildMap($mapName,&$base);
+				$menuElementDisplayAry=$base->HtmlObj->buildMap($mapName,&$base);
 				$returnAry[]='<tr>';
 				$returnAry[]="<td $menuElementClassInsert>\n";
 				$returnAry=array_merge($returnAry,$menuElementDisplayAry);
@@ -1643,20 +1643,20 @@ class plugin002Object {
 			case 'form':
 				$passAry=array();
 				$passAry['param_1']=$menuElementName;
-				$subReturnAry=$base->tagObj->insertForm($passAry,&$base);
+				$subReturnAry=$base->TagObj->insertForm($passAry,&$base);
 				$returnAry[]='<tr><td>';
 				$returnAry=array_merge($returnAry,$subReturnAry);
 				$returnAry[]='</td></tr>';
-				//$base->debugObj->printDebug($subReturnAry,1,'srtn');//xxx
+				//$base->DebugObj->printDebug($subReturnAry,1,'srtn');//xxx
 				//exit();//xxx			
 				break;	
 			case 'repeatingform':
 				$passAry=array();
 				$query_raw=$menuElementAry['menuelementsql'];
 				//-below let querytable do the formatting
-				//$query=$base->utlObj->returnFormattedString($query_raw,&$base);
-				$result=$base->dbObj->queryTable($query_raw,'read',&$base);
-				$workAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+				//$query=$base->UtlObj->returnFormattedString($query_raw,&$base);
+				$result=$base->DbObj->queryTable($query_raw,'read',&$base);
+				$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 				$passAry['param_1']=$menuElementName;
 				foreach ($workAry as $ctr=>$workRowAry){
 					//echo "$ctr<br>";//xxx
@@ -1665,10 +1665,10 @@ class plugin002Object {
 					$passAry['usethisdataary']=$workRowAry;
 					$tabIndexBase=($ctr+1)*20;
 					$passAry['tabindexbase']=$tabIndexBase;
-					//$base->debugObj->printDebug($workRowAry,1,'xxxworkrowary');
+					//$base->DebugObj->printDebug($workRowAry,1,'xxxworkrowary');
 					//echo "build a form<br>";//xxxd
-					$subReturnAry=$base->tagObj->insertForm($passAry,&$base);
-					//$base->debugObj->printDebug($subReturnAry,1,'xxx');
+					$subReturnAry=$base->TagObj->insertForm($passAry,&$base);
+					//$base->DebugObj->printDebug($subReturnAry,1,'xxx');
 					unset ($passAry['usethisdata']);
 					$returnAry[]="<tr><td>\n";
 					$headingStr="<!-- Form Number: $ctr -->\n";
@@ -1677,18 +1677,18 @@ class plugin002Object {
 					$returnAry=array_merge($returnAry,$subReturnAry);
 					$returnAry[]="</tr></td>\n";
 				}
-				//$base->debugObj->printDebug($returnAry,1,'rtnary');//xxx
+				//$base->DebugObj->printDebug($returnAry,1,'rtnary');//xxx
 				//exit(0);//xxx
 				break;
 				case 'album':
 					$albumProfileId=$menuElementAry['albumprofileid'];
 					//echo "albumprofileid: $albumProfileId<br>";//xxx
-					$passAry=$base->htmlObj->buildAlbumTable($albumProfileId,&$base);
+					$passAry=$base->HtmlObj->buildAlbumTable($albumProfileId,&$base);
 					$albumTableDisplayAry=$passAry['returnary'];
 					$albumName=$passAry['albumname'];
 					if (!array_key_exists('jsary',$base->albumProfileAry)){$base->albumProfileAry['jsary']=array();}
 					$base->albumProfileAry['jsary'][$albumName]=$passAry[$albumName];
-					//$base->debugObj->printDebug($albumTableDisplayAry,1,'atdaxxxa');
+					//$base->DebugObj->printDebug($albumTableDisplayAry,1,'atdaxxxa');
 					$returnAry[]="<tr><td $useMenuElementClassInsert>\n";
 					$returnAry=array_merge($returnAry,$albumTableDisplayAry);
 					$returnAry[]="</td></tr>\n";
@@ -1696,7 +1696,7 @@ class plugin002Object {
 				case 'image':
 					$imageName=$menuElementName;
 					$returnAry[]="<tr><td $useMenuElementClassInsert>\n";
-					$subReturnAry=$base->htmlObj->buildImg($imageName,&$base);
+					$subReturnAry=$base->HtmlObj->buildImg($imageName,&$base);
 					$returnAry=array_merge($returnAry,$subReturnAry);
 					$returnAry[]="<span $menuElementClassInsert>$menuElementLabel</span";
 					$returnAry[]="</td></tr>\n";
@@ -1704,7 +1704,7 @@ class plugin002Object {
 			default:
 //- element is text
 				if (!$allDone){
-					//$base->debugObj->printDebug($menuElementAry,1,'mea');//xxx
+					//$base->DebugObj->printDebug($menuElementAry,1,'mea');//xxx
 					//echo "url label: $menuElementLabel, class: $useMenuElementClass<br>";//xxx
 					$returnAry[]='<tr>';
 					if ($doLabelInsert){
@@ -1755,16 +1755,16 @@ class plugin002Object {
 		$base->menuProfileAry['jsmenusary'][$menuName]['lastmenuelementno']=0;
 		$base->menuProfileAry['jsmenusary'][$menuName]['elements']=$jsMenuAry;
 		$base->menuProfileAry['jsmenusary'][$menuName]['elementsother']=$jsMenuElementAry;
-		//$base->debugObj->printDebug($base->albumProfileAry['jsary'],1,'xxxf');
+		//$base->DebugObj->printDebug($base->albumProfileAry['jsary'],1,'xxxf');
 		if (!array_key_exists('jsary',$base->albumProfileAry)){$base->albumProfileAry['jsary']=array();}
-		$passAry=$base->htmlObj->buildAlbumTable($albumProfileId,&$base);
+		$passAry=$base->HtmlObj->buildAlbumTable($albumProfileId,&$base);
 		$base->albumProfileAry['jsary'][$albumName]=$passAry[$albumName];
-		$base->debugObj->printDebug("rtn: insertmenuvertical",0);//xx
+		$base->DebugObj->printDebug("rtn: insertmenuvertical",0);//xx
 		return $returnAry;				
 	}
 	//---------------------------------------
 	function insertMenuRotatedeprecated($sortOrder,$menuAry,$menuElementsAry,&$base){
-		//$base->debugObj->printDebug($menuAry,1,'mea');//xxx
+		//$base->DebugObj->printDebug($menuAry,1,'mea');//xxx
 		$menuName=$menuAry['menuname'];
 		$menuClass=$menuAry['menuclass'];
 //- title id
@@ -1788,15 +1788,15 @@ class plugin002Object {
 		if ($menuChangeType == null){$menuChangeType='button';}
 //- menudisplaytype
 		$menuDisplayType=$menuAry['menudisplaytype'];
-//-------- menuObject xxxxf
+//-------- MenuObject xxxxf
 //- class
-		$menuObjectClass=$menuAry['menuobjectclass'];
-		if ($menuObjectClass == NULL){$menuObjectClass=$menuClass.'object';}
-		$menuObjectClassInsert="class=\"$menuObjectClass\"";
+		$MenuObjectClass=$menuAry['menuobjectclass'];
+		if ($MenuObjectClass == NULL){$MenuObjectClass=$menuClass.'object';}
+		$MenuObjectClassInsert="class=\"$MenuObjectClass\"";
 //- id xxxf
-		$menuObjectId=$menuAry['menuobjectid'];
-		if ($menuObjectId == NULL){$menuObjectId=$menuId.'object';}
-		$menuObjectIdInsert="id=\"$menuObjectId\"";
+		$MenuObjectId=$menuAry['menuobjectid'];
+		if ($MenuObjectId == NULL){$MenuObjectId=$menuId.'object';}
+		$MenuObjectIdInsert="id=\"$MenuObjectId\"";
 //-------- menuParam xxxf
 		$menuParamClass=$menuAry['menuparamclass'];
 		if ($menuParamClass == NULL){$menuParamClass=$menuClass.'param';}
@@ -1816,11 +1816,11 @@ class plugin002Object {
 		$menuEmbedIdInsert="id=\"$menuEmbedId\"";
 //- previous event
 		$menuPreviousEvent=$menuAry['menupreviousevent'];
-		$menuPreviousEvent=$base->utlObj->returnFormattedString($menuPreviousEvent,&$base);
+		$menuPreviousEvent=$base->UtlObj->returnFormattedString($menuPreviousEvent,&$base);
 		if ($menuPreviousEvent==null){$menuPreviousEvent="onclick=\"previousPictureV2('$menuName','$menuTextId');\"";}
 //- next event
 		$menuNextEvent=$menuAry['menunextevent'];
-		$menuNextEvent=$base->utlObj->returnFormattedString($menuNextEvent,&$base);
+		$menuNextEvent=$base->UtlObj->returnFormattedString($menuNextEvent,&$base);
 		if ($menuNextEvent==null){$menuNextEvent="onclick=\"nextPictureV2('$menuName','$menuTextId')\"";}
 //echo "name: $menuName, display: $menuDisplayType<br>";//xxxf
 		switch ($menuDisplayType){
@@ -1884,7 +1884,7 @@ class plugin002Object {
 				$jsAlbumPicturesAry=array();
 				$jsAlbumTitlesAry=array();	
 				$jsAlbumTextAry=array();//xxxnew
-				//$base->debugObj->printDebug($albumProfileAry,1,'xxxfipic');//xxxf
+				//$base->DebugObj->printDebug($albumProfileAry,1,'xxxfipic');//xxxf
 				$cnt=count($albumPicturesAry);
 				if ($cnt>0){
 				foreach ($albumPicturesAry as $albumPictureName=>$albumPictureAry){
@@ -1925,8 +1925,8 @@ class plugin002Object {
 						$returnAry[]="<img src=\"$sourcePath\" $menuImageIdInsert $pictureClassInsert>\n";
 						//- do the object
 						$returnAry[]="<!-- youtube object -->\n";
-						$returnAry[]="<div class=\"$menuObjectClass\" id=\"$menuObjectId".'div'."\">\n";
-						$returnAry[]="<object $menuObjectInsert $menuObjectIdInsert>\n";
+						$returnAry[]="<div class=\"$MenuObjectClass\" id=\"$MenuObjectId".'div'."\">\n";
+						$returnAry[]="<object $MenuObjectInsert $MenuObjectIdInsert>\n";
 						$returnAry[]="<param name=\"movie\" id=\"$menuParamId\" value=\"\"/>";
 						$returnAry[]="<embed class=\"$menuEmbedClass\" id=\"$menuEmbedId\"/>\n";
 						$returnAry[]="</object>\n</div>\n";
@@ -2009,7 +2009,7 @@ class plugin002Object {
 		else {$menuNonSelectedClassInsert=NULL;}
 		//echo "0) menunonselectedclass: $menuNonSelectedClass<br>";//xxx
 //- menupagingclass
-//$base->debugObj->printDebug($menuAry,1,'menua');//xxx
+//$base->DebugObj->printDebug($menuAry,1,'menua');//xxx
 		$menuPagingClass=$menuAry['pagingclass'];
 		if ($menuPagingClass != NULL){$menuPagingClassInsert="class=\"$menuPagingClass\"";}
 		else {$menuPagingClassInsert=NULL;}
@@ -2034,7 +2034,7 @@ class plugin002Object {
 			$menuElementAry=$menuElementsAry[$menuElementProfileId];
 			$menuElementUrl=$menuElementAry['menuelementurl'];
 			$menuElementLabel_raw=$menuElementAry['menuelementlabel'];
-			$menuElementLabel=$base->utlObj->returnFormattedString($menuElementLabel_raw,&$base);
+			$menuElementLabel=$base->UtlObj->returnFormattedString($menuElementLabel_raw,&$base);
 			$menuElementClass=$menuElementAry['menuelementclass'];
 			$menuElementAlertClass=$menuElementAry['menuelementalertclass'];
 			$menuElementId=$menuElementAry['menuelementid'];
@@ -2042,10 +2042,10 @@ class plugin002Object {
 			$menuElementName=$menuElementAry['menuelementname'];
 			$menuElementImageName=$menuElementAry['menuelementimagename'];
 			$menuElementEventAttributes_raw=$menuElementAry['menuelementeventattributes'];
-			$menuElementEventAttributes=$base->utlObj->returnFormattedString($menuElementEventAttributes_raw,&$base);
-			$menuElementEventAttributes=$base->utlObj->returnFormattedStringDataFed($menuElementEventAttributes_raw,$menuElementAry,&$base);
+			$menuElementEventAttributes=$base->UtlObj->returnFormattedString($menuElementEventAttributes_raw,&$base);
+			$menuElementEventAttributes=$base->UtlObj->returnFormattedStringDataFed($menuElementEventAttributes_raw,$menuElementAry,&$base);
 			$menuElementCheckSecurity_raw=$menuElementAry['menuelementchecksecurity'];
-			$menuElementCheckSecurity=$base->utlObj->returnFormattedData($menuElementCheckSecurity_raw,'boolean','internal');
+			$menuElementCheckSecurity=$base->UtlObj->returnFormattedData($menuElementCheckSecurity_raw,'boolean','internal');
 			$menuElementAlt=$menuElementAry['menuelementalt'];
 			$menuElementNo=$menuElementAry['menuelementno'];
 			//echo "$rowCtr, $menuElementName, $menuElementType";//xxx
@@ -2101,7 +2101,7 @@ class plugin002Object {
 			if ($menuElementCheckSecurity){
 				$paramsAry=array('componentcheck'=>'true');
 				//-xxx below needs to be fixed for turning menu elements on/off
-				//$okToContinue=$base->utlObj->validateUserCompany($paramsAry,&$base);
+				//$okToContinue=$base->UtlObj->validateUserCompany($paramsAry,&$base);
 				$okToContinue=true;
 				if (!$okToContinue){$menuElementType='text';$menuElementEventAttributes=NULL;}
 				//echo "ok: $okToContinue<br>";//xxx
@@ -2110,17 +2110,17 @@ class plugin002Object {
 			switch ($menuElementType){
 			case 'image':
 				//echo "menuelementeventattributes: $menuElementEventAttributes, meear: $menuElementEventAttributes_raw<br>";//xxxf
-				//$base->debugObj->printDebug($menuElementAry,1,'mea');
+				//$base->DebugObj->printDebug($menuElementAry,1,'mea');
 				$passAry=array('imagename'=>$menuElementImageName);
 				if ($menuElementEventAttributes_raw != null){$passAry['imageevents']=$menuElementEventAttributes;}
-				//$base->debugObj->printDebug($passAry,1,'xxxf');
+				//$base->DebugObj->printDebug($passAry,1,'xxxf');
 				//print_r($passAry);
 				//exit();//xxxf
-				$workAry=$base->htmlObj->buildImgPass($passAry,&$base);
+				$workAry=$base->HtmlObj->buildImgPass($passAry,&$base);
 				//print_r($workAry);
-				//$base->debugObj->printDebug($workAry,1,'xxxf');exit();//xxxf
-				//$workAry=$base->htmlObj->buildImg($menuElementImageName,&$base);
-				//$base->debugObj->printDebug($workAry,1,'xxx');
+				//$base->DebugObj->printDebug($workAry,1,'xxxf');exit();//xxxf
+				//$workAry=$base->HtmlObj->buildImg($menuElementImageName,&$base);
+				//$base->DebugObj->printDebug($workAry,1,'xxx');
 				$returnAry[]="<td $menuIdInsert $menuElementClassInsert>";
 				$returnAry=array_merge($returnAry,$workAry);
 				$imageAry=$base->imageProfileAry[$menuElementImageName];
@@ -2137,8 +2137,8 @@ class plugin002Object {
 				$htmlElementAry['htmlelementimagename']=$menuElementImageName;
 				$htmlElementAry['htmlelementeventattributes']=$menuElementEventAttributes;
 				$htmlElementAry['menuelementaltinsert']=$menuElementAltInsert;
-				$workAry=$base->htmlObj->buildUrl($htmlElementAry,&$base);
-				//$base->debugObj->printDebug($workAry,1,'work');//xxxa
+				$workAry=$base->HtmlObj->buildUrl($htmlElementAry,&$base);
+				//$base->DebugObj->printDebug($workAry,1,'work');//xxxa
 				//if ($menuElementClass == NULL){$menuElementClassInsert=NULL;}
 				//else {$menuElementClassInsert="class=\"$menuElementClass\"";}
 				$returnAry[]="<td $menuIdInsert $menuElementClassInsert>";
@@ -2152,7 +2152,7 @@ class plugin002Object {
 				break;
 			case 'displaydata':
 				$returnAry[]="<td $menuIdInsert $menuElementClassInsert>";
-				$theDisplay=$base->htmlObj->buildDisplay($menuElementAry,&$base);
+				$theDisplay=$base->HtmlObj->buildDisplay($menuElementAry,&$base);
 				$returnAry[]=$theDisplay;
 				//-possible problem below!!!
 				$jsMenuAry[]=$theDisplay;
@@ -2176,7 +2176,7 @@ class plugin002Object {
 				$htmlElementAry['htmlelementname']=$menuElementName;
 				$htmlElementAry['joblink']=$menuElementUrl;
 				$htmlElementAry['htmlelementeventattributes']=$menuElementEventAttributes;
-				$workAry=$base->htmlObj->buildInputSelect($htmlElementAry,&$base);
+				$workAry=$base->HtmlObj->buildInputSelect($htmlElementAry,&$base);
 				$returnAry[]="<td $menuIdInsert $menuElementClassInsert>";
 				$returnAry=array_merge($returnAry,$workAry);
 				$jsMenuAry[]='inputselect';
@@ -2193,8 +2193,8 @@ class plugin002Object {
 			case 'form':
 				$returnAry[]="<td $menuIdInsert $menuElementTdClassInsert>\n";
 				$paramsAry=array('param_1'=>$menuElementName);
-				$subReturnAry=$base->tagObj->insertForm($paramsAry,&$base);
-				//$base->debugObj->printDebug($base->formProfileAry,1,'formprofileary');//xxx
+				$subReturnAry=$base->TagObj->insertForm($paramsAry,&$base);
+				//$base->DebugObj->printDebug($base->formProfileAry,1,'formprofileary');//xxx
 				$returnAry=array_merge($returnAry,$subReturnAry);
 				$returnAry[]="</td>\n";
 			break;
@@ -2226,7 +2226,7 @@ class plugin002Object {
 	}
 	//---------------------------------------
 	function insertMenuHorizontalDropDown($sortOrder,$menuAry,$menuElementsAry,$base){
-		$base->debugObj->printDebug("plugin002Obj:insertMenuHorizontalDropDown($menuAry,$menuElementsAry,'base')",0); //xx (h)
+		$base->DebugObj->printDebug("Plugin002Obj:insertMenuHorizontalDropDown($menuAry,$menuElementsAry,'base')",0); //xx (h)
 		$returnAry=array();
 		$menuClass=$menuAry['menuclass'];
 		$menuDelimiter=$menuAry['menudelimiter'];
@@ -2342,15 +2342,15 @@ class plugin002Object {
 		$menuPictureId=$menuAry['menuimageid'];
 		if ($menuPictureId == NULL){$menuPictureId=$menuId.'picture';}
 		$menuPictureIdInsert="id=\"$menuPictureId\"";
-//-------- menuObject xxxxf
+//-------- MenuObject xxxxf
 //- class
-		$menuObjectClass=$menuAry['menuobjectclass'];
-		if ($menuObjectClass == NULL){$menuObjectClass=$menuClass.'object';}
-		$menuObjectClassInsert="class=\"$menuObjectClass\"";
+		$MenuObjectClass=$menuAry['menuobjectclass'];
+		if ($MenuObjectClass == NULL){$MenuObjectClass=$menuClass.'object';}
+		$MenuObjectClassInsert="class=\"$MenuObjectClass\"";
 //- id xxxf
-		$menuObjectId=$menuAry['menuobjectid'];
-		if ($menuObjectId == NULL){$menuObjectId=$menuId.'object';}
-		$menuObjectIdInsert="id=\"$menuObjectId\"";
+		$MenuObjectId=$menuAry['menuobjectid'];
+		if ($MenuObjectId == NULL){$MenuObjectId=$menuId.'object';}
+		$MenuObjectIdInsert="id=\"$MenuObjectId\"";
 //-------- menuLocalObject xxxxf
 //- class
 		$menuLocalObjectClass=$menuAry['menulocalobjectclass'];
@@ -2398,7 +2398,7 @@ class plugin002Object {
 		else {$menuImageIdInsert="id=\"$menuImageId\"";}
 //- <table ...
 		$returnAry[]="<table $menuClassInsert $menuIdInsert>";
-		//$base->debugObj->printDebug($returnAry,1,'xxxd');
+		//$base->DebugObj->printDebug($returnAry,1,'xxxd');
 //- table cells holding menu items
 		$elementFirstTime=true;
 		$noElements=count($sortOrder);
@@ -2408,7 +2408,7 @@ class plugin002Object {
 			//echo "***** $rowCtr ******<br>";//xxxd
 			$menuElementCtr=$sortOrder[$rowCtr];
 			if ($menuElementCtr == null){
-				echo 'plugin002Obj.insertMenuFixed menuElementCtr is null!!!';
+				echo 'Plugin002Obj.insertMenuFixed menuElementCtr is null!!!';
 				exit();
 			}
 			$menuElementAry=$menuElementsAry[$menuElementCtr];
@@ -2425,7 +2425,7 @@ class plugin002Object {
 			if ($menuElementClass != NULL){$menuElementClassInsert=" class=\"$menuElementClass\"";}
 			else {$menuElementClassInsert=NULL;}
 			$menuElementEventAttributes_raw=$menuElementAry['menuelementeventattributes'];
-			$menuElementEventAttributes=$base->utlObj->returnFormattedString($menuElementEventAttributes_raw,&$base);
+			$menuElementEventAttributes=$base->UtlObj->returnFormattedString($menuElementEventAttributes_raw,&$base);
 //- determine class by job
 			$jobName=$base->jobProfileAry['jobname'];
 			$menuElementUrlAry=explode('&',$menuElementUrl);
@@ -2454,7 +2454,7 @@ class plugin002Object {
 					$jsMenuAry[]=$imagePath;
 					$jsMenuTitleAry[]='title place filler';
 					$imagePathInsert="src=\"$imagePath\"";
-					//$base->debugObj->printDebug($imageAry,1,'img');//xxx
+					//$base->DebugObj->printDebug($imageAry,1,'img');//xxx
 					$menuElementDisplayAry=array();
 					$menuElementDisplayAry[]="<img $menuElementClassInsert $menuImageIdInsert $imagePathInsert $useMapInsert>";
 					break;
@@ -2462,15 +2462,15 @@ class plugin002Object {
 					$mapProfileId=$menuElementAry['mapprofileid'];
 					$mapName=$base->mapProfileAry['main'][$mapProfileId]['mapname'];
 					//echo "mapname: $mapName<br>";//xxx
-					$menuElementDisplayAry=$base->htmlObj->buildMap($mapName,&$base);
+					$menuElementDisplayAry=$base->HtmlObj->buildMap($mapName,&$base);
 					$elementFirstTime=true; // keep turning it on for maps
-					//$base->debugObj->printDebug($menuElementDisplayAry,1,'mapary');
+					//$base->DebugObj->printDebug($menuElementDisplayAry,1,'mapary');
 					break;
 					//xxxa
 				case 'paragraph':
 					$paragraphName=$menuElementName;
 					$paramAry=array('param_1'=>$paragraphName);
-					$menuElementDisplayAry=$base->plugin002Obj->insertParagraph($paramAry,&$base);
+					$menuElementDisplayAry=$base->Plugin002Obj->insertParagraph($paramAry,&$base);
 					$workStrg_raw=implode('',$menuElementDisplayAry);
 					$removeString=chr(0x0d).chr(0x0a);
 					$workStrg=str_replace($removeString,"",$workStrg_raw);
@@ -2490,7 +2490,7 @@ class plugin002Object {
 						$jsAlbumVideoIdAry=array();//new
 						//- need to put in videoId
 						$cnt=count($albumPicturesAry);
-						//$base->debugObj->printDebug($base->albumProfileAry,1,'xxxf');
+						//$base->DebugObj->printDebug($base->albumProfileAry,1,'xxxf');
 						if ($cnt>0){
 						$albumPictureFirstTime=true;
 						foreach ($albumPicturesAry as $albumPictureName=>$albumPictureAry){
@@ -2500,7 +2500,7 @@ class plugin002Object {
 							$thumbnailPictureFileName=$pictureFileNameAry[0].'_TT.'.$pictureFileNameAry[1];
 							$sourcePath=$albumPictureAry['picturedirectory']."/$smallPictureFileName";
 							$pictureTitle=$albumPictureAry['picturetitle'];
-							$pictureTitle=$base->utlObj->returnFormattedString($pictureTitle,&$base);
+							$pictureTitle=$base->UtlObj->returnFormattedString($pictureTitle,&$base);
 							if ($pictureTitle == NULL){$pictureTitle=$albumPictureName;}
 							$pictureText=$albumPictureAry['picturetext'];//xxxdnew
 							$mediaType=$albumPictureAry['mediatype'];
@@ -2532,8 +2532,8 @@ class plugin002Object {
 								/*
 								//- do the youtube object
 								$menuElementDisplayAry[]="<!-- youtube object -->\n";
-								$menuElementDisplayAry[]="<div class=\"$menuObjectClass\" id=\"$menuObjectId".'div'."\">\n";
-								$menuElementDisplayAry[]="<object $menuObjectInsert $menuObjectIdInsert>\n";
+								$menuElementDisplayAry[]="<div class=\"$MenuObjectClass\" id=\"$MenuObjectId".'div'."\">\n";
+								$menuElementDisplayAry[]="<object $MenuObjectInsert $MenuObjectIdInsert>\n";
 								$menuElementDisplayAry[]="<param name=\"movie\" id=\"$menuParamId\" value=\"\"/>";
 								$menuElementDisplayAry[]="<embed class=\"$menuEmbedClass\" id=\"$menuEmbedId\"/>\n";
 								$menuElementDisplayAry[]="</object>\n</div>\n";
@@ -2584,7 +2584,7 @@ class plugin002Object {
 						} // end foreach albumpicturesary
 						} // end if cnt>0
 						$jsMenuAry[]=$jsAlbumPicturesAry;
-						//$base->debugObj->printDebug($jsAlbumPicturesAry,1,'jsapa');//xxx
+						//$base->DebugObj->printDebug($jsAlbumPicturesAry,1,'jsapa');//xxx
 						$jsMenuTitleAry[]=$jsAlbumTitlesAry;
 						$jsMenuTextAry[]=$jsAlbumTextAry;//xxxdnew
 						$jsMenuMediaTypeAry[]=$jsAlbumMediaTypeAry;
@@ -2605,7 +2605,7 @@ class plugin002Object {
 				$elementFirstTime=false;
 			} // end if elementfirsttime
 		} // end for rowctr=1 < noelements
-		//$base->debugObj->printDebug($returnAry,1,'rtn');//xxx
+		//$base->DebugObj->printDebug($returnAry,1,'rtn');//xxx
 		$returnAry[]='</table>';
 		$base->menuProfileAry['jsmenusary'][$menuName]=array();
 		$base->menuProfileAry['jsmenusary'][$menuName]['menuclass']=$menuClass;
@@ -2620,8 +2620,8 @@ class plugin002Object {
 		$base->menuProfileAry['jsmenusary'][$menuName]['videowidth']=$videoWidth;
 		$base->menuProfileAry['jsmenusary'][$menuName]['menupictureclass']=$menuPictureClass;
 		$base->menuProfileAry['jsmenusary'][$menuName]['menupictureid']=$menuPictureId;
-		$base->menuProfileAry['jsmenusary'][$menuName]['menuobjectclass']=$menuObjectClass;
-		$base->menuProfileAry['jsmenusary'][$menuName]['menuobjectid']=$menuObjectId;
+		$base->menuProfileAry['jsmenusary'][$menuName]['menuobjectclass']=$MenuObjectClass;
+		$base->menuProfileAry['jsmenusary'][$menuName]['menuobjectid']=$MenuObjectId;
 		$base->menuProfileAry['jsmenusary'][$menuName]['menuparamclass']=$menuParamClass;
 		$base->menuProfileAry['jsmenusary'][$menuName]['menuparamid']=$menuParamId;
 		$base->menuProfileAry['jsmenusary'][$menuName]['menuembedclass']=$menuEmbedClass;
@@ -2637,8 +2637,8 @@ class plugin002Object {
 		$base->menuProfileAry['jsmenusary'][$menuName]['text']=$jsMenuTextAry;//xxxdnew
 		$base->menuProfileAry['jsmenusary'][$menuName]['media']=$jsMenuMediaTypeAry;//xxxdnew
 		$base->menuProfileAry['jsmenusary'][$menuName]['video']=$jsMenuVideoIdAry;//xxxdnew
-		//$base->debugObj->printDebug($base->menuProfileAry['jsmenusary'][$menuName],1,'xxx');
-		$base->debugObj->printDebug("rtn: insertmenuvertical",0);//xx
+		//$base->DebugObj->printDebug($base->menuProfileAry['jsmenusary'][$menuName],1,'xxx');
+		$base->DebugObj->printDebug("rtn: insertmenuvertical",0);//xx
 		return $returnAry;				
 	}
 	//--------------------------------------- xxxd
@@ -2691,7 +2691,7 @@ class plugin002Object {
 		else {$menuAltInsert="title=\"$menuAlt\"";}
 	//- event
 		$menuEvent_raw=$menuAry['menuevent'];
-		$menuEvent=$base->utlObj->returnFormattedString($menuEvent_raw,&$base);
+		$menuEvent=$base->UtlObj->returnFormattedString($menuEvent_raw,&$base);
 //- start building menu
 	//- heading
 		$returnAry[]="\n<!-- start verticalmenu: $menuName -->\n";
@@ -2703,14 +2703,14 @@ class plugin002Object {
 		$allDone=false;
 		$noElements=count($sortOrder);
 		if ($menuMaxElements >0 && $menuMaxElements>$noElements){$menuMaxElements=0;}
-		//$base->debugObj->printDebug($menuElementsAry,1,'mea3');//xxx
-		//$base->debugObj->printDebug($sortOrder,1,'sortorder');//xxx
+		//$base->DebugObj->printDebug($menuElementsAry,1,'mea3');//xxx
+		//$base->DebugObj->printDebug($sortOrder,1,'sortorder');//xxx
 //- loop through menu rows
 		$firstTime=true;
 		for ($rowCtr=1;$rowCtr<=$noElements;$rowCtr++){
 			$menuElementCtr=$sortOrder[$rowCtr];
 			$menuElementAry=$menuElementsAry[$menuElementCtr];
-			//$base->debugObj->printDebug($menuElementAry,1,'mea2');//xxx
+			//$base->DebugObj->printDebug($menuElementAry,1,'mea2');//xxx
 			$menuElementName=$menuElementAry['menuelementname'];
 			if ($rowCtr==1){
 				$lastId=$menuElementAry['menuelementid'];
@@ -2722,7 +2722,7 @@ class plugin002Object {
 				$allDone=true;
 			}
 			$menuElementUrl_raw=$menuElementAry['menuelementurl'];
-			$menuElementUrl=$base->utlObj->returnFormattedString($menuElementUrl_raw,&$base);
+			$menuElementUrl=$base->UtlObj->returnFormattedString($menuElementUrl_raw,&$base);
 //- get class
 			$menuElementClass=$menuElementAry['menuelementclass'];
 			$menuElementClass_td=$menuElementClass.'_td';
@@ -2771,9 +2771,9 @@ class plugin002Object {
 			$menuElementIdTdInsert="id=\"$menuElementId_td\"";
 //- get label and modify and add events if needed
 			$menuElementLabel_raw=$menuElementAry['menuelementlabel'];
-			$menuElementLabel=$base->utlObj->returnFormattedString($menuElementLabel_raw,&$base);
+			$menuElementLabel=$base->UtlObj->returnFormattedString($menuElementLabel_raw,&$base);
 			$menuElementEventAttributes_raw=$menuElementAry['menuelementeventattributes'];
-			$menuElementEventAttributes=$base->utlObj->returnFormattedString($menuElementEventAttributes_raw,&$base);
+			$menuElementEventAttributes=$base->UtlObj->returnFormattedString($menuElementEventAttributes_raw,&$base);
 			$useMenuElementLabel_div="<div $useMenuElementClassInsert $menuElementIdInsert $menuAltInsert $menuElementEventAttributes>$menuElementLabel</div>";
 			$menuElementLabel_div="<div $menuElementClassInsert $menuElementIdInsert $menuAltInsert $menuElementEventAttributes>$menuElementLabel</div>";
 			$menuElementType=$menuElementAry['menuelementtype'];
@@ -2781,7 +2781,7 @@ class plugin002Object {
 //- change label positions with !!xxx!!
 			if (strpos($menuElementLabel,'!!',0) !== false) {
 				$doLabelInsert=true;
-				$menuLineAry=$base->htmlObj->convertHtmlLine($menuElementLabel,&$base);
+				$menuLineAry=$base->HtmlObj->convertHtmlLine($menuElementLabel,&$base);
 				//echo "menulineary: $menuLineAry<br>";//xxx
 			} // end if strpos!!
 			else {$doLabelInsert=false;}
@@ -2795,7 +2795,7 @@ class plugin002Object {
 			$workAry['menuelementid']=$menuElementId;
 			$jsMenuElementAry[$menuElementNo]=$workAry;			
 			//echo "name: $menuElementName, type: $menuElementType<br>";//xxx
-			//$base->debugObj->printDebug($menuElementAry,1,'mea');//xxx
+			//$base->DebugObj->printDebug($menuElementAry,1,'mea');//xxx
 			if (!$firstTime && $menuDelimiter != NULL){
 				$returnAry[]="<tr><td class=\"menudelimiter\"><div class=\"menudelimiter\">$menuDelimiter</div></td></tr>\n";
 			}
@@ -2810,8 +2810,8 @@ class plugin002Object {
 				$htmlElementAry['htmlelementclass']=$menuElementClass;
 				$htmlElementAry['joblink']=$menuElementUrl;	
 				$htmlElementAry['htmlelementeventattributes']=$menuElementEventAttributes;
-				$workAry=$base->htmlObj->buildUrl($htmlElementAry,&$base);
-				$menuElementUrl_html=$base->utlObj->returnFormattedData($menuElementUrl,'url','html',&$base);
+				$workAry=$base->HtmlObj->buildUrl($htmlElementAry,&$base);
+				$menuElementUrl_html=$base->UtlObj->returnFormattedData($menuElementUrl,'url','html',&$base);
 				if (!$allDone){
 					$returnAry[]='<tr>';
 					$returnAry[]="<td $useMenuElementClassInsert>";
@@ -2828,8 +2828,8 @@ class plugin002Object {
 				$menuElementNameAry=explode('_',$menuElementName);
 				$menuElementName=$menuElementNameAry[0];
 				$paramFeed=array('param_1'=>$menuElementName);
-				//$base->debugObj->printDebug($paramFeed,1,'xxxf');exit();//xxxf
-				$subReturnAry=$base->plugin002Obj->insertParagraph($paramFeed,&$base);
+				//$base->DebugObj->printDebug($paramFeed,1,'xxxf');exit();//xxxf
+				$subReturnAry=$base->Plugin002Obj->insertParagraph($paramFeed,&$base);
 				$returnAry[]="<tr><td $useMenuElementClassInsert>";
 				$returnAry=array_merge($returnAry,$subReturnAry);
 				$returnAry[]="</td></tr>";
@@ -2837,7 +2837,7 @@ class plugin002Object {
 			case 'table':
 				$tableName=$menuElementAry['menuelementname'];
 				$paramFeed=array('param_1'=>$tableName);
-				$menuElementDisplayAry=$base->tagObj->insertTable($paramFeed,&$base);
+				$menuElementDisplayAry=$base->TagObj->insertTable($paramFeed,&$base);
 				$returnAry[]="<tr><td $useMenuElementClassInsert>";
 				$returnAry=array_merge($returnAry,$menuElementDisplayAry);
 				$returnAry[]="</td></tr>";
@@ -2853,7 +2853,7 @@ class plugin002Object {
 			case 'map':
 				$mapProfileId=$menuElementAry['mapprofileid'];
 				$mapName=$base->mapProfileAry['main'][$mapProfileId]['mapname'];
-				$menuElementDisplayAry=$base->htmlObj->buildMap($mapName,&$base);
+				$menuElementDisplayAry=$base->HtmlObj->buildMap($mapName,&$base);
 				$returnAry[]='<tr>';
 				$returnAry[]="<td $menuElementClassInsert>\n";
 				$returnAry=array_merge($returnAry,$menuElementDisplayAry);
@@ -2862,26 +2862,26 @@ class plugin002Object {
 			case 'form':
 				$passAry=array();
 				$passAry['param_1']=$menuElementName;
-				$subReturnAry=$base->tagObj->insertForm($passAry,&$base);
+				$subReturnAry=$base->TagObj->insertForm($passAry,&$base);
 				$returnAry[]='<tr><td>';
 				$returnAry=array_merge($returnAry,$subReturnAry);
 				$returnAry[]='</td></tr>';
-				//$base->debugObj->printDebug($subReturnAry,1,'srtn');//xxx
+				//$base->DebugObj->printDebug($subReturnAry,1,'srtn');//xxx
 				//exit();//xxx			
 				break;	
 			case 'repeatingform':
 				$passAry=array();
 				$query_raw=$menuElementAry['menuelementsql'];
 				//-below let querytable do the formatting
-				//$query=$base->utlObj->returnFormattedString($query_raw,&$base);
+				//$query=$base->UtlObj->returnFormattedString($query_raw,&$base);
 				//!!! - below needs to check if using db2
 				$useOtherDb_raw=$base->formProfileAry[$menuElementName]['formuseotherdb'];
-				$useOtherDb=$base->utlObj->returnFormattedData($useOtherDb_raw,'boolean','internal');
-				if ($useOtherDb){$base->dbObj->setUseOtherDb(&$base);}
-				$result=$base->dbObj->queryTable($query_raw,'read',&$base,0);
-				$workAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+				$useOtherDb=$base->UtlObj->returnFormattedData($useOtherDb_raw,'boolean','internal');
+				if ($useOtherDb){$base->DbObj->setUseOtherDb(&$base);}
+				$result=$base->DbObj->queryTable($query_raw,'read',&$base,0);
+				$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 				//echo "query: $query_raw";//xxxf
-				//$base->debugObj->printDebug($workAry,1,'xxxf');
+				//$base->DebugObj->printDebug($workAry,1,'xxxf');
 				$passAry['param_1']=$menuElementName;
 				foreach ($workAry as $ctr=>$workRowAry){
 					//echo "$ctr<br>";//xxx
@@ -2892,9 +2892,9 @@ class plugin002Object {
 					$passAry['usethisdataary']=$workRowAry;
 					$tabIndexBase=($ctr+1)*10;
 					$passAry['tabindexbase']=$tabIndexBase;
-					//$base->debugObj->printDebug($workRowAry,1,'xxxworkrowary');
+					//$base->DebugObj->printDebug($workRowAry,1,'xxxworkrowary');
 					//echo "build a form<br>";//xxxd
-					$subReturnAry=$base->tagObj->insertForm($passAry,&$base);
+					$subReturnAry=$base->TagObj->insertForm($passAry,&$base);
 					unset ($passAry['usethisdata']);
 					$returnAry[]="<tr><td>\n";
 					$headingStr="<!-- Form Number: $ctr -->\n";
@@ -2905,18 +2905,18 @@ class plugin002Object {
 				}
 				//- need to write how many forms have been created here
 				$base->formProfileAry[$menuElementName]['formcount']=$ctr;
-				//$base->debugObj->printDebug($returnAry,1,'rtnary');//xxx
+				//$base->DebugObj->printDebug($returnAry,1,'rtnary');//xxx
 				//exit(0);//xxx
 				break;
 				case 'album':
 					$albumProfileId=$menuElementAry['albumprofileid'];
 					//echo "albumprofileid: $albumProfileId<br>";//xxx
-					$passAry=$base->htmlObj->buildAlbumTable($albumProfileId,&$base);
+					$passAry=$base->HtmlObj->buildAlbumTable($albumProfileId,&$base);
 					$albumTableDisplayAry=$passAry['returnary'];
 					$albumName=$passAry['albumname'];
 					if (!array_key_exists('jsary',$base->albumProfileAry)){$base->albumProfileAry['jsary']=array();}
 					$base->albumProfileAry['jsary'][$albumName]=$passAry[$albumName];
-					//$base->debugObj->printDebug($albumTableDisplayAry,1,'atdaxxxa');
+					//$base->DebugObj->printDebug($albumTableDisplayAry,1,'atdaxxxa');
 					$returnAry[]="<tr><td $useMenuElementClassInsert>\n";
 					$returnAry=array_merge($returnAry,$albumTableDisplayAry);
 					$returnAry[]="</td></tr>\n";
@@ -2924,7 +2924,7 @@ class plugin002Object {
 				case 'image':
 					$imageName=$menuElementName;
 					$returnAry[]="<tr><td $useMenuElementClassInsert>\n";
-					$subReturnAry=$base->htmlObj->buildImg($imageName,&$base);
+					$subReturnAry=$base->HtmlObj->buildImg($imageName,&$base);
 					$returnAry=array_merge($returnAry,$subReturnAry);
 					$returnAry[]="<span $menuElementClassInsert>$menuElementLabel</span";
 					$returnAry[]="</td></tr>\n";
@@ -2932,7 +2932,7 @@ class plugin002Object {
 			default:
 //- element is text
 				if (!$allDone){
-					//$base->debugObj->printDebug($menuElementAry,1,'mea');//xxx
+					//$base->DebugObj->printDebug($menuElementAry,1,'mea');//xxx
 					//echo "url label: $menuElementLabel, class: $useMenuElementClass<br>";//xxx
 					$returnAry[]='<tr>';
 					if ($doLabelInsert){
@@ -2968,14 +2968,14 @@ class plugin002Object {
 		$base->menuProfileAry['jsmenusary'][$menuName]['lastmenuelementno']=0;
 		$base->menuProfileAry['jsmenusary'][$menuName]['elements']=$jsMenuAry;
 		$base->menuProfileAry['jsmenusary'][$menuName]['elementsother']=$jsMenuElementAry;
-		$base->debugObj->printDebug("rtn: insertmenuvertical",0);//xx
+		$base->DebugObj->printDebug("rtn: insertmenuvertical",0);//xx
 		return $returnAry;				
 	}
 //=======================================
 	function insertStyle($paramFeed,$base){
-		$base->debugObj->printDebug("plugin002Obj:status()",0); //xx (h)
+		$base->DebugObj->printDebug("Plugin002Obj:status()",0); //xx (h)
 		$returnAry=array();
-		//$base->debugObj->printDebug($base->cssProfileAry,1,'xxxcssprofileary');
+		//$base->DebugObj->printDebug($base->cssProfileAry,1,'xxxcssprofileary');
 		$returnAry[]="\n<style>\n";
 		$tempAry=array('id','class','none');
 		$theCnt=count($tempAry);
@@ -2983,10 +2983,10 @@ class plugin002Object {
 			foreach ($tempAry as $rowNo=>$selectorType){
 				$theCnt=count($base->cssProfileAry[$selectorType]);
 				$insertPrefix=NULL;
-				//$base->debugObj->printDebug($base->cssProfileAry[$selectorType],1,'xxx: '.$selectorType);
+				//$base->DebugObj->printDebug($base->cssProfileAry[$selectorType],1,'xxx: '.$selectorType);
 				if ($theCnt>0){
 					foreach ($base->cssProfileAry[$selectorType] as $styleSelector=>$styleTags){
-						//$base->debugObj->printDebug($styleTags,1,'xxx');
+						//$base->DebugObj->printDebug($styleTags,1,'xxx');
 						//- delim
 						if ($selectorType == 'id'){$delim='#';}
 						else {$delim='.';}
@@ -3017,11 +3017,11 @@ class plugin002Object {
 		} // end count of above
 		$returnAry[]='</style>'."\n";		
 		return $returnAry;
-		$base->debugObj->printDebug("-rtn:xx",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:xx",0); //xx (f)
 	}
 //=======================================
 	function insertAlbumEntries($base){
-		//$base->debugObj->printDebug($base->paramsAry,1,'par');//xxx
+		//$base->DebugObj->printDebug($base->paramsAry,1,'par');//xxx
 		$albumProfileId=$base->paramsAry['albumprofileid'];
 		$dirPath=$base->paramsAry['dirpath'];
 		$nameFilter=$base->paramsAry['namefilter'];
@@ -3029,9 +3029,9 @@ class plugin002Object {
 //- get any album that is already on file
 		$query="select * from pictureprofileview where albumprofileid='$albumProfileId'";
 		//echo "query: $query<br>";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array('delimit1'=>'picturefilename');
-		$currentPictureAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$currentPictureAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		//$cnt=count($currentPictureAry);//xxxf
 		//echo "currentpictureary cnt: $cnt<br>";//xxxf
 		$largestNumber=0;
@@ -3039,14 +3039,14 @@ class plugin002Object {
 			$pictureNo=$pictureAry['pictureno'];
 			if ($pictureNo>$largestNumber){$largestNumber=$pictureNo;}		
 		}
-		//$base->debugObj->printDebug($dataAry,1,'xxxa:dataary');
+		//$base->DebugObj->printDebug($dataAry,1,'xxxa:dataary');
 		//echo "id: $albumProfileId, dir: $dirPath, filter: $nameFilter, format: $imageFormat<br>";//xxx
 		$passAry=array('directorypath'=>$dirPath,'namefilter'=>$nameFilter,'imageformat'=>$imageFormat);
-		$returnAry=$base->fileObj->retrieveFileNamesV2($passAry,&$base);
+		$returnAry=$base->FileObj->retrieveFileNamesV2($passAry,&$base);
 		sort($returnAry);
 		$cnt=count($returnAry);
 		if ($cnt>200){$cnt=200;}
-		//$base->debugObj->printDebug($returnAry,1,'rtn');//xxx
+		//$base->DebugObj->printDebug($returnAry,1,'rtn');//xxx
 		$writeRowsAry=array();
 		$pictureAry=array('albumprofileid'=>$albumProfileId);
 		$albumEntryCtr=0;
@@ -3072,7 +3072,7 @@ class plugin002Object {
 			if (array_key_exists($pictureFileName,$currentPictureAry)){$doit=false;$err=2;}
 			//if ($pictureFileName=='allenatoaksbottom.png') {
 			//echo "$pictureFileName, doit: $doit, err: $err<br>";//xxxf
-			//$base->debugObj->printDebug($currentPictureAry,1,'xxxf');//xxxf
+			//$base->DebugObj->printDebug($currentPictureAry,1,'xxxf');//xxxf
 			//}
 			if ($doit){
 			$processTypeCheck[$pictureFileName]='xxx';
@@ -3100,8 +3100,8 @@ class plugin002Object {
 		}
 		$dbControlsAry=array('dbtablename'=>'pictureprofile');
     	$dbControlsAry['writerowsary']=$writeRowsAry;
-    	//$base->debugObj->printDebug($dbControlsAry,1,'db');//xxx
-    	$successBool=$base->dbObj->writeToDb($dbControlsAry,&$base);
+    	//$base->DebugObj->printDebug($dbControlsAry,1,'db');//xxx
+    	$successBool=$base->DbObj->writeToDb($dbControlsAry,&$base);
 	}
 //=======================================
 	function clearSessionBuffer($base){
@@ -3122,26 +3122,26 @@ class plugin002Object {
 	}
 //=======================================
 	function insertMeta($paramFeed,$base){
-		$base->debugObj->printDebug("insertMeta('base')",0); //xx 	
+		$base->DebugObj->printDebug("insertMeta('base')",0); //xx 	
 	}
 //=======================================
 	function insertMap($paramFeed,$base){
-		$base->debugObj->printDebug("insertMap('base')",0); //xx	
+		$base->DebugObj->printDebug("insertMap('base')",0); //xx	
 		$mapName=$paramFeed['param_1'];
-		$returnAry=$base->htmlObj->buildMap($mapName,&$base);
-		$base->debugObj->printDebug("-rtn:insertmap"); //xx
+		$returnAry=$base->HtmlObj->buildMap($mapName,&$base);
+		$base->DebugObj->printDebug("-rtn:insertmap"); //xx
 		return $returnAry;
 	}
 //=======================================
 	function insertImg($paramFeed,$base){
-		$base->debugObj->printDebug("insertImg('base')",0); //xx
+		$base->DebugObj->printDebug("insertImg('base')",0); //xx
 		$imageName=$paramFeed['param_1'];
 		$urlAry=array();
 		//echo "name: $imageName<br>";//xxx
 		$imageAry=$base->imageProfileAry[$imageName];
 		$urlAry['label']=$imageAry['imagelabel'];
 		$imageSource_raw=$imageAry['imagesource'];
-		$imageSource=$base->utlObj->returnFormattedString($imageSource_raw,&$base);
+		$imageSource=$base->UtlObj->returnFormattedString($imageSource_raw,&$base);
 		$imageAlt=$imageAry['imagealt'];
 		$urlAry['joblink']=$imageSource;
 		$urlAry['imageusemap']=$imageAry['imageusemap'];
@@ -3154,7 +3154,7 @@ class plugin002Object {
 		if ($eventFromImg == null){$useEvent=$eventFromOther;}
 		else {$useEvent=$eventFromImg;}
 		$urlAry['htmlelementeventattributes']=$useEvent;
-		//$base->debugObj->printDebug($imageAry,1,'urlary');//xxx
+		//$base->DebugObj->printDebug($imageAry,1,'urlary');//xxx
 		//-
 		$imageClass=$imageAry['imageclass'];
 //- image id
@@ -3175,7 +3175,7 @@ class plugin002Object {
 		$imageTitle=$imageAry['imagetitle'];
 		if ($imageTitle==NULL){$imageTitle=$imageName;}
 		$imageText=$imageAry['imagetext'];
-		$imageAry_html=$base->htmlObj->buildOldImg($urlAry,&$base);
+		$imageAry_html=$base->HtmlObj->buildOldImg($urlAry,&$base);
 		$returnAry=array();
 		switch ($imageType){
 			case 'image':
@@ -3209,18 +3209,18 @@ class plugin002Object {
 			default:		
 				$returnAry=$imageAry_html;
 		}
-		$base->debugObj->printDebug("-rtn:insertimg",0); //xx
+		$base->DebugObj->printDebug("-rtn:insertimg",0); //xx
 		return $returnAry;
 	}
 //========================================= plugin: operation
 	function insertImages($base){
-		//$base->debugObj->printDebug($base->paramsAry,1,'par');//xxx
+		//$base->DebugObj->printDebug($base->paramsAry,1,'par');//xxx
 		$selectionString=$base->paramsAry['selectionstring'];
 		$sourceDir=$base->paramsAry['sourcedirectory'];
 		$prefixName=$base->paramsAry['prefixname'];
 		$imageClass=$base->paramsAry['imageclass'];
 		$imageFormat=$base->paramsAry['imageformat'];
-		$returnAry=$base->fileObj->retrieveFileNames($sourceDir,$selectionString,&$base);
+		$returnAry=$base->FileObj->retrieveFileNames($sourceDir,$selectionString,&$base);
 		sort($returnAry);
 		$cnt=count($returnAry);
 		if ($cnt>20){$cnt=20;}
@@ -3251,15 +3251,15 @@ class plugin002Object {
 		}
 		$dbControlsAry=array('dbtablename'=>'imageprofile');
     	$dbControlsAry['writerowsary']=$writeRowsAry;
-    	//$base->debugObj->printDebug($dbControlsAry,1,'db');//xxx
-    	$successBool=$base->dbObj->writeToDb($dbControlsAry,&$base);
+    	//$base->DebugObj->printDebug($dbControlsAry,1,'db');//xxx
+    	$successBool=$base->DbObj->writeToDb($dbControlsAry,&$base);
 	}
 //=========================================
 	function insertParagraph($paramFeed,$base){
-		$base->debugObj->printDebug("plugin002Obj:status()",0); //xx (h)
+		$base->DebugObj->printDebug("Plugin002Obj:status()",0); //xx (h)
 		$returnAry=array();
 		$paragraphName=$paramFeed['param_1'];
-		//$base->debugObj->printDebug($base->paragraphProfileAry,1,'par');//xxx
+		//$base->DebugObj->printDebug($base->paragraphProfileAry,1,'par');//xxx
 		$paragraphAry=$base->paragraphProfileAry[$paragraphName];
 		//-
 		$paragraphClass=$paragraphAry['paragraphclass'];
@@ -3301,7 +3301,7 @@ class plugin002Object {
 		if ($showParagraph){
 		$sentencesAry=$base->sentenceProfileAry[$paragraphName];
 		$sentenceOrderAry=$base->sentenceProfileAry['sortorderary_'.$paragraphName];
-		//$base->debugObj->printDebug($sentenceOrderAry,1,'sentenceorderary');//xxx
+		//$base->DebugObj->printDebug($sentenceOrderAry,1,'sentenceorderary');//xxx
 		$beginComment="<!-- start paragraph: $paragraphName -->";$endComment="<!-- end paragraph: $paragraphName -->";
 		if ($paragraphType=='span'){$beginDivider="<span $paragraphClassInsert>";$endDivider="</span>";$divider_front='<span';$divider_back='</span>';}
 		else if($paragraphType=='ul'){$beginDivider="<ul $paragraphClassInsert>";$endDivider='</ul>';$divider_front='<li';$divider_back='</li>';}
@@ -3319,7 +3319,7 @@ class plugin002Object {
 			$sentenceVisibility=$sentenceAry['sentencevisibility'];
 			$sentenceValue=$sentenceAry['sentencevalue'];
 			$sentenceBreak_array=$sentenceAry['sentencebreak'];
-			$sentenceBreak=$base->utlObj->returnFormattedData( $sentenceBreak_array, 'boolean', 'internal');
+			$sentenceBreak=$base->UtlObj->returnFormattedData( $sentenceBreak_array, 'boolean', 'internal');
 			$showSentence=false;
 			switch ($sentenceVisibility){
 				case 'nocartitemsgt':
@@ -3351,7 +3351,7 @@ class plugin002Object {
 			if ($sentenceId != NULL){$insertSentenceId=" id=\"$sentenceId\"";}
 			else {$insertSentenceId=NULL;}
 			$sentenceType=$sentenceAry['sentencetype'];
-			$sentenceText_good=$base->utlObj->returnFormattedString($sentenceText,&$base);
+			$sentenceText_good=$base->UtlObj->returnFormattedString($sentenceText,&$base);
 			//xxxf22
 			//echo "sentenceName: $sentenceName before: $sentenceText, after: $sentenceText_good<br>";//xxxf22
 			//echo "sentencetype: $sentenceType<br>";//xxx
@@ -3361,7 +3361,7 @@ class plugin002Object {
 					}
 				else {
 					$jobLink=$sentenceAry['sentenceurl'];
-					$jobLink_html=$base->utlObj->returnFormattedData($jobLink,'url','html',&$base);
+					$jobLink_html=$base->UtlObj->returnFormattedData($jobLink,'url','html',&$base);
 					$sentenceLine="<a href=\"$jobLink_html\" $insertSentenceId $insertSentenceClass>$sentenceText_good</a>$insertSentenceBreak";
 				}
 				$returnAry[]="$sentenceLine\n";
@@ -3370,19 +3370,19 @@ class plugin002Object {
 		$returnAry[]=$endDivider."\n";
 		$returnAry[]=$endComment."\n";
 		} // end if
-		//$base->debugObj->printDebug($returnAry,1,'rtn');//xxxf
-		$base->debugObj->printDebug("-rtn:xx",0); //xx (f)
+		//$base->DebugObj->printDebug($returnAry,1,'rtn');//xxxf
+		$base->DebugObj->printDebug("-rtn:xx",0); //xx (f)
 		return $returnAry;
 	}
 //======================================= deprecated - has dbtablemetaprofile stuff
 	function deprecatedreadDbUpdate($base){
-		$base->debugObj->printDebug("plugin002Obj:readDbUpdate('base')",0); //xx (h)
+		$base->DebugObj->printDebug("Plugin002Obj:readDbUpdate('base')",0); //xx (h)
 		$dbTableName=$base->paramsAry['dbtablemetaname'];
 		$dbControlsAry=array('dbtablename'=>$dbTableName);
-		$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+		$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
 		$dbTableMetaAry=$dbControlsAry['dbtablemetaary'];
 		$query="select * from $dbTableName";
-		$res=$base->dbObj->queryTable($query,'retrieve',&$base);
+		$res=$base->DbObj->queryTable($query,'retrieve',&$base);
 	 	$noFields = pg_num_fields($res);
 	 	$writeRowsAry=array();
  	 	for ($ctr = 0; $ctr < $noFields; $ctr++) {
@@ -3398,28 +3398,28 @@ class plugin002Object {
  	 	}
  	 	$dbControlsAry=array('dbtablename'=>'dbtablemetaprofile');
  	 	$dbControlsAry['writerowsary']=$writeRowsAry;
- 	 	//$base->debugObj->printDebug($dbControlsAry,1,'dbca');
- 	 	$base->dbObj->writeToDb($dbControlsAry,&$base);
- 	 	//$base->debugObj->printDebug($writeRowsAry,1,'wra');//xxx
-		$base->debugObj->printDebug("-rtn:setPrio",0); //xx (f)
+ 	 	//$base->DebugObj->printDebug($dbControlsAry,1,'dbca');
+ 	 	$base->DbObj->writeToDb($dbControlsAry,&$base);
+ 	 	//$base->DebugObj->printDebug($writeRowsAry,1,'wra');//xxx
+		$base->DebugObj->printDebug("-rtn:setPrio",0); //xx (f)
 	}
 //=======================================
 	function setPrio($base){
-		$base->debugObj->printDebug("plugin002Obj:setPrio('base')",0); //xx (h)
+		$base->DebugObj->printDebug("Plugin002Obj:setPrio('base')",0); //xx (h)
 		$newPrio=$base->paramsAry['newpriority'];
 		$dbTableName=$base->paramsAry['dbtablename'];
 		if ($dbTableName == ''){$dbTableName='thingstodo';}
 		$dbControlsAry=array('dbtablename'=>$dbTableName);
-		$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+		$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
 		$keyName=$dbControlsAry['keyname'];
 		$keyValue=$base->paramsAry[$keyName];
 		$dataRowsAry[]=array($keyName=>$keyValue);
 		$dbControlsAry['datarowsary']=$dataRowsAry;
-		$dataAry=$base->dbObj->readFromDb($dbControlsAry,&$base);
+		$dataAry=$base->DbObj->readFromDb($dbControlsAry,&$base);
 		$priority=$dataAry[0]['priority'];
 		//echo "priority: $priority, newpriority: $newPrio";exit();//xxxf
 		$colRegEx='/^[0-9]*$/';
-		$itIsAnInteger = $base->utlObj->checkData($colRegEx,$priority);
+		$itIsAnInteger = $base->UtlObj->checkData($colRegEx,$priority);
 		if ($itIsAnInteger){
 			if ($newPrio != NULL){$priority=$newPrio;}
 			if ($priority<=0){$priority=0;}
@@ -3427,30 +3427,30 @@ class plugin002Object {
 			$dataAry[0]['thingstodopriority']=$priority;
 			//fix date
 			$entryDate_raw=$dataAry[0]['entrydate'];
-			$entryDate=$base->utlObj->convertDate($entryDate_raw,'date1',&$base);
+			$entryDate=$base->UtlObj->convertDate($entryDate_raw,'date1',&$base);
 			$dataAry[0]['entrydate']=$entryDate;
 			$dbControlsAry['writerowsary']=$dataAry;
-			//$base->debugObj->printDebug($dbControlsAry,1,'xxxf');exit();
+			//$base->DebugObj->printDebug($dbControlsAry,1,'xxxf');exit();
 		}
-		//$base->debugObj->printDebug($dbControlsAry['writerowsary'],1,'db');//xxxf
+		//$base->DebugObj->printDebug($dbControlsAry['writerowsary'],1,'db');//xxxf
 		//exit();
-	  	$successBool=$base->dbObj->writeToDb($dbControlsAry,&$base);	
+	  	$successBool=$base->DbObj->writeToDb($dbControlsAry,&$base);	
 	  	if ($successBool != 1){
 	  		echo "error: ".$successBool;
 	  	}
 	  	else {
 		  	echo 'okdonothing';	
 	  	} 
-		$base->debugObj->printDebug("-rtn:setPrio",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:setPrio",0); //xx (f)
 	}
 //===============internal methods================
 //=======================================
 	function status(){
-		$base->debugObj->printDebug("plugin002Obj:status()",0); //xx (h)
+		$base->DebugObj->printDebug("Plugin002Obj:status()",0); //xx (h)
 		$this->incCalls();
 		echo "<br> $this->statusMsg ";
 		echo "(No of calls: $this->callNo)\n";
-		$base->debugObj->printDebug("-rtn:xx",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:xx",0); //xx (f)
 	}
 //=======================================
 	function errorOut($errorMsg){
@@ -3461,6 +3461,6 @@ class plugin002Object {
 	function incCalls(){$this->callNo++;}
 //=======================================
 	function d($theVariable,$theVariableName){
-		$this->base->debugObj->printDebug($theVariable,1,$theVariableName);
+		$this->base->DebugObj->printDebug($theVariable,1,$theVariableName);
 	}
 }

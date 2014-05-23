@@ -1,24 +1,24 @@
 <?php
-class pluginObject {
+class PluginObject {
 // version 1.1.1
 	var $statusMsg;
 	var $callNo = 0;
 	var $delim = '!!';
 //=======================================
-	function pluginObject() {
+	function PluginObject() {
 		$this->incCalls();
 		$this->statusMsg='plugin Object is fired up and ready for work!';
 	}
 //======================================= 
 	function runOperationPlugin($operationAry,$base){
-		$base->debugObj->printDebug("pluginObj:runOperationPlugin($operationAry,'base')",0);
+		$base->DebugObj->printDebug("PluginObj:runOperationPlugin($operationAry,'base')",0);
 		//xxxd else above
 		$operationName=$operationAry['operationname'];
 		switch ($operationName){
 			case 'runcgi':
 				$pluginName=$base->paramsAry['operation'];
 				if ($pluginName == ""){$pluginName='none';}
-				$base->fileObj->writeLog('jefftest66',"run operation pluginname: $pluginName",&$base);
+				$base->FileObj->writeLog('jefftest66',"run operation pluginname: $pluginName",&$base);
 				$hasReturn=false;
 			break;
 			case 'runoperation':
@@ -35,78 +35,78 @@ class pluginObject {
 				$pluginName='error';
 		}
 		if ($pluginName != "none"){
-			$pluginObject=$base->pluginProfileAry['operation'][$pluginName]['pluginobject'];
+			$PluginObject=$base->pluginProfileAry['operation'][$pluginName]['pluginobject'];
 			$pluginMethod=$base->pluginProfileAry['operation'][$pluginName]['pluginmethod'];
-			if (($pluginObject != "") && ($pluginMethod != "")){
-				//echo "pl: run $pluginObject, $pluginMethod<br>";//xxxd
+			if (($PluginObject != "") && ($pluginMethod != "")){
+				//echo "pl: run $PluginObject, $pluginMethod<br>";//xxxd
 //- setup useotherdb
-				$useOtherDb=$base->utlObj->returnFormattedData($base->jobProfileAry['jobuseotherdb'],'boolean','internal',&$base);
+				$useOtherDb=$base->UtlObj->returnFormattedData($base->jobProfileAry['jobuseotherdb'],'boolean','internal',&$base);
 				$test=null;
 				foreach ($base->jobProfileAry as $name=>$value){
 					$test.=", $name: $value";
 				}
-				$base->utlObj->appendValue('debug',"pluginObj,runOperationPlugin: jobprofileary: $test<br>",&$base);//xxxd
-				if ($useOtherDb){$base->dbObj->setUseOtherDbNoReset(&$base);}
-				$base->utlObj->appendValue('debug',"pluginObj,runOperationPlugin: run $pluginObject, $pluginMethod useotherdb: $useOtherDb<br>",&$base);
-				$base->fileObj->writeLog('writedbfromajaxsimple',"pluginObj) run $pluginObject($pluginMethod)",&$base);
+				$base->UtlObj->appendValue('debug',"PluginObj,runOperationPlugin: jobprofileary: $test<br>",&$base);//xxxd
+				if ($useOtherDb){$base->DbObj->setUseOtherDbNoReset(&$base);}
+				$base->UtlObj->appendValue('debug',"PluginObj,runOperationPlugin: run $PluginObject, $pluginMethod useotherdb: $useOtherDb<br>",&$base);
+				$base->FileObj->writeLog('writedbfromajaxsimple',"PluginObj) run $PluginObject($pluginMethod)",&$base);
 				if ($hasReturn){
-					$returnAry=$base->$pluginObject->$pluginMethod(&$base);
+					$returnAry=$base->$PluginObject->$pluginMethod(&$base);
 					return $returnAry;
 				}
 				else {
-					//echo "xxxd: run $pluginObject, $pluginMethod<br>";
-					//$base->debugObj->printDebug($base->paramsAry,1,'xxxd');
-					$base->$pluginObject->$pluginMethod(&$base);
+					//echo "xxxd: run $PluginObject, $pluginMethod<br>";
+					//$base->DebugObj->printDebug($base->paramsAry,1,'xxxd');
+					$base->$PluginObject->$pluginMethod(&$base);
 				}
-				if ($useOtherDb){$base->dbObj->unsetUseOtherDb(&$base);}
+				if ($useOtherDb){$base->DbObj->unsetUseOtherDb(&$base);}
 			}
 			else {
-				$base->debugObj->printDebug("Error: plugintype: $pluginType, pluginname: $pluginName, pluginclassname: $pluginObject,pluginmethodname: $pluginMethod",1);
-				$base->debugObj->displayStack();
+				$base->DebugObj->printDebug("Error: plugintype: $pluginType, pluginname: $pluginName, pluginclassname: $PluginObject,pluginmethodname: $pluginMethod",1);
+				$base->DebugObj->displayStack();
 			}
 		}
-		$base->debugObj->printDebug("-rtn:runOperationPlugin",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:runOperationPlugin",0); //xx (f)
 	}		
 //=======================================
 	function runTagPlugin($pluginName,$paramFeed,$base){
-		$base->debugObj->printDebug("pluginObj:runPlugin($pluginName,$pluginType,'base')",0);
+		$base->DebugObj->printDebug("PluginObj:runPlugin($pluginName,$pluginType,'base')",0);
 			//echo "pluginname: $pluginName<br>";
-			//$base->debugObj->printDebug($paramFeed,1,'xxx');
+			//$base->DebugObj->printDebug($paramFeed,1,'xxx');
 			$pluginType='tag';
-			$pluginObject=$base->pluginProfileAry[$pluginType][$pluginName]['pluginobject'];
+			$PluginObject=$base->pluginProfileAry[$pluginType][$pluginName]['pluginobject'];
 			$pluginMethod=$base->pluginProfileAry[$pluginType][$pluginName]['pluginmethod'];
-			//print "obj: $pluginObject, method: $pluginMethod<br>";
-			if (($pluginObject != "") && ($pluginMethod != "")){
-				$returnAry=$base->$pluginObject->$pluginMethod($paramFeed,&$base);
+			//print "obj: $PluginObject, method: $pluginMethod<br>";
+			if (($PluginObject != "") && ($pluginMethod != "")){
+				$returnAry=$base->$PluginObject->$pluginMethod($paramFeed,&$base);
 			}
 			else {
-				$base->debugObj->printDebug("Error: pluginname: $pluginName, plugintype: $pluginType,  pluginclassname: $pluginObject,pluginmethodname: $pluginMethod",1);
-				$base->debugObj->displayStack();
+				$base->DebugObj->printDebug("Error: pluginname: $pluginName, plugintype: $pluginType,  pluginclassname: $PluginObject,pluginmethodname: $pluginMethod",1);
+				$base->DebugObj->displayStack();
 				$returnAry=array();
 			}
-			$base->debugObj->printDebug("-rtn:runTabPlugin",0); //xx (f)
+			$base->DebugObj->printDebug("-rtn:runTabPlugin",0); //xx (f)
 			return $returnAry;
 	}
 //=======================================
 	function runAppPlugin($operAry,$applicationPassedAry,$base){
-		$base->debugObj->printDebug("pluginObj:runAppPlugin($operAry,'base')",0);
+		$base->DebugObj->printDebug("PluginObj:runAppPlugin($operAry,'base')",0);
 			$pluginType='app';
 			$pluginName=$operAry['applicationpluginname'];
 			$pluginArgs=$base->applicationProfileAry[$pluginName]['applicationpluginarguments'];
-			//$base->debugObj->printDebug($operAry,1,'operary');
-			$pluginObject=$base->pluginProfileAry[$pluginType][$pluginName]['pluginobject'];
+			//$base->DebugObj->printDebug($operAry,1,'operary');
+			$PluginObject=$base->pluginProfileAry[$pluginType][$pluginName]['pluginobject'];
 			$pluginMethod=$base->pluginProfileAry[$pluginType][$pluginName]['pluginmethod'];
-			if (($pluginObject != "") && ($pluginMethod != "")){
+			if (($PluginObject != "") && ($pluginMethod != "")){
 				$applicationPassedAry['pluginargs']=$pluginArgs;
-				//echo "obj: $pluginObject, method: $pluginMethod<br>";//xxx
-				$applicationPassedAry=$base->$pluginObject->$pluginMethod($applicationPassedAry,&$base);
+				//echo "obj: $PluginObject, method: $pluginMethod<br>";//xxx
+				$applicationPassedAry=$base->$PluginObject->$pluginMethod($applicationPassedAry,&$base);
 			}
 			else {
-				$base->debugObj->printDebug("Error: pluginname: $pluginName, plugintype: $pluginType, pluginname: $pluginName, pluginObject: $pluginObject, pluginmethod: $pluginMethod",1);
-				$base->debugObj->displayStack();
+				$base->DebugObj->printDebug("Error: pluginname: $pluginName, plugintype: $pluginType, pluginname: $pluginName, PluginObject: $PluginObject, pluginmethod: $pluginMethod",1);
+				$base->DebugObj->displayStack();
 				$applicationPassedAry=array();
 			}
-			$base->debugObj->printDebug("-rtn:runTabPlugin",0); //xx (f)
+			$base->DebugObj->printDebug("-rtn:runTabPlugin",0); //xx (f)
 			return $applicationPassedAry;
 	}
 //=======================================

@@ -1,11 +1,11 @@
 <?php
-class errorObject {
+class ErrorObject {
 	var $statusMsg;
 	var $callNo = 0;
 	var $errorAry = array();
 	var $keyConvAry = array();
 //---
-	function errorObject() {
+	function ErrorObject() {
 		$this->incCalls();
 		$this->statusMsg='file Object is fired up and ready for work!';
 	}

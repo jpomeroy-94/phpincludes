@@ -1,17 +1,17 @@
 <?php
-class menuObject {
+class MenuObject {
 	var $statusMsg;
 	var $callNo = 0;
 //====================================================
 	function incCalls(){$this->callNo++;}
 //====================================================
-	function menuObject() {
+	function MenuObject() {
 		$this->incCalls();
 		$this->statusMsg='tag Object is fired up and ready for work!';
 	}
 //====================================================
 	function cloneMenu($base){
-		//$base->debugObj->printDebug($base->paramsAry,1,'xxx');	
+		//$base->DebugObj->printDebug($base->paramsAry,1,'xxx');	
 		// this is done by operationProfile001Obj->cloneRow also
 		//- get old stuff
 		$menuProfileId=$base->paramsAry['menuprofileid'];
@@ -19,36 +19,36 @@ class menuObject {
 		if ($menuProfileId != null && $newMenuName != null){
 		$jobProfileId=$base->paramsAry['jobprofileid'];
 		$dbControlsAry=array('dbtablename'=>'menuprofile');
-		$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+		$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
 		//foreach ($dbControlsAry as $one=>$two){echo "$one<br>";}
 		$query="select * from menuprofile where menuprofileid=$menuProfileId";
 		$passAry=array();
-		$workAry=$base->dbObj->retrieveAryFromDb($query,$passAry,&$base);
-		//$base->debugObj->printDebug($workAry,1,'xxx');
+		$workAry=$base->DbObj->retrieveAryFromDb($query,$passAry,&$base);
+		//$base->DebugObj->printDebug($workAry,1,'xxx');
 		$newMenuAry=$workAry[0];
 		if (count($newMenuAry)>0){
 			$newMenuAry['menuname']=$newMenuName;	
 			$newMenuAry['jobprofileid']=$jobProfileId;
 			unset ($newMenuAry['menuprofileid']);
 			$dbControlsAry['writerowsary'][0]=$newMenuAry;
-			//$base->debugObj->printDebug($dbControlsAry['writerowsary'],1,'xxxf');
-			$base->dbObj->writeToDb($dbControlsAry,&$base);
+			//$base->DebugObj->printDebug($dbControlsAry['writerowsary'],1,'xxxf');
+			$base->DbObj->writeToDb($dbControlsAry,&$base);
 			$query="select menuprofileid from menuprofileview where jobprofileid=$jobProfileId and menuname='$newMenuName'";
 			$passAry=array();
-			$workAry=$base->dbObj->retrieveAryFromDb($query,$passAry,&$base);
+			$workAry=$base->DbObj->retrieveAryFromDb($query,$passAry,&$base);
 			$newMenuProfileId=$workAry[0]['menuprofileid'];
 			if ($newMenuProfileId != null){
 			$query="select * from menuelementprofileview where menuprofileid=$menuProfileId";
 			$passAry=array();
-			$workAry=$base->dbObj->retrieveAryFromDb($query,$passAry,&$base);
+			$workAry=$base->DbObj->retrieveAryFromDb($query,$passAry,&$base);
 			foreach ($workAry as $ctr=>$menuElementAry){
 				unset($workAry[$ctr]['menuelementprofileid']);
 				$workAry[$ctr]['menuprofileid']=$newMenuProfileId;	
 			}
 			$dbControlsAry=array('dbtablename'=>'menuelementprofile');
 			$dbControlsAry['writerowsary']=$workAry;
-			//$base->debugObj->printDebug($dbControlsAry,1,'xxx');
-			$base->dbObj->writeToDb($dbControlsAry,&$base);
+			//$base->DebugObj->printDebug($dbControlsAry,1,'xxx');
+			$base->DbObj->writeToDb($dbControlsAry,&$base);
 			}
 			else {echo "didnt create menuprofile row<br>";}
 		}
@@ -77,7 +77,7 @@ class menuObject {
 		else {
 			$menuAry=$base->menuProfileAry['jsmenusary'][$menuName];
 		}
-		//$ajaxAry=$base->ajaxObj->getContainerForAjax(&$base);
+		//$ajaxAry=$base->AjaxObj->getContainerForAjax(&$base);
 		$ajaxAry=array();
 		$ajaxAry[]="\n!!menus!!\n";
 		$ajaxAry[]='initmenu|'.$menuName."\n";
@@ -111,13 +111,13 @@ class menuObject {
 			$menuFieldValue=$menuAry[$menuFieldName];
 			//if ($menuFieldName=='menutitle'){
 				//echo "menuname: $menuName, menutitle: menufieldvalue: $menuFieldValue<br>";
-				//$base->debugObj->printDebug($menuAry,1,'xxxf');exit();
+				//$base->DebugObj->printDebug($menuAry,1,'xxxf');exit();
 			//}
 			//xxxf
 			if ($menuFieldName == 'pageno'){$menuFieldValue=1;}
 			$ajaxAry[]='setetchash|'.$menuFieldName.'|'.$menuFieldValue."\n";		
 		}
-		//$base->debugObj->printDebug($menuAry,1,'xxxd');//xxxd
+		//$base->DebugObj->printDebug($menuAry,1,'xxxd');//xxxd
 //---
 		$menuType=$menuAry['menutype'];
 		$returnAryLine=NULL;
@@ -125,7 +125,7 @@ class menuObject {
 		$firstTime=true;
 		if ($menuType == 'rotate' || $menuType =='albumfixed' ){
 // - revolving menu
-//$base->debugObj->printDebug($menuAry,1,'men');//xxx
+//$base->DebugObj->printDebug($menuAry,1,'men');//xxx
 			foreach ($menuAry['elements'] as $menuElementNo=>$menuElementAry){
 				$returnAryLine_ajax=NULL;
 				$titleAryLine_ajax=NULL;
@@ -172,7 +172,7 @@ class menuObject {
 		}
 		else {
 // - simple menu
-//$base->debugObj->printDebug($menuAry,1,'menu');//xxx
+//$base->DebugObj->printDebug($menuAry,1,'menu');//xxx
 //xxxf - not sure what to do with this - vertical menu does not get elements, titles, etc.
 			foreach ($menuAry['elements'] as $menuElementNo=>$menuElement_raw){
 				$menuElement=str_replace("'","\'",$menuElement_raw);
@@ -193,7 +193,7 @@ class menuObject {
 			//echo "returnaryline: $returnAryLine<br>";//xxx
 			//$titleAryLine_forObj=str_replace("'",'',$titleAryLine);
 			//$titleAryLine_forObj=str_replace(",",'~',$titleAryLine_forObj);
-			//$returnAry[]="menuObj.setArrays('titles','','','$titleAryLine_forObj');\n";
+			//$returnAry[]="MenuObj.setArrays('titles','','','$titleAryLine_forObj');\n";
 			//- old way: $ajaxAry[]=$menuName.'|titles|'.$titleAryLine."\n";
 			//-xxxf why does the below have the same as elements
 			$ajaxAry[]='initsetary|titles|0|'.$returnAryLine."\n";
@@ -247,7 +247,7 @@ class menuObject {
 					$elementsAry[]=$meLabel;
 				}
 			}
-			//$base->debugObj->printDebug($menuAry,1,'elementsaryxxxf');
+			//$base->DebugObj->printDebug($menuAry,1,'elementsaryxxxf');
 			break;
 		default:
 			foreach ($mepAry as $meName=>$meAry){
@@ -259,12 +259,12 @@ class menuObject {
 		$menuAry['titles']=$titlesAry;
 		$menuAry['text']=$textAry;
 		$menuAry['media']=$mediaAry;
-		//$base->debugObj->printDebug($menuAry,1,'xxxf');exit();
+		//$base->DebugObj->printDebug($menuAry,1,'xxxf');exit();
 		return $menuAry;
 	}
 //------------------------------------------------------
 function insertMenu($paramFeed,$base){
-		$base->debugObj->printDebug("insertMenu($paramFeed,'base')",0); //xx (h)
+		$base->DebugObj->printDebug("insertMenu($paramFeed,'base')",0); //xx (h)
 		$menuName=$paramFeed['param_1'];
 		$menuAry=$base->menuProfileAry[$menuName];
 		$menuElementsAry=$base->menuElementProfileAry[$menuName];
@@ -272,45 +272,45 @@ function insertMenu($paramFeed,$base){
 		$menuType=$menuAry['menutype'];
 		if ($menuType == ''){
 			echo "error!!! name: $menuName, type: $menuType<br>";//xxxf
-			//$base->debugObj->printDebug($base->menuProfileAry,1,'xxxf');
+			//$base->DebugObj->printDebug($base->menuProfileAry,1,'xxxf');
 			//exit();//xxxf
 		}
 		//echo "$menuName, $menuType<br>";//xxxf
-		$base->fileObj->writeLog('debug1',"insert a menuname: $menuName menutype: $menuType",&$base);
+		$base->FileObj->writeLog('debug1',"insert a menuname: $menuName menutype: $menuType",&$base);
 		switch ($menuType){
 			case 'horizontal':
-				$returnAry=$base->plugin002Obj->insertMenuHorizontal($sortOrder,$menuAry,$menuElementsAry,&$base);
+				$returnAry=$base->Plugin002Obj->insertMenuHorizontal($sortOrder,$menuAry,$menuElementsAry,&$base);
 			break;
 			case 'vertical':
 				$returnAry=$this->insertMenuVertical($sortOrder,$menuAry,$menuElementsAry,&$base);
-				//$base->debugObj->printDebug($returnAry,1,'xxxf returnary');
+				//$base->DebugObj->printDebug($returnAry,1,'xxxf returnary');
 			break;
 			case 'horizontaldropdown':
-				$returnAry=$base->plugin002Obj->insertMenuHorizontalDropDown($sortOrder,$menuAry,$menuElementsAry,&$base);
+				$returnAry=$base->Plugin002Obj->insertMenuHorizontalDropDown($sortOrder,$menuAry,$menuElementsAry,&$base);
 			break;
 			case 'rotate':
 				$returnAry=$this->insertMenuRotate($sortOrder,$menuAry,$menuElementsAry,&$base);
 			break;
 			case 'fixed':
-				$returnAry=$base->plugin002Obj->insertMenuFixed($sortOrder,$menuAry,$menuElementsAry,&$base);
+				$returnAry=$base->Plugin002Obj->insertMenuFixed($sortOrder,$menuAry,$menuElementsAry,&$base);
 			break;
 			case 'albumfixed':
-				$returnAry=$base->plugin002Obj->insertMenuFixed($sortOrder,$menuAry,$menuElementsAry,&$base);
+				$returnAry=$base->Plugin002Obj->insertMenuFixed($sortOrder,$menuAry,$menuElementsAry,&$base);
 			break;
 			case 'album':
-				$returnAry=$base->plugin002Obj->insertMenuAlbum($sortOrder,$menuAry,$menuElementsAry,&$base);
+				$returnAry=$base->Plugin002Obj->insertMenuAlbum($sortOrder,$menuAry,$menuElementsAry,&$base);
 			break;
 			default:
 				//echo "menuname: $menuName, menutype: $menuType is invalid!!!<br>";
 			break;
 		}
-		$base->fileObj->writeLog('debug1',"end of insert a menu",&$base);
-		$base->debugObj->printDebug("-rtn:insertMenu",0); //xx (f)	
+		$base->FileObj->writeLog('debug1',"end of insert a menu",&$base);
+		$base->DebugObj->printDebug("-rtn:insertMenu",0); //xx (f)	
 		return $returnAry;
 	}
 //---------------------------------------
 	function insertMenuRotate($sortOrder,$menuAry,$menuElementsAry,&$base){
-		//$base->debugObj->printDebug($menuAry,1,'mea');//xxx
+		//$base->DebugObj->printDebug($menuAry,1,'mea');//xxx
 		$menuName=$menuAry['menuname'];
 		$menuClass=$menuAry['menuclass'];
 //- title id
@@ -336,11 +336,11 @@ function insertMenu($paramFeed,$base){
 		$menuDisplayType=$menuAry['menudisplaytype'];
 //- previous event
 		$menuPreviousEvent=$menuAry['menupreviousevent'];
-		$menuPreviousEvent=$base->utlObj->returnFormattedString($menuPreviousEvent,&$base);
+		$menuPreviousEvent=$base->UtlObj->returnFormattedString($menuPreviousEvent,&$base);
 		//if ($menuPreviousEvent==null){$menuPreviousEvent="onclick=\"previousPictureV2('$menuName','$menuTextId');\"";}
 //- next event
 		$menuNextEvent=$menuAry['menunextevent'];
-		$menuNextEvent=$base->utlObj->returnFormattedString($menuNextEvent,&$base);
+		$menuNextEvent=$base->UtlObj->returnFormattedString($menuNextEvent,&$base);
 //xxxf - what about this?
 		//if ($menuNextEvent==null){$menuNextEvent="onclick=\"nextPictureV2('$menuName','$menuTextId')\"";}
 //echo "name: $menuName, display: $menuDisplayType<br>";//xxxf
@@ -464,10 +464,10 @@ function insertMenu($paramFeed,$base){
 		$menuName=$menuNameAry[0];
 		//echo "menuname: $menuName<br>";//xxxf
 		$jsonAry=array();
-		//$base->debugObj->printDebug($base->menuProfileAry['jsmenusary'],1,'menuary');exit();//xxxf
+		//$base->DebugObj->printDebug($base->menuProfileAry['jsmenusary'],1,'menuary');exit();//xxxf
 		$jsonAry['etchash']=$base->menuProfileAry[$menuName];
 		$jsonAry['etchash']['pageno']=1;
-		//$base->debugObj->printDebug($jsonAry,1,'xxxf jsonary');exit();
+		//$base->DebugObj->printDebug($jsonAry,1,'xxxf jsonary');exit();
 //---
 		$menuType=$jsonAry['etchash']['menutype'];
 		//xxxf22 need to put in conversions for %dblqt%, etc.
@@ -476,10 +476,10 @@ function insertMenu($paramFeed,$base){
 		foreach ($convertAry as $ctr=>$convName){
 			$convValue_raw=$jsonAry['etchash'][$convName];
 			//echo "$convName, $convValue_raw<br>";//xxxf
-			$convValue=$base->utlObj->returnFormattedString($convValue_raw,&$base);
+			$convValue=$base->UtlObj->returnFormattedString($convValue_raw,&$base);
 			$jsonAry['etchash'][$convName]=$convValue;
 		}
-		//$base->debugObj->printDebug($jsonAry,1,'xxxf');exit();
+		//$base->DebugObj->printDebug($jsonAry,1,'xxxf');exit();
 		if ($menuType == 'rotate' || $menuType == 'albumfixed'){
 			$workAry=$this->buildMenuFromScratch($menuName,$menuType,&$base);
 			$jsonAry['elementsary']=$workAry['elements'];
@@ -500,9 +500,9 @@ function insertMenu($paramFeed,$base){
 			$theElement=str_replace('|','&#124',$theElement);
 			$jsonAry['elementsary'][$ctr]=$theElement;
 		}
-		//xxxf -must set this up manually $ajaxAry=$base->ajaxObj->getContainerForAjaxInternal(&$base);
+		//xxxf -must set this up manually $ajaxAry=$base->AjaxObj->getContainerForAjaxInternal(&$base);
 		$ajaxAry[]="\n!!menus!!\n";
-		$jsonStrg=$base->xmlObj->array2Json($jsonAry,&$base);
+		$jsonStrg=$base->XmlObj->array2Json($jsonAry,&$base);
 		$ajaxAry[]="loadjson|$menuName|".$jsonStrg."\n";
 		}
 		return $ajaxAry;
@@ -557,10 +557,10 @@ function insertMenu($paramFeed,$base){
 		else {$menuAltInsert="title=\"$menuAlt\"";}
 	//- event
 		$menuEvent_raw=$menuAry['menuevent'];
-		$menuEvent=$base->utlObj->returnFormattedString($menuEvent_raw,&$base);
+		$menuEvent=$base->UtlObj->returnFormattedString($menuEvent_raw,&$base);
 	//- next event (for button at bottom)
 		$menuEventNext_raw=$menuAry['menunextevent'];
-		$menuEventNext=$base->utlObj->returnFormattedString($menuEventNext_raw,&$base);
+		$menuEventNext=$base->UtlObj->returnFormattedString($menuEventNext_raw,&$base);
 //- start building menu
 	//- heading
 		$returnAry[]="\n<!-- start verticalmenu: $menuName -->\n";
@@ -572,14 +572,14 @@ function insertMenu($paramFeed,$base){
 		$allDone=false;
 		$noElements=count($sortOrder);
 		if ($menuMaxElements >0 && $menuMaxElements>$noElements){$menuMaxElements=0;}
-		//$base->debugObj->printDebug($menuElementsAry,1,'mea3');//xxx
-		//$base->debugObj->printDebug($sortOrder,1,'sortorder');//xxx
+		//$base->DebugObj->printDebug($menuElementsAry,1,'mea3');//xxx
+		//$base->DebugObj->printDebug($sortOrder,1,'sortorder');//xxx
 //- loop through menu rows
 		$firstTime=true;
 		for ($rowCtr=1;$rowCtr<=$noElements;$rowCtr++){
 			$menuElementCtr=$sortOrder[$rowCtr];
 			$menuElementAry=$menuElementsAry[$menuElementCtr];
-			//$base->debugObj->printDebug($menuElementAry,1,'mea2');//xxx
+			//$base->DebugObj->printDebug($menuElementAry,1,'mea2');//xxx
 			$menuElementName=$menuElementAry['menuelementname'];
 			if ($rowCtr==1){
 				$lastId=$menuElementAry['menuelementid'];
@@ -598,7 +598,7 @@ function insertMenu($paramFeed,$base){
 			}
 //- url
 			$menuElementUrl_raw=$menuElementAry['menuelementurl'];
-			$menuElementUrl=$base->utlObj->returnFormattedString($menuElementUrl_raw,&$base);
+			$menuElementUrl=$base->UtlObj->returnFormattedString($menuElementUrl_raw,&$base);
 			$menuElementTarget=$menuElementAry['menuelementtarget'];
 			if ($menuElementTarget != null){$menuElementTargetInsert="target=\"$menuElementTarget\"";}
 			else {$menuElementTargetInsert=null;}
@@ -650,9 +650,9 @@ function insertMenu($paramFeed,$base){
 			$menuElementIdTdInsert="id=\"$menuElementId_td\"";
 //- get label and modify and add events if needed
 			$menuElementLabel_raw=$menuElementAry['menuelementlabel'];
-			$menuElementLabel=$base->utlObj->returnFormattedString($menuElementLabel_raw,&$base);
+			$menuElementLabel=$base->UtlObj->returnFormattedString($menuElementLabel_raw,&$base);
 			$menuElementEventAttributes_raw=$menuElementAry['menuelementeventattributes'];
-			$menuElementEventAttributes=$base->utlObj->returnFormattedString($menuElementEventAttributes_raw,&$base);
+			$menuElementEventAttributes=$base->UtlObj->returnFormattedString($menuElementEventAttributes_raw,&$base);
 			$useMenuElementLabel_div="<div $useMenuElementClassInsert $menuElementIdInsert $menuAltInsert $menuElementEventAttributes>$menuElementLabel</div>";
 			$menuElementLabel_div="<div $menuElementClassInsert $menuElementIdInsert $menuAltInsert $menuElementEventAttributes>$menuElementLabel</div>";
 			$menuElementType=$menuElementAry['menuelementtype'];
@@ -660,7 +660,7 @@ function insertMenu($paramFeed,$base){
 //- change label positions with !!xxx!!
 			if (strpos($menuElementLabel,'!!',0) !== false) {
 				$doLabelInsert=true;
-				$menuLineAry=$base->htmlObj->convertHtmlLine($menuElementLabel,&$base);
+				$menuLineAry=$base->HtmlObj->convertHtmlLine($menuElementLabel,&$base);
 				//echo "menulineary: $menuLineAry<br>";//xxx
 			} // end if strpos!!
 			else {$doLabelInsert=false;}
@@ -674,13 +674,13 @@ function insertMenu($paramFeed,$base){
 			$workAry['menuelementid']=$menuElementId;
 			$jsMenuElementAry[$menuElementNo]=$workAry;			
 			//echo "name: $menuElementName, type: $menuElementType<br>";//xxx
-			//$base->debugObj->printDebug($menuElementAry,1,'mea');//xxx
+			//$base->DebugObj->printDebug($menuElementAry,1,'mea');//xxx
 			if (!$firstTime && $menuDelimiter != NULL){
 				$returnAry[]="<tr><td class=\"menudelimiter\"><div class=\"menudelimiter\">$menuDelimiter</div></td></tr>\n";
 			}
 			//- xxxf problem needs to be fixed later
 			if ($menuElementType == 'paragraph'){$menuElementType='para';}
-			$base->fileObj->writeLog('jefftest',"menueletype: $menuElementType",&$base);//xxxf
+			$base->FileObj->writeLog('jefftest',"menueletype: $menuElementType",&$base);//xxxf
 			switch ($menuElementType){
 //- element is url
 			case 'url':
@@ -692,9 +692,9 @@ function insertMenu($paramFeed,$base){
 				$htmlElementAry['htmlelementeventattributes']=$menuElementEventAttributes;
 				$htmlElementAry['htmlelementtarget']=$menuElementTarget;
 				//echo "menuelementtarget: $menuElementTarget";//xxxf
-				$workAry=$base->htmlObj->buildUrl($htmlElementAry,&$base);
-				//$base->debugObj->printDebug($workAry,1,'xxxf',&$base);//xxxf
-				$menuElementUrl_html=$base->utlObj->returnFormattedData($menuElementUrl,'url','html',&$base);
+				$workAry=$base->HtmlObj->buildUrl($htmlElementAry,&$base);
+				//$base->DebugObj->printDebug($workAry,1,'xxxf',&$base);//xxxf
+				$menuElementUrl_html=$base->UtlObj->returnFormattedData($menuElementUrl,'url','html',&$base);
 				if (!$allDone){
 					$returnAry[]='<tr>';
 					$returnAry[]="<td $useMenuElementClassInsert>";
@@ -711,8 +711,8 @@ function insertMenu($paramFeed,$base){
 				$menuElementNameAry=explode('_',$menuElementName);
 				$menuElementName=$menuElementNameAry[0];
 				$paramFeed=array('param_1'=>$menuElementName);
-				//$base->debugObj->printDebug($paramFeed,1,'xxxf');exit();//xxxf
-				$subReturnAry=$base->plugin002Obj->insertParagraph($paramFeed,&$base);
+				//$base->DebugObj->printDebug($paramFeed,1,'xxxf');exit();//xxxf
+				$subReturnAry=$base->Plugin002Obj->insertParagraph($paramFeed,&$base);
 				$returnAry[]="<tr><td $useMenuElementClassInsert>";
 				$returnAry=array_merge($returnAry,$subReturnAry);
 				$returnAry[]="</td></tr>";
@@ -720,7 +720,7 @@ function insertMenu($paramFeed,$base){
 			case 'table':
 				$tableName=$menuElementAry['menuelementname'];
 				$paramFeed=array('param_1'=>$tableName);
-				$menuElementDisplayAry=$base->tagObj->insertTable($paramFeed,&$base);
+				$menuElementDisplayAry=$base->TagObj->insertTable($paramFeed,&$base);
 				$returnAry[]="<tr><td $useMenuElementClassInsert>";
 				$returnAry=array_merge($returnAry,$menuElementDisplayAry);
 				$returnAry[]="</td></tr>";
@@ -736,7 +736,7 @@ function insertMenu($paramFeed,$base){
 			case 'map':
 				$mapProfileId=$menuElementAry['mapprofileid'];
 				$mapName=$base->mapProfileAry['main'][$mapProfileId]['mapname'];
-				$menuElementDisplayAry=$base->htmlObj->buildMap($mapName,&$base);
+				$menuElementDisplayAry=$base->HtmlObj->buildMap($mapName,&$base);
 				$returnAry[]='<tr>';
 				$returnAry[]="<td $menuElementClassInsert>\n";
 				$returnAry=array_merge($returnAry,$menuElementDisplayAry);
@@ -745,27 +745,27 @@ function insertMenu($paramFeed,$base){
 			case 'form':
 				$passAry=array();
 				$passAry['param_1']=$menuElementName;
-				$subReturnAry=$base->tagObj->insertForm($passAry,&$base);
+				$subReturnAry=$base->TagObj->insertForm($passAry,&$base);
 				$returnAry[]='<tr><td>';
 				$returnAry=array_merge($returnAry,$subReturnAry);
 				$returnAry[]='</td></tr>';
-				//$base->debugObj->printDebug($subReturnAry,1,'srtn');//xxx
+				//$base->DebugObj->printDebug($subReturnAry,1,'srtn');//xxx
 				//exit();//xxx			
 				break;	
 			case 'repeatingform':
 				$passAry=array();
 				$query_raw=$menuElementAry['menuelementsql'];
 				//-below let querytable do the formatting
-				//$query=$base->utlObj->returnFormattedString($query_raw,&$base);
+				//$query=$base->UtlObj->returnFormattedString($query_raw,&$base);
 				//!!! - below needs to check if using db2
 				$useOtherDb_raw=$base->formProfileAry[$menuElementName]['formuseotherdb'];
-				$useOtherDb=$base->utlObj->returnFormattedData($useOtherDb_raw,'boolean','internal');
-				if ($useOtherDb){$base->dbObj->setUseOtherDb(&$base);}
-				$base->fileObj->writeLog('jefftest',"queryraw: $query_raw",&$base);//xxxf
-				$result=$base->dbObj->queryTable($query_raw,'read',&$base,0);
-				$workAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+				$useOtherDb=$base->UtlObj->returnFormattedData($useOtherDb_raw,'boolean','internal');
+				if ($useOtherDb){$base->DbObj->setUseOtherDb(&$base);}
+				$base->FileObj->writeLog('jefftest',"queryraw: $query_raw",&$base);//xxxf
+				$result=$base->DbObj->queryTable($query_raw,'read',&$base,0);
+				$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 				//echo "query: $query_raw";//xxxf
-				//$base->debugObj->printDebug($workAry,1,'xxxf');
+				//$base->DebugObj->printDebug($workAry,1,'xxxf');
 				$passAry['param_1']=$menuElementName;
 				foreach ($workAry as $ctr=>$workRowAry){
 					//echo "$ctr<br>";//xxx
@@ -776,9 +776,9 @@ function insertMenu($paramFeed,$base){
 					$passAry['usethisdataary']=$workRowAry;
 					$tabIndexBase=($ctr+1)*10;
 					$passAry['tabindexbase']=$tabIndexBase;
-					//$base->debugObj->printDebug($workRowAry,1,'xxxworkrowary');
+					//$base->DebugObj->printDebug($workRowAry,1,'xxxworkrowary');
 					//echo "build a form<br>";//xxxd
-					$subReturnAry=$base->tagObj->insertForm($passAry,&$base);
+					$subReturnAry=$base->TagObj->insertForm($passAry,&$base);
 					unset ($passAry['usethisdata']);
 					$returnAry[]="<tr><td>\n";
 					$headingStr="<!-- Form Number: $ctr -->\n";
@@ -789,18 +789,18 @@ function insertMenu($paramFeed,$base){
 				}
 				//- need to write how many forms have been created here
 				$base->formProfileAry[$menuElementName]['formcount']=$ctr;
-				//$base->debugObj->printDebug($returnAry,1,'rtnary');//xxx
+				//$base->DebugObj->printDebug($returnAry,1,'rtnary');//xxx
 				//exit(0);//xxx
 				break;
 				case 'album':
 					$albumProfileId=$menuElementAry['albumprofileid'];
 					//echo "albumprofileid: $albumProfileId<br>";//xxx
-					$passAry=$base->htmlObj->buildAlbumTable($albumProfileId,&$base);
+					$passAry=$base->HtmlObj->buildAlbumTable($albumProfileId,&$base);
 					$albumTableDisplayAry=$passAry['returnary'];
 					$albumName=$passAry['albumname'];
 					if (!array_key_exists('jsary',$base->albumProfileAry)){$base->albumProfileAry['jsary']=array();}
 					$base->albumProfileAry['jsary'][$albumName]=$passAry[$albumName];
-					//$base->debugObj->printDebug($albumTableDisplayAry,1,'atdaxxxa');
+					//$base->DebugObj->printDebug($albumTableDisplayAry,1,'atdaxxxa');
 					$returnAry[]="<tr><td $useMenuElementClassInsert>\n";
 					$returnAry=array_merge($returnAry,$albumTableDisplayAry);
 					$returnAry[]="</td></tr>\n";
@@ -808,7 +808,7 @@ function insertMenu($paramFeed,$base){
 				case 'image':
 					$imageName=$menuElementName;
 					$returnAry[]="<tr><td $useMenuElementClassInsert>\n";
-					$subReturnAry=$base->htmlObj->buildImg($imageName,&$base);
+					$subReturnAry=$base->HtmlObj->buildImg($imageName,&$base);
 					$returnAry=array_merge($returnAry,$subReturnAry);
 					$returnAry[]="<span $menuElementClassInsert>$menuElementLabel</span";
 					$returnAry[]="</td></tr>\n";
@@ -816,7 +816,7 @@ function insertMenu($paramFeed,$base){
 			default:
 //- element is text
 				if (!$allDone){
-					//$base->debugObj->printDebug($menuElementAry,1,'mea');//xxx
+					//$base->DebugObj->printDebug($menuElementAry,1,'mea');//xxx
 					//echo "url label: $menuElementLabel, class: $useMenuElementClass<br>";//xxx
 					$returnAry[]='<tr>';
 					if ($doLabelInsert){
@@ -852,7 +852,7 @@ function insertMenu($paramFeed,$base){
 		$base->menuProfileAry['jsmenusary'][$menuName]['lastmenuelementno']=0;
 		$base->menuProfileAry['jsmenusary'][$menuName]['elements']=$jsMenuAry;
 		$base->menuProfileAry['jsmenusary'][$menuName]['elementsother']=$jsMenuElementAry;
-		$base->debugObj->printDebug("rtn: insertmenuvertical",0);//xx
+		$base->DebugObj->printDebug("rtn: insertmenuvertical",0);//xx
 		return $returnAry;				
 	}
 //====================================================

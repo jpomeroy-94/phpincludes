@@ -1,5 +1,5 @@
 <?php
-class dbObject {
+class DbObject {
 	// 1/20/13 make insert/update/validate all load in dbcolumnprofile[dbcolumndefault] if colValue is null
 	// 2/1/13 changed if (colvalue == NULL) to if (colValueLen == 0)
 	var $statusMsg;
@@ -16,7 +16,7 @@ class dbObject {
 	var $dbDebugFlg=false;//xxxf
 	var $rtnIdFlg=false;
 	//=======================================
-	function dbObject($base) {
+	function DbObject($base) {
 		$this->incCalls();
 		$this->connMain(&$base);
 		$this->statusMsg='db Object is fired up and ready for work!';
@@ -27,30 +27,30 @@ class dbObject {
 	}
 	//======================================= xxxd
 	function setUseOtherDb($base){
-		$lastProg=$base->debugObj->getLastStackEntry();
-		$base->fileObj->writeLog("debug","dbObj, setUseOtherDb($lastProg)",&$base);
+		$lastProg=$base->DebugObj->getLastStackEntry();
+		$base->FileObj->writeLog("debug","DbObj, setUseOtherDb($lastProg)",&$base);
 		$this->useOtherDb=true;
 		$this->dontResetUseOtherDb=false;
-		$base->fileObj->writeLog("debug","dbObj, setUseOtherDb reset dontResetUseOtherDb",&$base);
+		$base->FileObj->writeLog("debug","DbObj, setUseOtherDb reset dontResetUseOtherDb",&$base);
 	}
 	//=======================================
 	function setUseOtherDbNoReset($base){
-		$lastProg=$base->debugObj->getLastStackEntry();
-		$base->utlObj->appendValue("debug","dbObj,setUseOtherDbNoReset: call setUseOtherDb($lastProg)<br>",&$base);
+		$lastProg=$base->DebugObj->getLastStackEntry();
+		$base->UtlObj->appendValue("debug","DbObj,setUseOtherDbNoReset: call setUseOtherDb($lastProg)<br>",&$base);
 		$this->setUseOtherDb(&$base);
-		$base->utlObj->appendValue("debug","dbObj,setUseOtherDbNoReset: set dontResetUseOtherDb($lastProg)<br>",&$base);
+		$base->UtlObj->appendValue("debug","DbObj,setUseOtherDbNoReset: set dontResetUseOtherDb($lastProg)<br>",&$base);
 		$this->dontResetUseOtherDb=true;
 	}
 	//=======================================
 	function unsetUseOtherDb($base){
-		$lastProg=$base->debugObj->getLastStackEntry();
-		$base->utlObj->appendValue("debug","dbObj, unset useOtherDb and unset dontResetUseOtherDb($lastProg)<br>",&$base);
+		$lastProg=$base->DebugObj->getLastStackEntry();
+		$base->UtlObj->appendValue("debug","DbObj, unset useOtherDb and unset dontResetUseOtherDb($lastProg)<br>",&$base);
 		$this->useOtherDb=false;
 		$this->dontResetUseOtherDb=false;
 	}
 	//=======================================
 	function getDataForForm($passAry,$base){
-		$base->debugObj->printDebug("dbObj:getDataForForm($formName,'base')",0);
+		$base->DebugObj->printDebug("DbObj:getDataForForm($formName,'base')",0);
 		//echo "dbobj.getdataforform: formname: $formName, db: $this->dbConn, db2: $this->toDbConn, useothdb: $useOtherDb, dnt rst: $dontResetUseOtherDb<br>";//xxxd
 		// - figure out what to do
 		$jobType=$passAry['jobtype'];
@@ -59,7 +59,7 @@ class dbObject {
 			// ====================
 			case 'feed':
 				$rowAry=$passAry['usethisdataary'];
-				//$base->debugObj->printDebug($passAry,1,'xxxbeginfeed');
+				//$base->DebugObj->printDebug($passAry,1,'xxxbeginfeed');
 				$formName=$passAry['formname'];
 				$returnAry=array();
 				// - get dbtablename and edit it
@@ -75,7 +75,7 @@ class dbObject {
 					//$this->getDbTableMetaInfo(&$dbControlsAry,&$base); // xxx - restore if problems
 					$this->getDbTableInfo(&$dbControlsAry,&$base);
 					$newRowAry=$this->getDataForForm_convdata($rowAry,$dbControlsAry,&$base);
-					//$base->debugObj->printDebug($rowAry,1,'xxxrowary');
+					//$base->DebugObj->printDebug($rowAry,1,'xxxrowary');
 					$workAry=array();
 					$workAry[]=$newRowAry;
 					$dataRowsAry=array($dbTableName=>$workAry);
@@ -84,11 +84,11 @@ class dbObject {
 				break;
 				//====================
 			default:
-				//$base->debugObj->printDebug($passAry,1,'passary');//xxx
+				//$base->DebugObj->printDebug($passAry,1,'passary');//xxx
 				$returnAry=$this->getDataForFormOld($passAry,&$base);
-				//$base->debugObj->printDebug($returnAry,1,'rtnary');//xxx
+				//$base->DebugObj->printDebug($returnAry,1,'rtnary');//xxx
 		}
-		$base->debugObj->printDebug("-rtn:getDataForForm",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:getDataForForm",0); //xx (f)
 		return $returnAry;
 	}
 	//=======================================
@@ -115,14 +115,14 @@ class dbObject {
 	}
 	//=======================================
 	function getDataForFormOld($passAry,$base){
-		$base->debugObj->printDebug("dbObj:getDataForForm($formName,'base')",0);
+		$base->DebugObj->printDebug("DbObj:getDataForForm($formName,'base')",0);
 		$formName=$passAry['formname'];
 		//echo "xxxf1: formname: $formName<br>";
 		$returnAry=array();
 		// - get dbtablename and edit it
 		$dbTableName=$base->formProfileAry[$formName]['tablename'];
 		$useOtherDb_raw=$base->formProfileAry[$formName]['formuseotherdb'];
-		$useOtherDb=$base->utlObj->returnFormattedData($useOtherDb_raw,'boolean','internal');
+		$useOtherDb=$base->UtlObj->returnFormattedData($useOtherDb_raw,'boolean','internal');
 		if ($useOtherDb){
 			$this->setUseOtherDb(&$base);
 		}
@@ -136,7 +136,7 @@ class dbObject {
 			$dbControlsAry=array('dbtablename'=>$dbTableName);
 			//$this->getDbTableMetaInfo(&$dbControlsAry,&$base); // xxx - restore if problems
 			$this->getDbTableInfo(&$dbControlsAry,&$base);
-			//$base->debugObj->printDebug($dbControlsAry,1,'dbc');//xxx
+			//$base->DebugObj->printDebug($dbControlsAry,1,'dbc');//xxx
 			// - setup selector for read
 			$selectorNameAry=$dbControlsAry['selectornameary'];
 			if ($selectorNameAry != ""){
@@ -160,12 +160,12 @@ class dbObject {
 				if ($useOtherDb){
 					$this->setUseOtherDb(&$base);
 				}
-				$rowsAry=$base->dbObj->readFromDb($dbControlsAry,&$base);
-				//$base->debugObj->printDebug($rowsAry,1,'rowsary');//xxxd
+				$rowsAry=$base->DbObj->readFromDb($dbControlsAry,&$base);
+				//$base->DebugObj->printDebug($rowsAry,1,'rowsary');//xxxd
 				foreach ($rowsAry[0] as $colName=>$colValue){
 					//$convCode=$dbControlsAry['dbtablemetaary'][$colName]['dbcolumnconversionname']; //xxx restore if problems
 					$convCode=$dbControlsAry['dbtablemetaary'][$colName]['dbcolumnconversionname'];
-					//$base->debugObj->printDebug($dbControlsAry,1,'xxxf');exit();//xxxf
+					//$base->DebugObj->printDebug($dbControlsAry,1,'xxxf');exit();//xxxf
 					//echo "name: $colName, value: $colValue, convcode: $convCode\n";//xxxf
 					if ($colValue != NULL){
 						switch ($convCode){
@@ -196,31 +196,31 @@ class dbObject {
 						if ($useOtherDb){
 							$this->setUseOtherDb(&$base);
 						}
-						$result=$base->dbObj->queryTable($sqlCommand,'read',&$base);
-						$resultAry=$base->utlObj->tableToHashAryV3($result);
+						$result=$base->DbObj->queryTable($sqlCommand,'read',&$base);
+						$resultAry=$base->UtlObj->tableToHashAryV3($result);
 						$returnAry['datarowsary'][$thisDbTableName]=$resultAry;
 					} // end foreach 'read'
 				} // end arraykeyexists('read')
 			} // end if arraykeyexists('formname')
 		} // end if dbtablename ne null
-		$base->debugObj->printDebug("-rtn:getDataForForm",0); //xx (f)
-		//$base->debugObj->printDebug($returnAry,1,'xxxf');exit();//xxxf
+		$base->DebugObj->printDebug("-rtn:getDataForForm",0); //xx (f)
+		//$base->DebugObj->printDebug($returnAry,1,'xxxf');exit();//xxxf
 		return $returnAry;
 	}
 	//=======================================
 	function insertDbFromForm($base){
-		$base->debugObj->printDebug("dbObj:insertDbFromForm('base')",0);
-		$base->plugin001Obj->insertDbFromForm($base);
-		$base->debugObj->printDebug("-rtn:dbObj:insertDbFromForm",0); //xx (f)
+		$base->DebugObj->printDebug("DbObj:insertDbFromForm('base')",0);
+		$base->Plugin001Obj->insertDbFromForm($base);
+		$base->DebugObj->printDebug("-rtn:DbObj:insertDbFromForm",0); //xx (f)
 	}
 	//=======================================
 	function buildList($tableName, $base){
-		$base->debugObj->printDebug("dbObj:buildList($urlNoSt, 'base')",0);
+		$base->DebugObj->printDebug("DbObj:buildList($urlNoSt, 'base')",0);
 		$returnAry=array();
 		if ($tableName != ""){
 			$query = "select * from $tableName order by label";
 			$result=$this->queryTable($query,'retrieve',&$base);
-			$workAry=$base->utlObj->tableToHashAryV3($result);
+			$workAry=$base->UtlObj->tableToHashAryV3($result);
 			$noCnt=count($workAry);
 			for ($ctr=0;$ctr<$noCnt;$ctr++){
 				$url=$workAry[$ctr]['url'];
@@ -228,35 +228,35 @@ class dbObject {
 				$returnAry[]="<tr><td><a href=\"$url\">$label</a>";
 			}
 		}
-		$base->debugObj->printDebug("-rtn:dbObj:buildList",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:DbObj:buildList",0); //xx (f)
 		return $returnAry;
 	}
 	//=======================================
 	function buildMenuList($tableName,$base){
-		$base->debugObj->printDebug("dbObj:buildMenuList('base')",0);
+		$base->DebugObj->printDebug("DbObj:buildMenuList('base')",0);
 		$jobSt=$base->paramsAry['job'];
 		$query="select * from staticmenuprofile where jobname='$jobSt' order by label";
 		$result=$this->queryTable($query,'retrieve',&$base);
-		$workAry=$base->utlObj->tableToHashAryV3($result);
-		$returnAry=$base->htmlObj->buildTableHeaders($tableName,&$base);
+		$workAry=$base->UtlObj->tableToHashAryV3($result);
+		$returnAry=$base->HtmlObj->buildTableHeaders($tableName,&$base);
 		$noCnt=count($workAry);
 		for ($ctr=0;$ctr<$noCnt;$ctr++){
 			$jobLink=$workAry[$ctr]['joblink'];
 			$pos=strpos($jobLink,'jobname',0);
 			$url_raw="%joblocal%$jobLink";
-			$url=$base->utlObj->returnFormattedString($url_raw,&$base);
+			$url=$base->UtlObj->returnFormattedString($url_raw,&$base);
 			$label=$workAry[$ctr]['label'];
 			$returnAry[]="<tr><td><a href=\"$url\">$label</a></td></tr>";
 		}
 		$returnAry[]="</table>";
 		$returnAry[]="</center>";
-		$base->debugObj->printDebug("-rtn:dbObj:buildMenuList",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:DbObj:buildMenuList",0); //xx (f)
 		return $returnAry;
 	}
 	//=======================================
 	function connMain($base){
 		$domainName='default';
-		$this->dbConn=$base->clientObj->getClientConn($domainName,&$base);
+		$this->dbConn=$base->ClientObj->getClientConn($domainName,&$base);
 	}
 	//======================================= deprecated
 	function getConn($dbName, $dbUser, $dbPwd, $base){
@@ -265,7 +265,7 @@ class dbObject {
 	}
 	//=======================================
 	function getSimpleProfile($tableName,$base){
-		$base->debugObj->printDebug("dbObj:getSimpleProfile($tableName,'base')",-2);
+		$base->DebugObj->printDebug("DbObj:getSimpleProfile($tableName,'base')",-2);
 		$returnAry=array();
 		$job = $base->paramsAry['job'];
 		$query="select * from $tableName".'view';
@@ -278,13 +278,13 @@ class dbObject {
 		}
 		$result=$this->queryTable($query,'retrieve',$base,-2);
 		if (!$result) {echo "Error7 query: $query<br>";}
-		else {$returnAry=$base->utlObj->tableRowToHashAry($result);}
-		$base->debugObj->printDebug("-rtn:dbObj:getSimpleProfile",-2); //xx (f)
+		else {$returnAry=$base->UtlObj->tableRowToHashAry($result);}
+		$base->DebugObj->printDebug("-rtn:DbObj:getSimpleProfile",-2); //xx (f)
 		return $returnAry;
 	}
 	//=======================================
 	function getSimpleMultiProfile($tableName,$base){
-		$base->debugObj->printDebug("dbObj:getSimpleMultiProfile($tableName,'base')",-2);
+		$base->DebugObj->printDebug("DbObj:getSimpleMultiProfile($tableName,'base')",-2);
 		$returnAry=array();
 		$jobSt = $base->jobSt;
 		$query="select * from $tableName";
@@ -297,13 +297,13 @@ class dbObject {
 		}
 		$result=$this->queryTable($query,'retrieve',$base,-2);
 		if (!$result) {echo "Error2";}
-		else {$returnAry=$base->utlObj->tableToHashAryV3($result);}
-		$base->debugObj->printDebug("-rtn:dbObj:getSimpleMultiProfile",-2); //xx (f)
+		else {$returnAry=$base->UtlObj->tableToHashAryV3($result);}
+		$base->DebugObj->printDebug("-rtn:DbObj:getSimpleMultiProfile",-2); //xx (f)
 		return $returnAry;
 	}
 	//=======================================simple
 	function getPluginProfile($base){
-		$base->debugObj->printDebug("dbObj:getPluginProfile('base')",-2);
+		$base->DebugObj->printDebug("DbObj:getPluginProfile('base')",-2);
 		$returnAry=array();
 		$workAry=array();
 		$newAry=array();
@@ -312,7 +312,7 @@ class dbObject {
 		$query="select * from pluginprofile where plugintype='operation'";
 		$result=$this->queryTable($query,'retrieve',$base,-2);
 		if (!$result) {echo "Error3";}
-		else {$workAry=$base->utlObj->tableToHashAryV3($result);}
+		else {$workAry=$base->UtlObj->tableToHashAryV3($result);}
 		$cnt=count($workAry);
 		for ($lp=0;$lp<$cnt;$lp++){
 			$newAry=$workAry[$lp];
@@ -322,7 +322,7 @@ class dbObject {
 		$query="select * from pluginprofile where plugintype='tag'";
 		$result=$this->queryTable($query,'retrieve',$base,-2);
 		if (!$result) {echo "Error4";}
-		else {$workAry=$base->utlObj->tableToHashAryV3($result);}
+		else {$workAry=$base->UtlObj->tableToHashAryV3($result);}
 		$cnt=count($workAry);
 		for ($lp=0;$lp<$cnt;$lp++){
 			$newAry=$workAry[$lp];
@@ -332,18 +332,18 @@ class dbObject {
 		$query="select * from pluginprofile where plugintype='app'";
 		$result=$this->queryTable($query,'retrieve',$base,-2);
 		if (!$result) {echo "Error5";}
-		else {$workAry=$base->utlObj->tableToHashAryV3($result);}
+		else {$workAry=$base->UtlObj->tableToHashAryV3($result);}
 		$cnt=count($workAry);
 		for ($lp=0;$lp<$cnt;$lp++){
 			$newAry=$workAry[$lp];
 			$returnAry['app'][$newAry['pluginname']]=$newAry;
 		}
-		$base->debugObj->printDebug("-rtn:dbObj:getPluginProfile",-2); //xx (f)
+		$base->DebugObj->printDebug("-rtn:DbObj:getPluginProfile",-2); //xx (f)
 		return $returnAry;
 	}
 	//======================================
 	function getComplexProfile($dbTableName,$select1,$delimit1,$delimit2='',$base){
-		$base->debugObj->printDebug("dbObj:getComplexProfile($tableName,$delimit1,$delimit2,'base')",-2);
+		$base->DebugObj->printDebug("DbObj:getComplexProfile($tableName,$delimit1,$delimit2,'base')",-2);
 		$returnAry=array();
 		if ($select1=='jobname'){$useSelect1='job';}
 		else {$useSelect1='jobname';}
@@ -353,25 +353,25 @@ class dbObject {
 		$passAry=array();
 		if ($delimit1 != ''){$passAry['delimit1']=$delimit1;}
 		if ($delimit2 != ''){$passAry['delimit2']=$delimit2;}
-		$returnAry=$base->utlObj->tableToHashAryV3($result,$passAry);
-		$base->debugObj->printDebug("-rtn:dbObj:getDbTableProfile",-2); //xx (f)
+		$returnAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+		$base->DebugObj->printDebug("-rtn:DbObj:getDbTableProfile",-2); //xx (f)
 		return $returnAry;
 	}
 	//=======================================
 	function getTableData($tableName,$base){
-		$base->debugObj->printDebug("dbObj:getTableData($tableName,'base')",0);
-		$sendDataAry=$base->utlObj->breakOutSendData($base);
-		//$base->debugObj->printDebug($base->paramsAry,1,'xxxf');exit();//xxxf
-		$strg="xxxf: job: $useJob---paramsary in dbObject when getting table data---\n";
+		$base->DebugObj->printDebug("DbObj:getTableData($tableName,'base')",0);
+		$sendDataAry=$base->UtlObj->breakOutSendData($base);
+		//$base->DebugObj->printDebug($base->paramsAry,1,'xxxf');exit();//xxxf
+		$strg="xxxf: job: $useJob---paramsary in DbObject when getting table data---\n";
 		foreach ($base->paramsAry as $name=>$value){
 			//if ($name=='senddata'){$value="...";}
 			$strg.="$name: $value\n";
 		}
-		$base->fileObj->writeLog('xxxf',$strg,&$base);
+		$base->FileObj->writeLog('xxxf',$strg,&$base);
 		$returnAry=array();
 		//echo "dbobj.gettabledata: tablename: $tableName, db: $this->dbConn, db2: $this->toDbConn, useothdb: $useOtherDb, dnt rst: $dontResetUseOtherDb<br>";//xxxd
 		$tableProfile=$base->tableProfileAry[$tableName];
-		//$base->debugObj->printDebug($base->tableProfileAry,1,'xxx');
+		//$base->DebugObj->printDebug($base->tableProfileAry,1,'xxx');
 		//- get values
 		$dbTableName=$tableProfile['dbtablename'];
 		//echo "dbtablename: $dbTableName<br>";//xxx
@@ -385,15 +385,15 @@ class dbObject {
 		$dbControlsAry=array('dbtablename'=>$dbTableName);
 		//$this->getDbTableMetaInfo(&$dbControlsAry,&$base); //xxx - restore if problems
 		$this->getDbTableInfo(&$dbControlsAry,&$base);
-		//$base->debugObj->printDebug($dbControlsAry,1,'xxx');
+		//$base->DebugObj->printDebug($dbControlsAry,1,'xxx');
 		//exit();//xxx
 		$selectKey1=$tableProfile['selectkey1'];
-		//$base->debugObj->printDebug($tableProfile,1,'xxxd');
-		$base->fileObj->writeLog('xxxf','xxxf1',&$base);
+		//$base->DebugObj->printDebug($tableProfile,1,'xxxd');
+		$base->FileObj->writeLog('xxxf','xxxf1',&$base);
 		if ($selectKey1 != NULL){
 			$selectKey1Type=$dbControlsAry['dbtablemetaary'][$selectKey1]['dbcolumntype'];
 			if ($tableName == 'cssprofile'){
-				$base->fileObj->writeLog('jefftest',"xxxf2 selectkey1: $selectKey1, selectkey1type: $selectKey1Type",&$base);
+				$base->FileObj->writeLog('jefftest',"xxxf2 selectkey1: $selectKey1, selectkey1type: $selectKey1Type",&$base);
 			}
 			//echo "name: $selectKey1, type: $selectKey1Type<br>";//xxx
 			//exit();//xxx
@@ -401,17 +401,17 @@ class dbObject {
 			else {$selectKey1Value=$base->paramsAry[$selectKey1];}
 			if ($selectKey1Value == null){
 				$selectKey1Value=$sendDataAry[$selectKey1];
-				$base->fileObj->writeLog('xxx',"get from send data selectkey1: $selectKey1, selectkey1value: $selectKey1Value",&$base);
+				$base->FileObj->writeLog('xxx',"get from send data selectkey1: $selectKey1, selectkey1value: $selectKey1Value",&$base);
 			}
 			//echo "dbobj L391: selectkey1: $selectKey1, selectkey1value: $selectKey1Value<br>";//xxxf
 		}
-		$base->fileObj->writeLog('debug',"dbObj.getTableData: selectkey1: $selectKey1, selectkey1type: $selectKey1Type, selectkey1value: $selectKey1Value",&$base);
+		$base->FileObj->writeLog('debug',"DbObj.getTableData: selectkey1: $selectKey1, selectkey1type: $selectKey1Type, selectkey1value: $selectKey1Value",&$base);
 		if ($tableName == 'cssprofile'){
 			$strg='';
 			foreach ($base->paramsAry as $name=>$value){
 				$strg.=$name.': '.$value.", ";
 			}
-			$base->fileObj->writeLog('jefftest',$tableName.': '.$strg,&$base);
+			$base->FileObj->writeLog('jefftest',$tableName.': '.$strg,&$base);
 		}
 		$selectKey2=$tableProfile['selectkey2'];
 		if ($selectKey2 != NULL){
@@ -432,7 +432,7 @@ class dbObject {
 			}
 		}
 		//- start sql statement with filter
-		$base->fileObj->writeLog('xxxf','xxxf1',&$base);
+		$base->FileObj->writeLog('xxxf','xxxf1',&$base);
 		$query="select *";
 		$query.=" from $dbTableNameView";
 		if ($selectKey1 != NULL){
@@ -490,25 +490,25 @@ class dbObject {
 			}
 			else {echo "sortkey: $sortKey3 is not on file!";}
 		}
-		$base->fileObj->writeLog('dbobject',"tablename: $tableName, dbtablename: $dbTableName,  query: $query",&$base);
+		$base->FileObj->writeLog('dbobject',"tablename: $tableName, dbtablename: $dbTableName,  query: $query",&$base);
 		//- run query
-		//$base->debugObj->printDebug($base->paramsAry,1,'paa');//xxx
+		//$base->DebugObj->printDebug($base->paramsAry,1,'paa');//xxx
 		//echo "dbobj, gettabledata L460: query: $query";//xxxf
 		//echo "hasfilter: $hasFilter, defaultdisplay: $defaultDisplay\n";//xxxf
-		$base->fileObj->writeLog('xxxf',"hasfilter: $hasFilter, defaultdisplay: $defaultDisplay",&$base);
+		$base->FileObj->writeLog('xxxf',"hasfilter: $hasFilter, defaultdisplay: $defaultDisplay",&$base);
 		if ($hasFilter || $defaultDisplay == 'showall'){
 			//which db do we get the data from? xxxd
 			$tableUseOtherDb_raw=$tableProfile['tableuseotherdb'];
-			$tableUseOtherDb=$base->utlObj->returnFormattedData($tableUseOtherDb_raw,'boolean','internal');
+			$tableUseOtherDb=$base->UtlObj->returnFormattedData($tableUseOtherDb_raw,'boolean','internal');
 			//echo "tablename: $tableName, db: $this->dbConn, db2: $this->toDbConn, tableuseotherdb: $tableUseOtherDb<br>";//xxxd
 			if ($tableUseOtherDb){
 				$this->setUseOtherDb(&$base);
 			}
 			//$this->dbDebugFlg=true;//xxxf
-			//echo "dbObj L469: query: $query<br>";//xxxf
+			//echo "DbObj L469: query: $query<br>";//xxxf
 			$pos=strpos('csseventprofile',$query,0);
 			if ($pos>-1){
-				$base->fileObj->writeLog('dbobject','the query: $query',&$base);//xxxf
+				$base->FileObj->writeLog('dbobject','the query: $query',&$base);//xxxf
 			}
 			//exit();//xxxf
 			$result=$this->queryTable($query,'retrieve',&$base);
@@ -517,14 +517,14 @@ class dbObject {
 			if (!$result) {echo "Error6";}
 			else {
 				//echo "call hash program<br>";//xxx
-				//$dbTableAry=$base->utlObj->tableToHashAryV3($result); // xxx - restore if problems
+				//$dbTableAry=$base->UtlObj->tableToHashAryV3($result); // xxx - restore if problems
 				$passAry=array('dbcontrolsary'=>$dbControlsAry);
-				$dbTableAry=$base->utlObj->tableToHashAryV3($result,$passAry);
-				//$base->debugObj->printDebug($dbTableAry,1,'xxx');
+				$dbTableAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+				//$base->DebugObj->printDebug($dbTableAry,1,'xxx');
 				//exit();//xxx
 			}
 		} else {$dbTableAry=array();}
-		//$base->debugObj->printDebug($dbTableAry,1,'xxx');
+		//$base->DebugObj->printDebug($dbTableAry,1,'xxx');
 		//exit();//xxx
 		//- build return array
 		//- general
@@ -550,14 +550,14 @@ class dbObject {
 		$subReturnAry['sortkey3']=$sortKey3;
 		$returnAry['thefilters']=$subReturnAry;
 		//- data
-		//$base->debugObj->printDebug($dbTableAry,1,'xxxd');
+		//$base->DebugObj->printDebug($dbTableAry,1,'xxxd');
 		$returnAry['dbtableary']=$dbTableAry;
-		$base->debugObj->printDebug("-rtn:dbObj:getTableData",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:DbObj:getTableData",0); //xx (f)
 		return $returnAry;
 	}
 	//=======================================
 	function updateTablesBatch($base){
-		$base->debugObj->printDebug("dbObj:updateTablesBatch('base')",0);
+		$base->DebugObj->printDebug("DbObj:updateTablesBatch('base')",0);
 		$paramsAry=$base->paramsAry;
 		//$tableName=$base->formProfileAry['formname1']['tablename'];
 		//$tableMetaData=$base->formProfileAry['formname1']['tablemetadata'];
@@ -596,11 +596,11 @@ class dbObject {
 			$query.=" $nameList values $valueList";
 			$result=$this->queryTable($query,'insert',&$base);
 		} // end of for - rows
-		$base->debugObj->printDebug("-rtn:dbObj:updateTablesBatch",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:DbObj:updateTablesBatch",0); //xx (f)
 	}
 	//=======================================
 	function updateMultiRows($base){
-		$base->debugObj->printDebug("dbObj:updateMultiRows",0);
+		$base->DebugObj->printDebug("DbObj:updateMultiRows",0);
 		$formAry=$base->formProfileAry['formname1'];
 		$selectName=$formAry['selectorname'];
 		$tableName=$formAry['tablename'];
@@ -615,11 +615,11 @@ class dbObject {
 			}
 		}
 		$this->doDbTableUpdateFromAry($base,$tableName,$selectName,$doTheUpdateAry);
-		$base->debugObj->printDebug("-rtn:dbObj:updateMultiRows",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:DbObj:updateMultiRows",0); //xx (f)
 	}
 	//=======================================
 	function doDbTableUpdateFromAry($base,$tableName,$selectName,$dataAry){
-		$base->debugObj->printDebug("dbObj:doDbTableUpdateFromAry($base,$tableName,$selectName,$dataAry)",0);
+		$base->DebugObj->printDebug("DbObj:doDbTableUpdateFromAry($base,$tableName,$selectName,$dataAry)",0);
 		$tableTypes=$base->formProfileAry['formname1']['tablenametype'];
 		foreach ($dataAry as $key=>$rowValues){
 			$selectValue=$rowValues[$selectName];
@@ -671,11 +671,11 @@ class dbObject {
 			//echo "<br>query: $query";
 			$this->queryTable($query,'update',&$base);
 		} // end foreach
-		$base->debugObj->printDebug("-rtn:dbObj:doDbTableUpdateFromAry",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:DbObj:doDbTableUpdateFromAry",0); //xx (f)
 	}
 	//=======================================
 	function buildDbMetaTable($passAry,&$base){
-		$base->debugObj->printDebug("dbObj:buildDbTableMetaTable($passAry,&'base')",0); //xx (h)
+		$base->DebugObj->printDebug("DbObj:buildDbTableMetaTable($passAry,&'base')",0); //xx (h)
 		//- get basic stuff
 		$dbTableName=$passAry['dbtablename'];
 		$dbTableMetaKeyName=$dbTableName.'id';
@@ -695,7 +695,7 @@ class dbObject {
 			$dbTableMetaColumnName=$valueary['dbcolumnname'];
 			//-determine type
 			$dbTableMetaType_fromtable=$valueary['dbcolumntype'];
-			$dbTableMetaType=$base->utlObj->returnFormattedData($dbTableMetaType_fromtable,'in','dbtype');
+			$dbTableMetaType=$base->UtlObj->returnFormattedData($dbTableMetaType_fromtable,'in','dbtype');
 			//- determine if selector
 			if (array_key_exists($dbTableMetaColumnName,$dbTableMetaSelectorsAry)){
 				$dbTableMetaSelector=true;
@@ -739,13 +739,13 @@ class dbObject {
 		}
 		//- delete old
 		$query="delete from dbtablemetaprofile where dbtablemetaname='$dbTableName'";
-		$base->dbObj->queryTable($query,'delete',&$base);
-		$base->dbObj->writeToDb($dbControlsAry,&$base);
-		$base->debugObj->printDebug("-rtn:buildDbMetaTable",0); //xx (f)
+		$base->DbObj->queryTable($query,'delete',&$base);
+		$base->DbObj->writeToDb($dbControlsAry,&$base);
+		$base->DebugObj->printDebug("-rtn:buildDbMetaTable",0); //xx (f)
 	}
 	//======================================= deprecated 8/20/7
 	function deprecatedgetDbTableMetaDataFromDb($dbTableName,$base){
-		$base->debugObj->printDebug("dbObj:getDbTableMetaDataFromDb('base')",0);
+		$base->DebugObj->printDebug("DbObj:getDbTableMetaDataFromDb('base')",0);
 		$returnAry=array();
 		$query="select * from $dbTableName";
 		$res=$this->queryTable($query,'retrieve',&$base,-1);
@@ -757,12 +757,12 @@ class dbObject {
 				$returnAry[$fieldName]=$fieldType;
 			}
 		}
-		$base->debugObj->printDebug("-rtn:getDbTableMetaDataFromDb",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:getDbTableMetaDataFromDb",0); //xx (f)
 		return $returnAry;
 	}
 	//=======================================
 	function getDbTableDataFromDb($dbTableName,$base){
-		$base->debugObj->printDebug("dbObj:getDbTableMetaDataFromDb('base')",0);
+		$base->DebugObj->printDebug("DbObj:getDbTableMetaDataFromDb('base')",0);
 		$returnAry=array();
 		$query="select * from $dbTableName";
 		$res=$this->queryTable($query,'retrieve',&$base,-1);
@@ -774,25 +774,25 @@ class dbObject {
 				$returnAry[$fieldName]=$fieldType;
 			}
 		}
-		$base->debugObj->printDebug("-rtn:getDbTableMetaDataFromDb",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:getDbTableMetaDataFromDb",0); //xx (f)
 		return $returnAry;
 	}
 	//=======================================
 	function retrieveAryFromDb($query,$passAry,$base,$prio=0){
 		$result=$this->queryTable($query,'read',&$base,$prio);
-		$returnAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$returnAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		return $returnAry;
 	}
 	//=======================================
 	function queryTableRead($query,$passAry,$base){
 		$result=$this->queryTable($query,'read',&$base);
-		$returnAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$returnAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		return $returnAry;
 	}
 	//=======================================
 	function queryTable($query,$job,$base,$prio=0){
-		$base->debugObj->printDebug("dbObj:queryTable($query,$job,'base')",-2);
-		if ($this->dbDebugFlg == true){echo 'xxxf: dbObj.queryTable at beginning, query: '+$query;}
+		$base->DebugObj->printDebug("DbObj:queryTable($query,$job,'base')",-2);
+		if ($this->dbDebugFlg == true){echo 'xxxf: DbObj.queryTable at beginning, query: '+$query;}
 		$insertQuery='';
 		$dontConvert=false;
 		$doItQuietly=true;
@@ -860,22 +860,22 @@ class dbObject {
 			if ($tstPos>0){
 				unset($base->errorProfileAry['converterror']);
 				$oldQuery=$query;
-				$query=$base->utlObj->returnFormattedString($oldQuery,&$base);
+				$query=$base->UtlObj->returnFormattedString($oldQuery,&$base);
 				/*
 				 $pos=strpos($query,'jobstats',0);//xxxf22
 				 if ($pos>0){
-				 $base->debugObj->printDebug($base->paramsAry,1,'paramsaryxxxf22');
+				 $base->DebugObj->printDebug($base->paramsAry,1,'paramsaryxxxf22');
 				 echo "db:qt old: $oldQuery, query: $query";exit();//xxxf22
 				 }
 				 */
 				//echo "dbobj xxxf7.5";
-				$base->utlObj->appendValue('debug',"convert query to: $query<br>",&$base);
+				$base->UtlObj->appendValue('debug',"convert query to: $query<br>",&$base);
 				if (array_key_exists('converterror',$base->errorProfileAry)){$convertErrorFlg=true;}
 			}
 			$newQuery=str_replace('~','%',$query);
 			$query=$newQuery;
 		} // end if !dontconvert
-		$base->debugObj->showQuery("$query",$base,$prio);
+		$base->DebugObj->showQuery("$query",$base,$prio);
 		//echo "query: $query<br>";//xxxd
 		$returnResult=array();
 		//xxxf
@@ -883,13 +883,13 @@ class dbObject {
 			if ($this->useOtherDb){
 				if ($this->toDbConn != null){
 					$useDbConn=$this->toDbConn;
-					$lastProg=$base->debugObj->getLastStackEntry();
-					$base->utlObj->appendValue('debug',"use todbconn ($lastProg) $query<br>",&$base);
+					$lastProg=$base->DebugObj->getLastStackEntry();
+					$base->UtlObj->appendValue('debug',"use todbconn ($lastProg) $query<br>",&$base);
 				}
 				else {
 					$useDbConn=$this->dbConn;
-					$lastProg=$base->debugObj->getLastStackEntry();
-					$base->utlObj->appendValue('debug',"use dbconn want to use todbconn ($lastProg) $query<br>",&$base);
+					$lastProg=$base->DebugObj->getLastStackEntry();
+					$base->UtlObj->appendValue('debug',"use dbconn want to use todbconn ($lastProg) $query<br>",&$base);
 				}
 				if (!($this->dontResetUseOtherDb)){
 					$this->unsetUseOtherDb(&$base);
@@ -898,32 +898,32 @@ class dbObject {
 			else {
 				$useDbConn=$this->dbConn;
 				//- below can happen before utilObj is even fired up so check for it
-				if ($base->utlObj != null){
-					$lastProg=$base->debugObj->getLastStackEntry();
-					$base->utlObj->appendValue('debug',"use dbconn ($lastProg) $query<br>",&$base);//xxxg
+				if ($base->UtlObj != null){
+					$lastProg=$base->DebugObj->getLastStackEntry();
+					$base->UtlObj->appendValue('debug',"use dbconn ($lastProg) $query<br>",&$base);//xxxg
 				}
 			}
 			$pos=strpos(('x'.$query),'insert',0);
 			if ($pos>0){$query.="";}
 			$returnResult=pg_query($useDbConn,"$query");
-			$base->fileObj->writeLog('debug',"query: $query \n useotheredb: $this->useOtherDb, conn: $this->dbConn, toconn: $this->toDbConn, useconn: $useDbConn",&$base);
+			$base->FileObj->writeLog('debug',"query: $query \n useotheredb: $this->useOtherDb, conn: $this->dbConn, toconn: $this->toDbConn, useconn: $useDbConn",&$base);
 			if ($returnResult == null){
 				$lastError=pg_last_error($useDbConn);
 				if (!$doItQuietly){
-					$base->debugObj->placeCheck("!!!dbObj.queryTable: SQL Error:($lastError) $query"); //xx (c)
-					$base->debugObj->displayStack();
+					$base->DebugObj->placeCheck("!!!DbObj.queryTable: SQL Error:($lastError) $query"); //xx (c)
+					$base->DebugObj->displayStack();
 				}
 				$workStrg="dbConn: $this->dbConn, toDbConn: $this->toDbConn, useOtherDb: $this->useOtherDb";
-				$base->errorObj->saveError('sqlerror',"workstrg: $workStrg, sql error($lastError): $query",&$base);
-				$base->fileObj->writeLog('debug',"workstrg: $workStrg, lasterror: $lastError",&$base);
+				$base->ErrorObj->saveError('sqlerror',"workstrg: $workStrg, sql error($lastError): $query",&$base);
+				$base->FileObj->writeLog('debug',"workstrg: $workStrg, lasterror: $lastError",&$base);
 			}
 		}
-		$base->debugObj->printDebug("-rtn:dbObj:queryTable",-2); //xx (f)
+		$base->DebugObj->printDebug("-rtn:DbObj:queryTable",-2); //xx (f)
 		return $returnResult;
 	}
 	//=======================================
 	function queryTableAnyDb($query,$queryType,$dbConn,$base,$prio=0){
-		$base->debugObj->printDebug("dbObj:queryTable($query,$job,'base')",-2);
+		$base->DebugObj->printDebug("DbObj:queryTable($query,$job,'base')",-2);
 		$insertQuery='';
 		$dontConvert=false;
 		switch ($queryType){
@@ -960,24 +960,24 @@ class dbObject {
 		if (!$dontConvert){
 			$tstPos=strpos($query,'%',0);
 			if ($tstPos>0){
-				$query=$base->utlObj->returnFormattedString($query,&$base);
+				$query=$base->UtlObj->returnFormattedString($query,&$base);
 			}
 			$query=str_replace('~','%',$query);
 		} // end if !dontconvert
-		$base->debugObj->showQuery("$query",$base,$prio);
+		$base->DebugObj->showQuery("$query",$base,$prio);
 		$returnResult=pg_query($dbConn,"$query");
 		if ($returnResult === false && $prio>=0){
-			$base->errorObj->saveError('sqlerror',$query,&$base);
-			$base->debugObj->placeCheck("!!!dbObj.queryTableAnyDb: SQL Error: $query, dontconvert: $dontConvert, querytype: $queryType"); //xx (c)
-			$base->debugObj->displayStack();
+			$base->ErrorObj->saveError('sqlerror',$query,&$base);
+			$base->DebugObj->placeCheck("!!!DbObj.queryTableAnyDb: SQL Error: $query, dontconvert: $dontConvert, querytype: $queryType"); //xx (c)
+			$base->DebugObj->displayStack();
 			exit('early termination');
 		}
-		$base->debugObj->printDebug("-rtn:dbObj:queryTable",-2); //xx (f)
+		$base->DebugObj->printDebug("-rtn:DbObj:queryTable",-2); //xx (f)
 		return $returnResult;
 	}
 	//======================================
 	function updateJobOverride($base){
-		$base->debugObj->printDebug("dbObj:updateJobOverride('base')",0);
+		$base->DebugObj->printDebug("DbObj:updateJobOverride('base')",0);
 		$overrideName=$base->paramsAry['overridename'];
 		$overrideValue=$base->paramsAry['overridevalue'];
 		$query="update systemprofile set overridename='$overrideName',overridevalue='$overrideValue' where domainname='home'";
@@ -985,11 +985,11 @@ class dbObject {
 		$base->systemProfileAry['overridename']=$overrideName;
 		$base->systemProfileAry['overridevalue']=$overrideValue;
 		$base->paramsAry[$overrideName]=$overrideValue;
-		$base->debugObj->printDebug("-rtn:dbObj:updateJobOverride",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:DbObj:updateJobOverride",0); //xx (f)
 	}
 	//======================================
 	function readFromDb($dbControlsAry,$base){
-		$base->debugObj->printDebug("dbObj:readFromDb($dbControlsAry,'base')",0);
+		$base->DebugObj->printDebug("DbObj:readFromDb($dbControlsAry,'base')",0);
 		$useSelect=$dbControlsAry['useselect'];
 		$this->getDbTableInfo(&$dbControlsAry,&$base);
 		if (!$useSelect) {
@@ -1003,7 +1003,7 @@ class dbObject {
 			$rowsAry=$this->readDbRows($dbControlsAry,&$base);
 			$dbControlsAry['datarowsary']=$rowsAry;
 		}
-		$base->debugObj->printDebug("-rtn:dbObj:readFromDb",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:DbObj:readFromDb",0); //xx (f)
 		return $dbControlsAry['datarowsary'];
 	}
 	//======================================
@@ -1016,23 +1016,23 @@ class dbObject {
 	}
 	//======================================
 	function writeToDb($dbControlsAry,$base){
-		$base->debugObj->printDebug("dbObj:writeToDb($dbControlsAry,'base')",0);
-		$base->fileObj->writeLog('debug',"enter writetodb",&$base);
-		$base->utlObj->appendValue('debug',"call writetodb<br>",&$base);
+		$base->DebugObj->printDebug("DbObj:writeToDb($dbControlsAry,'base')",0);
+		$base->FileObj->writeLog('debug',"enter writetodb",&$base);
+		$base->UtlObj->appendValue('debug',"call writetodb<br>",&$base);
 		$writeRowsAry=$dbControlsAry['writerowsary'];
 		//xxxf
-		foreach ($writeRowsAry[0] as $one=>$two){$base->fileObj->writeLog('debug2','name: '.$one.', value: '.$two,&$base);}
+		foreach ($writeRowsAry[0] as $one=>$two){$base->FileObj->writeLog('debug2','name: '.$one.', value: '.$two,&$base);}
 		$dbTableName=$dbControlsAry['dbtablename'];
 		$this->getDbTableInfo(&$dbControlsAry,&$base);
-		//$base->debugObj->printDebug($dbControlsAry,1,'dbc');//xxx
+		//$base->DebugObj->printDebug($dbControlsAry,1,'dbc');//xxx
 		$keyName=$dbControlsAry['keyname'];
 		$updatedRowsAry=array();
 		$selectorNameAry=$dbControlsAry['selectornameary'];
 		$noRows=count($writeRowsAry);
-		$base->fileObj->writeLog('debug',"no rows: $noRows",&$base);
+		$base->FileObj->writeLog('debug',"no rows: $noRows",&$base);
 		$allSuccessfulUpdate=true;
 		for ($rowCtr=0;$rowCtr<$noRows;$rowCtr++){
-			//$base->fileObj->writeLog('debug',"rowctr: $rowCtr",&$base);//xxxf
+			//$base->FileObj->writeLog('debug',"rowctr: $rowCtr",&$base);//xxxf
 			//echo "rownctr: $rowCtr,";//xxxd
 			$currentRowAry=$writeRowsAry[$rowCtr];
 			$overrideCommand=$currentRowAry['overridecommand'];
@@ -1043,21 +1043,21 @@ class dbObject {
 					$dbControlsAry['selectorary'][$selName]=$newSelValue;
 				} // end foreach
 				//--- update/insert
-				//$base->fileObj->writeLog('debug',"do update/insert",&$base);
+				//$base->FileObj->writeLog('debug',"do update/insert",&$base);
 				if ($currentRowAry[$keyName] != "" && $currentRowAry[$keyName] != 'NULL'){
 					$successfulUpdate=$this->updateDbRow($currentRowAry,$dbControlsAry,&$base);
 					//echo "$successfulUpdate,";
 					if (!$successfulUpdate){
 						$allSuccessfulUpdate=false;
-						$base->fileObj->writeLog('db',"update error dbtablename: $dbTableName, keyname: $keyName($currentRowAry[$keyName])",&$base);
+						$base->FileObj->writeLog('db',"update error dbtablename: $dbTableName, keyname: $keyName($currentRowAry[$keyName])",&$base);
 					}
 				} // end if keyname!=""
 				else {
 					$successfulUpdate=$this->insertDbRow($currentRowAry,$dbControlsAry,&$base);
 					if (!$successfulUpdate){
 						$allSuccessfulUpdate=false;
-						$errorStrg=$base->errorObj->retrieveAllErrors(&$base);
-						$base->fileObj->writeLog('debug',"dbobj.insertrow: fail errorstrg: $errorStrg ",&$base);
+						$errorStrg=$base->ErrorObj->retrieveAllErrors(&$base);
+						$base->FileObj->writeLog('debug',"dbobj.insertrow: fail errorstrg: $errorStrg ",&$base);
 					}
 				} // end else keyname == ""
 			} // end if overridecommand == ""
@@ -1069,7 +1069,7 @@ class dbObject {
 					$keyValue=$currentRowAry[$keyName];
 					$query="delete from $dbTableName where $keyName=$keyValue";
 					if ($keyValue != ''){
-						$result=$base->dbObj->queryTable($query,'delete',&$base);
+						$result=$base->DbObj->queryTable($query,'delete',&$base);
 					}
 					//delete it
 				} // end delete it
@@ -1078,12 +1078,12 @@ class dbObject {
 				} // end else do nothing
 			} // end else overridecommand != ""
 		}
-		$base->debugObj->printDebug("-rtn:writeToDb",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:writeToDb",0); //xx (f)
 		return $allSuccessfulUpdate;
 	}
 	//======================================
 	function updateToDb($dbControlsAry,$base){
-		$base->debugObj->printDebug("dbObj:updateToDb($dbControlsAry,'base')",0);
+		$base->DebugObj->printDebug("DbObj:updateToDb($dbControlsAry,'base')",0);
 		$foundError=false;
 		$writeRowsAry=$dbControlsAry['writerowsary'];
 		$dbTableName=$dbControlsAry['dbtablename'];
@@ -1114,12 +1114,12 @@ class dbObject {
 		}
 		if ($foundError){$allSuccessfulUpdate=false;}
 		else {$allSuccessfulUpdate=true;}
-		$base->debugObj->printDebug("-rtn:dbObj:updateToDb",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:DbObj:updateToDb",0); //xx (f)
 		return $allSuccessfulUpdate;
 	}
 	//======================================
 	function insertToDb($dbControlsAry,$base){
-		$base->debugObj->printDebug("dbObj:insertToDb($dbControlsAry,'base')",0);
+		$base->DebugObj->printDebug("DbObj:insertToDb($dbControlsAry,'base')",0);
 		$returnStatus=false;
 		$foundError=false;
 		$writeRowsAry=$dbControlsAry['writerowsary'];
@@ -1148,12 +1148,12 @@ class dbObject {
 				if (!($insertedOk)){$insertedAllOk=false;}
 			}
 		}
-		$base->debugObj->printDebug("-rtn:dbObj:insertToDb",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:DbObj:insertToDb",0); //xx (f)
 		return $insertedAllOk;
 	}
 	//======================================= soon to be deprecated
 	function getDbTableMetaInfo($dbControlAry,$base){
-		$base->debugObj->printDebug("dbObj:getDbTableMetaInfo($dbControlAry,'base')",0);
+		$base->DebugObj->printDebug("DbObj:getDbTableMetaInfo($dbControlAry,'base')",0);
 		if (!(array_key_exists('dbtablemetaary',$dbControlAry))){
 			$dbTableName=$dbControlAry['dbtablename'];
 			$returnAry=array();
@@ -1161,12 +1161,12 @@ class dbObject {
 			//echo "query: $query";//xxx
 			$result=$this->queryTable($query,'read',&$base);
 			if ($result === false) {
-				$base->debugObj->placeCheck("Error: The table $dbTableName is not defined in the dbtablemetaprofile table!!!"); //xx (c)
-				$base->debugObj->displayStack(); //xx (c)
+				$base->DebugObj->placeCheck("Error: The table $dbTableName is not defined in the dbtablemetaprofile table!!!"); //xx (c)
+				$base->DebugObj->displayStack(); //xx (c)
 			} // end if false
 			$passAry=array('delimit1'=>'dbcolumnname');
-			$returnAry=$base->utlObj->tableToHashAryV3($result,$passAry);
-			//$base->debugObj->printDebug($returnAry,1,'ret');//xxx
+			$returnAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+			//$base->DebugObj->printDebug($returnAry,1,'ret');//xxx
 			$noRetrieved=count($returnAry);
 			if ($noRetrieved > 0){
 				$dbTableAccessAry=$this->getSelectorNameAry($returnAry,&$base);
@@ -1178,15 +1178,15 @@ class dbObject {
 			} // end if noretrieve >
 			else {
 				$dbControlAry['dbtablemetaary']=array();
-				$base->debugObj->placeCheck("1: Error! Table '$dbTableName' is not defined!!!"); //xx (c)
-				$base->debugObj->displayStack();
+				$base->DebugObj->placeCheck("1: Error! Table '$dbTableName' is not defined!!!"); //xx (c)
+				$base->DebugObj->displayStack();
 			}
 		} // end if !
-		$base->debugObj->printDebug("-rtn:getDbTableMetaInfo",0); //xx (h)
+		$base->DebugObj->printDebug("-rtn:getDbTableMetaInfo",0); //xx (h)
 	}
 	//=======================================
 	function getDbTableInfo($dbControlAry,$base){
-		$base->debugObj->printDebug("dbObj:getDbTableInfo($dbControlAry,'base')",0);
+		$base->DebugObj->printDebug("DbObj:getDbTableInfo($dbControlAry,'base')",0);
 		if (!(array_key_exists('dbtablemetaary',$dbControlAry))){
 			$dbTableName=$dbControlAry['dbtablename'];
 			$returnAry=array();
@@ -1194,12 +1194,12 @@ class dbObject {
 			//echo "query: $query";//xxx
 			$result=$this->queryTable($query,'read',&$base);
 			if ($result === false) {
-				$base->debugObj->placeCheck("Error: The table $dbTableName is not defined in the dbtablemetaprofile table!!!"); //xx (c)
-				$base->debugObj->displayStack(); //xx (c)
+				$base->DebugObj->placeCheck("Error: The table $dbTableName is not defined in the dbtablemetaprofile table!!!"); //xx (c)
+				$base->DebugObj->displayStack(); //xx (c)
 			} // end if false
 			$passAry=array('delimit1'=>'dbcolumnname');
-			$returnAry=$base->utlObj->tableToHashAryV3($result,$passAry);
-			//$base->debugObj->printDebug($returnAry,1,'ret');//xxx
+			$returnAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+			//$base->DebugObj->printDebug($returnAry,1,'ret');//xxx
 			$noRetrieved=count($returnAry);
 			if ($noRetrieved > 0){
 				$dbTableAccessAry=$this->getDbTableKeyFields($returnAry,&$base);
@@ -1211,15 +1211,15 @@ class dbObject {
 			} // end if noretrieve >
 			else {
 				$dbControlAry['dbtablemetaary']=array();
-				$base->debugObj->placeCheck("1: Error! Table '$dbTableName' is not defined!!!"); //xx (c)
-				$base->debugObj->displayStack();
+				$base->DebugObj->placeCheck("1: Error! Table '$dbTableName' is not defined!!!"); //xx (c)
+				$base->DebugObj->displayStack();
 			}
 		} // end if !
-		$base->debugObj->printDebug("-rtn:getDbTableInfo",0); //xx (h)
+		$base->DebugObj->printDebug("-rtn:getDbTableInfo",0); //xx (h)
 	}
 	//===========================================
 	function getDbTableKeyFields($dbColumnsAry,$base){
-		$base->debugObj->printDebug("dbObj:getSelectorNameAry($dbTableMetaAry,'base')",0);
+		$base->DebugObj->printDebug("DbObj:getSelectorNameAry($dbTableMetaAry,'base')",0);
 		$keyName="none";
 		$possibleKeyName="none";
 		$parentSelectorName="none";
@@ -1230,16 +1230,16 @@ class dbObject {
 		foreach ($dbColumnsAry as $key=>$valueAry){
 			//- check for selector
 			$chkIt=$valueAry['dbcolumnselector'];
-			$chkIt=$base->dbObj->returnBoolByType($chkIt,'bool');
+			$chkIt=$base->DbObj->returnBoolByType($chkIt,'bool');
 			if ($chkIt===true){
 				$selectorNameAry[]=$key;
 				$foundSelector=true;
-				$parentChk=$base->dbObj->returnBoolByType($valueAry['dbcolumnparentselector']);
+				$parentChk=$base->DbObj->returnBoolByType($valueAry['dbcolumnparentselector']);
 				if ($parentChk === true){$parentSelectorName=$key;}
 			} // end if
 			//- check for foreign key
 			$chkIt=$valueAry['dbcolumnforeignfield'];
-			$foreignChk=$base->dbObj->returnBoolByType($valueAry['dbcolumnforeignfield']);
+			$foreignChk=$base->DbObj->returnBoolByType($valueAry['dbcolumnforeignfield']);
 			if ($foreignChk===true){
 				$foreignKeyAry[]=$key;
 			} // end if
@@ -1251,19 +1251,19 @@ class dbObject {
 			if ($chkIt == 'id' && $possibleKeyName=="none"){$possibleKeyName=$key;}
 			//- check for key
 			$chkIt=$valueAry['dbcolumnkey'];
-			$chkIt=$base->dbObj->returnBoolByType($chkIt,'bool');
+			$chkIt=$base->DbObj->returnBoolByType($chkIt,'bool');
 			if ($chkIt===true){$keyName=$key;}
 		} // end foreach loop
 		if ($keyName == 'none'){
 			if ($possibleKeyName != 'none'){$keyName=$possibleKeyName;}
 		}
 		$dbTableAccessAry=array('selectornameary'=>$selectorNameAry,'keyname'=>$keyName,'parentselectorname'=>$parentSelectorName,'foreignkeyary'=>$foreignKeyAry);
-		$base->debugObj->printDebug("-rtn:getSelectorNameAry",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:getSelectorNameAry",0); //xx (f)
 		return $dbTableAccessAry;
 	}
 	//=========================================== soon to be deprecated
 	function getSelectorNameAry($dbTableMetaAry,$base){
-		$base->debugObj->printDebug("dbObj:getSelectorNameAry($dbTableMetaAry,'base')",0);
+		$base->DebugObj->printDebug("DbObj:getSelectorNameAry($dbTableMetaAry,'base')",0);
 		$keyName="none";
 		$possibleKeyName="none";
 		$parentSelectorName="none";
@@ -1274,16 +1274,16 @@ class dbObject {
 		foreach ($dbTableMetaAry as $key=>$valueAry){
 			//- check for selector
 			$chkIt=$valueAry['dbcolumnselector'];
-			$chkIt=$base->dbObj->returnBoolByType($chkIt,'bool');
+			$chkIt=$base->DbObj->returnBoolByType($chkIt,'bool');
 			if ($chkIt===true){
 				$selectorNameAry[]=$key;
 				$foundSelector=true;
-				$parentChk=$base->dbObj->returnBoolByType($valueAry['dbcolumnparentselector']);
+				$parentChk=$base->DbObj->returnBoolByType($valueAry['dbcolumnparentselector']);
 				if ($parentChk === true){$parentSelectorName=$key;}
 			} // end if
 			//- check for foreign key
 			$chkIt=$valueAry['dbcolumnforeignfield'];
-			$foreignChk=$base->dbObj->returnBoolByType($valueAry['dbcolumnforeignfield']);
+			$foreignChk=$base->DbObj->returnBoolByType($valueAry['dbcolumnforeignfield']);
 			if ($foreignChk===true){
 				$foreignKeyAry[]=$key;
 			} // end if
@@ -1295,36 +1295,36 @@ class dbObject {
 			if ($chkIt == 'id' && $possibleKeyName=="none"){$possibleKeyName=$key;}
 			//- check for key
 			$chkIt=$valueAry['dbcolumnkey'];
-			$chkIt=$base->dbObj->returnBoolByType($chkIt,'bool');
+			$chkIt=$base->DbObj->returnBoolByType($chkIt,'bool');
 			if ($chkIt===true){$keyName=$key;}
 		} // end foreach loop
 		if ($keyName == 'none'){
 			if ($possibleKeyName != 'none'){$keyName=$possibleKeyName;}
 		}
 		$dbTableAccessAry=array('selectornameary'=>$selectorNameAry,'keyname'=>$keyName,'parentselectorname'=>$parentSelectorName,'foreignkeyary'=>$foreignKeyAry);
-		$base->debugObj->printDebug("-rtn:getSelectorNameAry",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:getSelectorNameAry",0); //xx (f)
 		return $dbTableAccessAry;
 	}
 	//===========================================
 	function readDbRow($currentRowNo,$dbControlsAry,$base){
-		$base->debugObj->printDebug("dbObj:readDbRow($currentRowAry,$dbControlsAry,'base')",0); //xx (h)
-		$result=$base->dbObj->getDbStuff($currentRowNo,$dbControlsAry,&$base);
-		$returnAry=$base->utlObj->tableRowToHashAry($result,$dbControlsAry);
-		$base->debugObj->printDebug("-rtn:readDbRow",0); //xx (f)
+		$base->DebugObj->printDebug("DbObj:readDbRow($currentRowAry,$dbControlsAry,'base')",0); //xx (h)
+		$result=$base->DbObj->getDbStuff($currentRowNo,$dbControlsAry,&$base);
+		$returnAry=$base->UtlObj->tableRowToHashAry($result,$dbControlsAry);
+		$base->DebugObj->printDebug("-rtn:readDbRow",0); //xx (f)
 		return $returnAry;
 	}
 	//===========================================
 	function readDbRows($dbControlsAry,$base){
-		$base->debugObj->printDebug("readDbRows($dbControlsAry,'base')",0); //xx (h)
-		$result=$base->dbObj->getDbStuff(0,$dbControlsAry,&$base);
+		$base->DebugObj->printDebug("readDbRows($dbControlsAry,'base')",0); //xx (h)
+		$result=$base->DbObj->getDbStuff(0,$dbControlsAry,&$base);
 		$passAry=array('dbcontrolsary'=>$dbControlsAry);
-		$returnAry=$base->utlObj->tableToHashAryV3($result,$passAry);
-		$base->debugObj->printDebug("-rtn:readDbRows",0); //xx (f)
+		$returnAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+		$base->DebugObj->printDebug("-rtn:readDbRows",0); //xx (f)
 		return $returnAry;
 	}
 	//===========================================
 	function getDbStuff($rowCtr,$dbControlsAry,$base){
-		$base->debugObj->printDebug("dbObj:getDbStuff($rowCtr,$dbControlsAry,'base')",0);
+		$base->DebugObj->printDebug("DbObj:getDbStuff($rowCtr,$dbControlsAry,'base')",0);
 		$useSelect=$dbControlsAry['useselect'];
 		$dbTableName=$dbControlsAry['dbtablename'];
 		$dbTableNameView=$dbTableName."view";
@@ -1341,9 +1341,9 @@ class dbObject {
 			$andSepar=" ";
 			foreach ($selectorAry as $selectorName=>$selectorValue){
 				$selectorType=$dbTableMetaAry[$selectorName]['dbcolumntype'];
-				$selectorValue_sql=$base -> utlObj -> returnFormattedData( $selectorValue, $selectorType, 'sql');
+				$selectorValue_sql=$base -> UtlObj -> returnFormattedData( $selectorValue, $selectorType, 'sql');
 				if ($selectorValue == 'initialized'){
-					$base->debugObj->placeCheck("Error at approx 1494 selector value is initialized"); //xx (c)
+					$base->DebugObj->placeCheck("Error at approx 1494 selector value is initialized"); //xx (c)
 				}
 				$insertQuery .= "$andSepar$selectorName=$selectorValue_sql";
 				$andSepar=" and ";
@@ -1353,13 +1353,13 @@ class dbObject {
 		//echo "query: $query<br>";//xxxd
 		$result=$this->queryTable($query,'read',&$base);
 		//echo "got data <br>";//xxxd
-		$base->debugObj->printDebug("-rtn:getDbStuff",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:getDbStuff",0); //xx (f)
 		return $result;
 	}
 	//========================================
 	function updateDbRow($currentRowAry,$dbControlsAry,$base){
-		$base->debugObj->printDebug("dbObj:updateDbRow($currentRowAry,$oldRowAry,$controlsDb,'base')",0);
-		$base->utlObj->appendValue('debug',"update db row<br>",&$base);
+		$base->DebugObj->printDebug("DbObj:updateDbRow($currentRowAry,$oldRowAry,$controlsDb,'base')",0);
+		$base->UtlObj->appendValue('debug',"update db row<br>",&$base);
 		$selectorNameAry=$dbControlsAry['selectornameary'];
 		$dbTableMetaAry=$dbControlsAry['dbtablemetaary'];
 		$dbTableName=$dbControlsAry['dbtablename'];
@@ -1370,12 +1370,12 @@ class dbObject {
 		//echo "oktoupdate: $okToUpdate";//xxx
 		// - validate the data
 		if ($okToUpdate) {
-			$itAllValidates=$base->dbObj->validateData($currentRowAry,$dbControlsAry,&$base);
+			$itAllValidates=$base->DbObj->validateData($currentRowAry,$dbControlsAry,&$base);
 		}
 		else {
-			$base->errorObj->saveError('arowtoupdate','it is not ok to update some rows',&$base);
+			$base->ErrorObj->saveError('arowtoupdate','it is not ok to update some rows',&$base);
 		}
-		//$base->debugObj->printDebug($currentRowAry,1,'xxxf');exit();
+		//$base->DebugObj->printDebug($currentRowAry,1,'xxxf');exit();
 		// - build the sql statement
 		//echo "oktoupdate: $okToUpdate, itallvalidates: $itAllValidates<br>";//xxxf
 		//exit();//xxxf
@@ -1401,11 +1401,11 @@ class dbObject {
 						if ($foreignKey && $mainTable != NULL){$dontDoIt=true;}
 						else {$dontDoIt=false;}
 						//if ($colName == 'jobprofileid'){
-						//$base->debugObj->printDebug($dbTableMetaAry[$colName],1,'dbtablemeta');//xxx
+						//$base->DebugObj->printDebug($dbTableMetaAry[$colName],1,'dbtablemeta');//xxx
 						//}
 						if ($foreignField === false && $dontDoIt === false){
 							//xxxf22 new by jeff 10/3/11
-							$base->fileObj->writeLog('debugx',"colname: $colName",&$base);//xxxf
+							$base->FileObj->writeLog('debugx',"colname: $colName",&$base);//xxxf
 							$columnEvent=$dbTableMetaAry[$colName]['dbcolumnevent'];
 							$colValue_raw=$currentRowAry[$colName];
 							$columnDefault=$dbTableMetaAry[$colName]['dbcolumndefault'];
@@ -1423,7 +1423,7 @@ class dbObject {
 							//xxxf22 end changes
 							//$colType=$dbTableMetaAry[$colName]['dbtablemetatype']; //xxx - restore if errors
 							$colType=$dbTableMetaAry[$colName]['dbcolumntype'];
-							$colValue_sqlformat=$base->utlObj->returnFormattedData($colValue,$colType,'sql');
+							$colValue_sqlformat=$base->UtlObj->returnFormattedData($colValue,$colType,'sql');
 							//if ($colName=='thingstodopriority'){
 								//echo "type: $colType, valueraw: $colValue_raw value: $colValue, valuesql: $colValue_sqlformat";exit();//xxxf
 							//}
@@ -1437,18 +1437,18 @@ class dbObject {
 				} // end if key exists
 				else {
 					//echo "colname: ".'x'.$colName.'x';
-					//$base->debugObj->printDebug($currentRowAry,1,'cra');//xxx
+					//$base->DebugObj->printDebug($currentRowAry,1,'cra');//xxx
 				}
 			} // end for each colname colinfo
 			$query .= " where $keyName = $keyValue";
-			$base->utlObj->appendValue('debug',"call to querytable with $query<br>",&$base);
+			$base->UtlObj->appendValue('debug',"call to querytable with $query<br>",&$base);
 			//echo "query: $query";exit();//xxxf
 			$result=$this->queryTable($query,'updatenoconversion',&$base);
-			$base->utlObj->appendValue('debug',"return from querytable<br>",&$base);
+			$base->UtlObj->appendValue('debug',"return from querytable<br>",&$base);
 		} // end if oktoupdate and all validates
 		if ($okToUpdate && $itAllValidates){$itWasUpdated=true;}
 		else {$itWasUpdated=false;}
-		$base->debugObj->printDebug("-rtn:updateDbRow",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:updateDbRow",0); //xx (f)
 		return $itWasUpdated;
 	}
 	//==============================================
@@ -1462,7 +1462,7 @@ class dbObject {
 		$colEventCheckValue=$colEventAry[3];
 		$colEventAction=$colEventAry[4];
 		$colEventCheckColValue=$currentRowAry[$colEventCheckCol];
-		$base->fileObj->writeLog('debugx',$columnEvent,&$base);//xxxf
+		$base->FileObj->writeLog('debugx',$columnEvent,&$base);//xxxf
 		$doit=false;
 		switch ($colEventType){
 			case 'ifnulland':
@@ -1476,16 +1476,16 @@ class dbObject {
 							if ($colEventCheckColValue != $colEventCheckValue){$doit=true;}
 							break;
 						default:
-							$base->fileObj->writeLog('error',"dbobj.doEvent) invalid event string: $colEvent for column $colName",&$base);
+							$base->FileObj->writeLog('error',"dbobj.doEvent) invalid event string: $colEvent for column $colName",&$base);
 					}
 					if ($doit){
 						switch ($colEventAction){
 							case 'today':
-								$colValue=$base->utlObj->getTodaysDate(&$base);
-								$base->fileObj->writeLog('debugx',"!!!coleventaction: $colEventAction, colvalue: $colvalue",&$base);
+								$colValue=$base->UtlObj->getTodaysDate(&$base);
+								$base->FileObj->writeLog('debugx',"!!!coleventaction: $colEventAction, colvalue: $colvalue",&$base);
 								break;
 							default:
-							$base->fileObj->writeLog('error',"dbobj.doEvent) invalid event string: $colEvent for column $colName",&$base);	
+							$base->FileObj->writeLog('error',"dbobj.doEvent) invalid event string: $colEvent for column $colName",&$base);	
 							$colValue=$colValue_raw;
 						}
 					}
@@ -1493,18 +1493,18 @@ class dbObject {
 				else {
 					$colValue=$colValue_raw;
 				}
-				$base->fileObj->writeLog('debugx',"ifnulland) colvalue: $colValue",&$base);
+				$base->FileObj->writeLog('debugx',"ifnulland) colvalue: $colValue",&$base);
 				break;
 			case 'ifnull':
 //---
 				if ($colValue_raw == null){
 					switch ($colEventQuickAction){
 						case 'today':
-							$colValue=$base->utlObj->getTodaysDate(&$base);
+							$colValue=$base->UtlObj->getTodaysDate(&$base);
 							break;
 						default:
 							$colValue=$colValue_raw;
-							$base->fileObj->writeLog('error',"dbobj.doEvent) invalid event string: $colEvent for column $colName",&$base);
+							$base->FileObj->writeLog('error',"dbobj.doEvent) invalid event string: $colEvent for column $colName",&$base);
 					}
 				}
 				else {
@@ -1512,43 +1512,43 @@ class dbObject {
 				}
 				break;
 			default:
-				$base->fileObj->writeLog('error',"dbobj.doEvent) invalid event string: $colEvent for column $colName",&$base);
+				$base->FileObj->writeLog('error',"dbobj.doEvent) invalid event string: $colEvent for column $colName",&$base);
 		}
-		$base->fileObj->writeLog('debug1',"doit: $doit, type: $colEventType, coleventaction: $colEventAction, colvalueraw: $colValue_raw, colvalue: $colValue",&$base);
+		$base->FileObj->writeLog('debug1',"doit: $doit, type: $colEventType, coleventaction: $colEventAction, colvalueraw: $colValue_raw, colvalue: $colValue",&$base);
 		return $colValue;
 	}
 	//=======================================
 	function insertDbRow($currentRowAry,$dbControlsAry,$base){
-		//$base->debugObj->printDebug($currentRowAry,1,'xxxf0');
-		$base->debugObj->printDebug("dbObj:insertDbRow($currentRowAry,$dbControlsAry,'base')",0);
+		//$base->DebugObj->printDebug($currentRowAry,1,'xxxf0');
+		$base->DebugObj->printDebug("DbObj:insertDbRow($currentRowAry,$dbControlsAry,'base')",0);
 		$selectorAry=$dbControlsAry['selectorary'];
 		$dbTableMetaAry=$dbControlsAry['dbtablemetaary'];
 		$dbTableName=$dbControlsAry['dbtablename'];
 		$keyName=$dbControlsAry['keyname'];
 		$noSelectors=count($selectorAry);
 		if ($noSelectors>0){
-			$okToInsert=$base->dbObj->checkOkToInsert($currentRowAry,$dbControlsAry,&$base);
+			$okToInsert=$base->DbObj->checkOkToInsert($currentRowAry,$dbControlsAry,&$base);
 		}
 		else {$okToInsert=true;}
 		//echo "oktoinsert: $okToInsert<br>";//xxx
 		if ($okToInsert) {
-			$itAllValidates=$base->dbObj->validateData($currentRowAry,$dbControlsAry,&$base);
+			$itAllValidates=$base->DbObj->validateData($currentRowAry,$dbControlsAry,&$base);
 		}
 		else {
-			$base->errorObj->saveError('rowtoinsert','It is not ok to insert some rows',&$base);
+			$base->ErrorObj->saveError('rowtoinsert','It is not ok to insert some rows',&$base);
 		}
 		//echo "oktoinsert: $okToInsert, itallvalidates: $itAllValidates<br>";//xxxf
-		//$base->debugObj->printDebug($base->errorProfileAry,1,'xxxd');
-		$base->fileObj->writeLog('debug',"dbtablename: $dbTableName, oktoinsert: $okToInsert, itallvalidates: $itAllValidates",&$base);//xxxf
+		//$base->DebugObj->printDebug($base->errorProfileAry,1,'xxxd');
+		$base->FileObj->writeLog('debug',"dbtablename: $dbTableName, oktoinsert: $okToInsert, itallvalidates: $itAllValidates",&$base);//xxxf
 		if ($okToInsert && $itAllValidates) {
-			$base->fileObj->writeLog('debug',"going to do it",&$base);//xxxf
+			$base->FileObj->writeLog('debug',"going to do it",&$base);//xxxf
 			$tempKeyId=$currentRowAry['tempkeyid'];
 			$query="insert into $dbTableName (";
 			$start=true;
 			$colValues="";
 			foreach ($dbTableMetaAry as $colName=>$colInfo){
 				//$colValue=$currentRowAry[$colName];
-				//$base->fileObj->writeLog('debugx',"colname: $colName",&$base);//xxxf
+				//$base->FileObj->writeLog('debugx',"colname: $colName",&$base);//xxxf
 				$columnEvent=$dbTableMetaAry[$colName]['dbcolumnevent'];
 				$colValue_raw=$currentRowAry[$colName];
 				$columnDefault=$dbTableMetaAry[$colName]['dbcolumndefault'];
@@ -1564,8 +1564,8 @@ class dbObject {
 				//}
 				//xxxf22
 				$colType=$dbTableMetaAry[$colName]['dbcolumntype'];
-				$colValue_sqlformat=$base->utlObj->returnFormattedData($colValue,$colType,'sql');
-				//$base->fileObj->writeLog('debug',"name: $colName, colvalueraw: $colValue_raw, colvalue: $colValue, colvaluesql: $colValue_sqlformat",&$base);//xxxf
+				$colValue_sqlformat=$base->UtlObj->returnFormattedData($colValue,$colType,'sql');
+				//$base->FileObj->writeLog('debug',"name: $colName, colvalueraw: $colValue_raw, colvalue: $colValue, colvaluesql: $colValue_sqlformat",&$base);//xxxf
 				$foreignField=$dbTableMetaAry[$colName]['dbcolumnforeignfield'];
 				$foreignField=$this->returnBoolByType($foreignField,'bool');
 				$foreignKey=$dbTableMetaAry[$colName]['dbcolumnforeignkey'];
@@ -1587,35 +1587,35 @@ class dbObject {
 			} //end foreach
 			$query .= ") values ($colValues)";
 
-			//$base->fileObj->writeLog('debug',"query: $query",&$base);//xxxf
+			//$base->FileObj->writeLog('debug',"query: $query",&$base);//xxxf
 			$result=$this->queryTable($query,'updatenoconversion',&$base);
 			if ($tempKeyId != null){
 				$query="select max($keyName) from $dbTableName";
 				$keyResult=$this->queryTable($query,'read',&$base);
 				$passAry=array();
-				$keyAry=$base->utlObj->tableRowToHashAry($keyResult,$dbControlsAry);
+				$keyAry=$base->UtlObj->tableRowToHashAry($keyResult,$dbControlsAry);
 				$realKeyId=$keyAry['max'];
-				$base->errorObj->saveKeyConv($tempKeyId,$realKeyId,&$base);
+				$base->ErrorObj->saveKeyConv($tempKeyId,$realKeyId,&$base);
 			}
 			$rtnIdFlg=$this->getRtnIdFlg();
 			if ($rtnIdFlg){
 				$query="select max($keyName) from $dbTableName";
 				$keyResult=$this->queryTable($query,'read',&$base);
 				$passAry=array();
-				$keyAry=$base->utlObj->tableRowToHashAry($keyResult,$dbControlsAry);
+				$keyAry=$base->UtlObj->tableRowToHashAry($keyResult,$dbControlsAry);
 				$realKeyId=$keyAry['max'];
-				$base->errorObj->saveError('newkeyid',$realKeyId);
+				$base->ErrorObj->saveError('newkeyid',$realKeyId);
 			}			
 
 		} //end if oktoinsert
 		else {
 			//if ($okToInsert) {echo "there are validation errors!!!";}
 			//else {echo "it is not ok to insert to $dbTableName!!!";}
-			//$base->debugObj->displayStack();//xxx
+			//$base->DebugObj->displayStack();//xxx
 			$okToInsert=false;
-			$base->fileObj->writeLog('debug',"did not do insert",&$base);//xxxf
+			$base->FileObj->writeLog('debug',"did not do insert",&$base);//xxxf
 		}
-		$base->debugObj->printDebug("-rtn:insertDbRow",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:insertDbRow",0); //xx (f)
 		return $okToInsert;
 	}
 	function setRtnIdFlg(){
@@ -1681,7 +1681,7 @@ class dbObject {
 	}
 	//=======================================
 	function checkOkToUpdate($currentRowAry,$dbControlsAry,$base){
-		$base->debugObj->printDebug("dbObj:checkOkToUpdate($currentRowAry,$dbControlsAry,'base')",0); //xx (h)
+		$base->DebugObj->printDebug("DbObj:checkOkToUpdate($currentRowAry,$dbControlsAry,'base')",0); //xx (h)
 		//- assume that all selectors are varchar <- !!! not the case
 		//-        that keyname is numeric always
 		// - need to fix this routine - if no update of any selector field, then no need to check
@@ -1713,8 +1713,8 @@ class dbObject {
 					if ($errorMsgRtn != ""){$errorMsgRtn .= ", ";}
 					$errorMsgRtn .= "$selName is $selValue";
 				}
-				$result=$base->dbObj->queryTable($query,'checkon',&$base);
-				$checkAry=$base->utlObj->tableRowToHashAry($result);
+				$result=$base->DbObj->queryTable($query,'checkon',&$base);
+				$checkAry=$base->UtlObj->tableRowToHashAry($result);
 				if (count($checkAry)==0){$okToUpdate=true;}
 				else {
 					//xxxd - need to change
@@ -1724,26 +1724,26 @@ class dbObject {
 						$errorStrg.=$selName.'('.$selValue.')'.$theComma;
 						$theComma=', ';
 					}
-					$base->errorObj->saveError('updateerror',$errorStrg,&$base);
-					$base->debugObj->printDebug("query: $query",0); //xx (q)
-					$base->debugObj->printDebug($checkAry,0,"checkAry: should be empty"); //xx (v)
+					$base->ErrorObj->saveError('updateerror',$errorStrg,&$base);
+					$base->DebugObj->printDebug("query: $query",0); //xx (q)
+					$base->DebugObj->printDebug($checkAry,0,"checkAry: should be empty"); //xx (v)
 				}
 			} // end if !checkerror
 			else {
-				$base->debugObj->placeCheck("Fatal Table Def Error keyname: $keyName, keyvalue: $keyValue, tableName: $tableName, number of selectors: $noSelectors"); //xx (c)
+				$base->DebugObj->placeCheck("Fatal Table Def Error keyname: $keyName, keyvalue: $keyValue, tableName: $tableName, number of selectors: $noSelectors"); //xx (c)
 			} // end else if !checkerror
 		} // end if need to check
 		else {$okToUpdate=true;}
-		$base->debugObj->printDebug("-rtn:checkOkToUpdate",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:checkOkToUpdate",0); //xx (f)
 		return $okToUpdate;
 	}
 	//=======================================
 	//- assume that all selectors are varchar <- !!! not necessarily the case
 	//- assume that keyname is numeric
 	function checkOkToInsert($currentRowAry,$dbControlsAry,$base){
-		$base->debugObj->printDebug("dbObj:checkOkToInsert($currentRowAry,$dbControlsAry,'base')",0); //xx (h)
+		$base->DebugObj->printDebug("DbObj:checkOkToInsert($currentRowAry,$dbControlsAry,'base')",0); //xx (h)
 		$selectorAry=$dbControlsAry['selectorary'];
-		//$base->debugObj->printDebug($selectorAry,1,'sel');//xxx
+		//$base->DebugObj->printDebug($selectorAry,1,'sel');//xxx
 		$tableName=$dbControlsAry['dbtablename'];
 		$tableNameView=$tableName."view";
 		$query="select * from $tableName where ";
@@ -1765,9 +1765,9 @@ class dbObject {
 			if ($needView == true){$useQuery=$queryView;}
 			else {$useQuery=$query;}
 			//echo "usequery: $useQuery<br>";//xxx
-			$result=$base->dbObj->queryTable($useQuery,'checkon',&$base);
-			$checkAry=$base->utlObj->tableRowToHashAry($result);
-			//$base->debugObj->printDebug($checkAry,1,'ckary');//xxx
+			$result=$base->DbObj->queryTable($useQuery,'checkon',&$base);
+			$checkAry=$base->UtlObj->tableRowToHashAry($result);
+			//$base->DebugObj->printDebug($checkAry,1,'ckary');//xxx
 			if (count($checkAry)==0){$okToInsert=true;}
 			else {
 				$okToInsert=false;
@@ -1777,7 +1777,7 @@ class dbObject {
 					$errorStrg.=$selName.'('.$selValue.')'.$theComma;
 					$theComma=', ';
 				}
-				$base->errorObj->saveError('inserterror',$errorStrg,&$base);
+				$base->ErrorObj->saveError('inserterror',$errorStrg,&$base);
 			}
 		}
 		else {
@@ -1785,17 +1785,17 @@ class dbObject {
 			$okToInsert=true;
 			//echo "xxx";
 		}
-		$base->debugObj->printDebug("-rtn:checkOkToInsert",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:checkOkToInsert",0); //xx (f)
 		return $okToInsert;
 	}
 	//=======================================
 	function validateData($currentRowAry,$dbControlsAry,$base){
-		$base->debugObj->printDebug("dbObj:validateData($currentRowAry,$dbControlsAry,'base')",0); // (h)
-		//$base->debugObj->printDebug($currentRowAry,1,'xxxf');
+		$base->DebugObj->printDebug("DbObj:validateData($currentRowAry,$dbControlsAry,'base')",0); // (h)
+		//$base->DebugObj->printDebug($currentRowAry,1,'xxxf');
 		$allValidated=true;
 		//$this->getDbTableInfo(&$dbControlsAry,&$base);
 		$dbTableName=$dbControlsAry['dbtablename'];
-		$base->fileObj->writeLog('debug2',"validate for dbtablename: $dbTableName",&$base);
+		$base->FileObj->writeLog('debug2',"validate for dbtablename: $dbTableName",&$base);
 		$dbTableMetaAry=$dbControlsAry['dbtablemetaary'];
 		//$debugStrg='';
 		foreach ($dbTableMetaAry as $colName=>$colProfileAry){
@@ -1804,7 +1804,7 @@ class dbObject {
 			$colRegEx=$colProfileAry['validateregex'];
 			$colErrMsg=$colProfileAry['validateerrormsg'];
 			$colNotNull_raw=$colProfileAry['dbcolumnnotnull'];
-			$colNotNull=$base->utlObj->returnFormattedData($colNotNull_raw,'boolean','internal');
+			$colNotNull=$base->UtlObj->returnFormattedData($colNotNull_raw,'boolean','internal');
 			$colDefaultData=$colProfileAry['dbcolumndefault'];
 			//$colEvent=$colProfileAry['dbcolumnevent'];
 			$colData=$currentRowAry[$colName];
@@ -1813,40 +1813,40 @@ class dbObject {
 			if ($colRegEx == "" && $colType == 'numeric'){
 				$colRegEx='/^[0-9]*$/';
 				$colErrMsg="Must be an integer";
-				$base->fileObj->writeLog('db',"error: $colName($colData), $colErrMsg",&$base);
+				$base->FileObj->writeLog('db',"error: $colName($colData), $colErrMsg",&$base);
 			}
 			if ($colNotNull && $colData == NULL){
 				$allValidated=false;
 				//$base->errorProfileAry['columnerrorary'][$colName]='required';//xxx
-				$base->errorObj->saveError($colName,'required',&$base);
-				$base->fileObj->writeLog('db',"error: $colName($colData), required",&$base);
+				$base->ErrorObj->saveError($colName,'required',&$base);
+				$base->FileObj->writeLog('db',"error: $colName($colData), required",&$base);
 				//echo "colname: $colName, colerrmsg: $colErrMsg";//xxx
 			} elseif ($colRegEx != "" && $colData != "") {
 				$tst = preg_match($colRegEx,$colData);
 				//echo "colname: $colName, colregex: $colRegEx, coldata: $colData, tst: $tst<br>";//xxx
 				if ($tst == 0){
-					$base->errorObj->saveError($colName,$colErrMsg."($colData)",&$base);
+					$base->ErrorObj->saveError($colName,$colErrMsg."($colData)",&$base);
 					//echo "colname: $colName, coldata: $colData, colerrmsg: $colErrMsg, preg: $colRegEx";//xxxf
-					//$base->debugObj->printDebug($currentRowAry,1,'xxxf');exit();
-					$base->fileObj->writeLog('updatecsv',"error: $colName($colData), $colErrMsg",&$base);
+					//$base->DebugObj->printDebug($currentRowAry,1,'xxxf');exit();
+					$base->FileObj->writeLog('updatecsv',"error: $colName($colData), $colErrMsg",&$base);
 					$allValidated=false;
 				} // end tst for error
 			} // end if colregex and coldata ne null
 		} // end foreach dbtablemetaary
 		//$base->paramsAry['debug']='jeff';//xxx
 		if (array_key_exists('debug',$base->paramsAry)){
-			$base->errorObj->printAllErrors(&$base);
+			$base->ErrorObj->printAllErrors(&$base);
 		}
-		$base->debugObj->printDebug("-rtn:validateData",0); //xx (f)
-		$base->fileObj->writeLog('debug2',"allvalidated: $allValidated",&$base);//xxxf
+		$base->DebugObj->printDebug("-rtn:validateData",0); //xx (f)
+		$base->FileObj->writeLog('debug2',"allvalidated: $allValidated",&$base);//xxxf
 		return $allValidated;
 	}
 	//=======================================
 	function getSqlDbAry($query,$passAry,$base){
-		//$this->containerProfileAry=$base->dbObj->getSqlDbAry($query,$passAry,&$base);
+		//$this->containerProfileAry=$base->DbObj->getSqlDbAry($query,$passAry,&$base);
 		$dataAry=array();
-		$result=$base->dbObj->queryTable($query,'read',&$base);
-		$dataAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
+		$dataAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		return $dataAry;
 	}
 	//=======================================
@@ -1858,10 +1858,10 @@ class dbObject {
 	//=======================================
 	function setRemoteDb($toDbConn,$base){
 		if ($toDbConn == null){
-			$base->fileObj->writeLogError("dbObj.setRemoteDb toDbConn is null",&$base);
+			$base->FileObj->writeLogError("DbObj.setRemoteDb toDbConn is null",&$base);
 		}
 		$this->toDbConn=$toDbConn;
-		$base->fileObj->writeLog("debug","set this->todbconn: $this->toDbConn",&$base);
+		$base->FileObj->writeLog("debug","set this->todbconn: $this->toDbConn",&$base);
 		//echo "dbobj.setremotedb: tablename: $tableName, db: $this->dbConn, db2: $this->toDbConn, useothdb: $useOtherDb, dnt rst: $dontResetUseOtherDb<br>";//xxxd
 	}
 	//=======================================

@@ -1,5 +1,5 @@
 <?php
-class formObject {
+class FormObject {
 	//5.3.13 changed getFormForAjax to get all of formprofileary
 	var $statusMsg;
 	var $formName;
@@ -9,7 +9,7 @@ class formObject {
 	var $formAry_js;
 	var $formNamesXref = array();
 //---
-	function formObject() {
+	function FormObject() {
 		$this->incCalls();
 		$this->statusMsg='html Object is fired up and ready for work!';
 		$this->setupFormJs();
@@ -17,8 +17,8 @@ class formObject {
 //===============================================
 	function setupFormJs(){
 		$this->formAry_js[]="//----------------------- setup for forms;\n";
-		$this->formAry_js[]="var formObj = new formObject();\n";
-		//- cant get to work $this->formAry_js[]="var ajaxObj = new ajaxObject();\n";
+		$this->formAry_js[]="var FormObj = new FormObject();\n";
+		//- cant get to work $this->formAry_js[]="var AjaxObj = new AjaxObject();\n";
 		$this->formAry_js[]='var validateArray = new Array();'."\n";
 	}
 //===============================================
@@ -27,20 +27,20 @@ class formObject {
 	}
 //===============================================
 	function loadFormSetups($base){
-		//$base->debugObj->printDebug($base->formElementProfileAry,1,'xxx');
+		//$base->DebugObj->printDebug($base->formElementProfileAry,1,'xxx');
 		//exit();
 		foreach ($base->formProfileAry as $formName=>$formDataAry){
 			if ($formName != 'element_order'){
 				//echo "$formName<br>";//xxx	
 				$dbTableName=$formDataAry['tablename'];
-				$this->formAry_js[]="formObj.updateEtc('$formName','dbtablename','$dbTableName');\n";
+				$this->formAry_js[]="FormObj.updateEtc('$formName','dbtablename','$dbTableName');\n";
 				$workAry=$base->formElementProfileAry[$formName];
-				//$base->debugObj->printDebug($workAry,1,'xxx');
+				//$base->DebugObj->printDebug($workAry,1,'xxx');
 				$nameStrg=null;$idStrg=null;$separ=null;
 				foreach ($workAry as $formElementName=>$formElementAry){
 					//echo "$formName, $formElementName<br>";
 					$formElementId=$formElementAry['formelementid'];
-					$formElementId=$base->utlObj->returnFormattedString($formElementId,&$base);
+					$formElementId=$base->UtlObj->returnFormattedString($formElementId,&$base);
 					if ($formElementId != null){
 						$nameStrg.=$separ.$formElementName;
 						$idStrg.=$separ.$formElementId;
@@ -48,14 +48,14 @@ class formObject {
 					}
 				}
 				//echo "datstrg: $dataStrg";
-				$this->formAry_js[]="formObj.loadFormSetupsV2('$formName', '$nameStrg','$idStrg');\n";
+				$this->formAry_js[]="FormObj.loadFormSetupsV2('$formName', '$nameStrg','$idStrg');\n";
 			}
 		}	
 	}
 //===============================================
 	function getFormForAjax($paramsAry,$base){
 	//xxxd - remove below may be a problem with another program!!!!
-		//$ajaxAry=$base->ajaxObj->getContainerForAjax(&$base);
+		//$ajaxAry=$base->AjaxObj->getContainerForAjax(&$base);
 		$ajaxAry[]="!!form!!\n";
 		$formName=$paramsAry['param_1'];
 		$formNameAry=explode('_',$formName);
@@ -64,7 +64,7 @@ class formObject {
 		$formOperation=$formAry['formoperation'];
 		$formErrorReportType=$formAry['formerrorreporttype'];
 		$formErrorReportId=$formAry['formerrorreportid'];
-		//$base->debugObj->printDebug($formAry,1,'xxxd');exit();
+		//$base->DebugObj->printDebug($formAry,1,'xxxd');exit();
 		$formContainerId=$formAry['formcontainerid'];
 		$formCount=$formAry['formcount'];
 		if ($formCount == null){$formCount=0;}
@@ -72,7 +72,7 @@ class formObject {
 		$ajaxAry[]='formname|'.$formName."\n";
 //- get form html to load (may not be in container html)
 		$newParamsAry=array('param_1'=>$formName);
-		$formHtmlAry=$base->tagObj->insertForm($newParamsAry,&$base);
+		$formHtmlAry=$base->TagObj->insertForm($newParamsAry,&$base);
 		$formHtml_raw=implode('',$formHtmlAry);
 		$formHtml=str_replace("\n",null,$formHtml_raw);
 		$ajaxAry[]='loadetc|html|'.$formHtml."\n";
@@ -80,9 +80,9 @@ class formObject {
 		$dbTableName=$formAry['tablename'];
 		//echo "forname: $formName, dbtablename: $dbTableName<br>";//xxx
 		$query="select * from dbcolumnprofileview where dbtablename='$dbTableName'";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array('delimit1'=>dbcolumnname);
-		$validateAry=$base->utlObj->tableToHashAryV3($result,$passAry,&$base);
+		$validateAry=$base->UtlObj->tableToHashAryV3($result,$passAry,&$base);
 		$ajaxAry[]='loadetc|dbtablename|'.$dbTableName."\n";
 //- get validation stuff
 		$nameStrg=null;$idStrg=null;$validateRegExStrg=null;$validateKeyMapStrg=null;$dontClearDataStrg=null;
@@ -97,16 +97,16 @@ class formObject {
 		for ($workLp=1;$workLp<=$workLpEnd;$workLp++){
 			$formElementName=$workAry[$workLp];
 			$formElementAry=$formElementsAry[$formElementName];
-			//$base->debugObj->printDebug($formElementAry,1,'xxxd');
+			//$base->DebugObj->printDebug($formElementAry,1,'xxxd');
 			$formElementId=$formElementAry['formelementid'];
 			//- cant have additional info after _ for saving to javascript form directory
-			$formElementId=$base->utlObj->returnFormattedString($formElementId,&$base);
+			$formElementId=$base->UtlObj->returnFormattedString($formElementId,&$base);
 			//below causes blowups in validation
 			$formElementIdAry=explode('_',$formElementId);
 			$formElementId=$formElementIdAry[0];
 			//- end special modification
 			$formElementDontClear=$formElementAry['formelementdontclear'];
-			$formElementDontClear=$base->utlObj->returnFormattedData($formElementDontClear,'boolean','js',&$base);
+			$formElementDontClear=$base->UtlObj->returnFormattedData($formElementDontClear,'boolean','js',&$base);
 			$validateRegEx=$validateAry[$formElementName]['validateregex'];
 			$validateKeyMap=$validateAry[$formElementName]['validatekeymap'];
 			$validateErrorMsg=$validateAry[$formElementName]['validateerrormsg'];
@@ -146,18 +146,18 @@ class formObject {
 	}
 //===============================================
 	function buildForm($formName,$dbControlsAry,$base){
-		$base->debugObj->printDebug("formObj:buildForm($formName,$dbControlsAry,'base')",0);
-		$base->fileObj->writeLog('jefftest2',"entering formname: $formName",&$base);//xxxf05
+		$base->DebugObj->printDebug("FormObj:buildForm($formName,$dbControlsAry,'base')",0);
+		$base->FileObj->writeLog('jefftest2',"entering formname: $formName",&$base);//xxxf05
 		$this->formName=$formName;
 		$dbTableName=$dbControlsAry['dbtablename'];
 		if ($dbTableName==''){$dbTableName='none';}
 		$defaultDataAry=$dbControlsAry['datarowsary'][$dbTableName][0];
 		$allDataAry=$dbControlsAry['datarowsary'];
 		//echo "formname: $formName<br>";//xxx
-		//$base->debugObj->printDebug($allDataAry,1,'alldataary');//xxx
-		//$base->fileObj->writeLog('formcreate.txt','--- form('.$formName.')---',&$base);//xxxf22
+		//$base->DebugObj->printDebug($allDataAry,1,'alldataary');//xxx
+		//$base->FileObj->writeLog('formcreate.txt','--- form('.$formName.')---',&$base);//xxxf22
 		$dataAry=$defaultDataAry;
-		//$base->debugObj->printDebug($dataAry,1,'dataary');//xxx
+		//$base->DebugObj->printDebug($dataAry,1,'dataary');//xxx
 		$dbTableMetaAry=$dbControlsAry['dbtablemetaary'];
 		$selectorNameAry=$dbControlsAry['selectornameary'];
 		$keyName=$dbControlsAry['keyname'];
@@ -167,9 +167,9 @@ class formObject {
 		$formAry=$base->formProfileAry[$formName];
 //- do <form ...>
 		$formClass_raw=$formAry['formclass'];
-		$formClass=$base->utlObj->returnFormattedString($formClass_raw,&$base);
+		$formClass=$base->UtlObj->returnFormattedString($formClass_raw,&$base);
 		$formId_raw=$formAry['formid'];
-		$formId=$base->utlObj->returnFormattedString($formId_raw,&$base);
+		$formId=$base->UtlObj->returnFormattedString($formId_raw,&$base);
 		$formContainerId=$formAry['formcontainerid'];
 		if ($formId == NULL){$formId=$formName;}
 		$tableFormat=$formAry['formtableformat'];
@@ -192,7 +192,7 @@ class formObject {
 		//- action
 		$formAction=$formAry['formaction'];
 		if ($formAction==null){
-			$systemAry=$base->clientObj->getSystemData(&$base);
+			$systemAry=$base->ClientObj->getSystemData(&$base);
 			$jobLocal=$systemAry['joblocal'];
 			$job=$base->paramsAry['job'];
 			$formAction="$jobLocal$job";
@@ -205,7 +205,7 @@ class formObject {
 		else {$formTargetInsert=null;}
 		//- events
 		$formEvents_raw=$formAry['formevents'];
-		$formEvents=$base->utlObj->returnFormattedString($formEvents_raw,&$base);
+		$formEvents=$base->UtlObj->returnFormattedString($formEvents_raw,&$base);
 		//- line
 		//echo "xxxd1: name: $formName, type: $formType<br>";//xxxd
 		if ($formType != 'fragment'){
@@ -214,9 +214,9 @@ class formObject {
 			if ($formId != NULL){$formLine .= " id=\"$formId\"";}
 			$formLine .= ">";
 			$returnAry[]="$formLine\n";
-			$this->formAry_js[]="formObj.updateEtc('$formName','containerid','$formContainerId')"."\n";
+			$this->formAry_js[]="FormObj.updateEtc('$formName','containerid','$formContainerId')"."\n";
 			//xxx
-			//if ($formName=='insertpictureprofile'){$base->debugObj->printDebug($returnAry,1,'xxxd');exit();}
+			//if ($formName=='insertpictureprofile'){$base->DebugObj->printDebug($returnAry,1,'xxxd');exit();}
 		}
 		//- comment
 //- do only if not form fragment
@@ -330,8 +330,8 @@ class formObject {
 		$formOrderAry=$base->formProfileAry['element_order'][$formName];
 		$formElCnt=count($formOrderAry);
 		$rowNo=0;
-		//$base->debugObj->printDebug($dataAry,1,'dtaary');//xxx
-		//$base->debugObj->printDebug($allFormElementAry,1,'for');//xxx
+		//$base->DebugObj->printDebug($dataAry,1,'dtaary');//xxx
+		//$base->DebugObj->printDebug($allFormElementAry,1,'for');//xxx
 		//- need to alter this for row, column setup form
 		//echo "----------------loop through form elements!!!<br>";//xxxf24
 		for ($formElCtr=1;$formElCtr<=$formElCnt;$formElCtr++){
@@ -344,7 +344,7 @@ class formObject {
 			$formElNameColumnName=$formElNameAry[2];
 			$formElAry=$allFormElementAry[$formElName];
 			$formElName=$formElAry['formelementname'];
-			//$this->doDebug("formObj: formname: $formName, formelctr: $formElCtr, formelname: $formElName, formelnamecolumnname: $formElNameColumnName",&$base);//xxxf
+			//$this->doDebug("FormObj: formname: $formName, formelctr: $formElCtr, formelname: $formElName, formelnamecolumnname: $formElNameColumnName",&$base);//xxxf
 			if ($formElNameColumnName != ''){
 				$dataAry=$allDataAry[$formElNameDbTable][$formElNameRowNo];
 				$formElAry['formelementname_use']=$formElNameColumnName;
@@ -354,7 +354,7 @@ class formObject {
 				$formElAry['formelementname_use']=$formElName;
 			}
 			//echo "formelnameuse: $formElName or $formElNameColumnName<br>";//xxx
-			//$base->debugObj->printDebug($dataAry,1,'dataary');//xxx
+			//$base->DebugObj->printDebug($dataAry,1,'dataary');//xxx
 			$formElAry['datatype']=$dbTableMetaAry[$formElName]['dbcolumntype'];
 			$formElAry['labelfill']=$labelFill;
 			$formElAry['labelcols']=$labelCols;
@@ -363,7 +363,7 @@ class formObject {
 			$formElSubType=$formElAry['formelementsubtype'];
 			//echo "name: $formElName, type: $formElType<br>";//xxx
 			//if ($formElName == 'cssprofileid'){
-				//$base->fileObj->writeLog('jefftest',"xxx05: formname: $formName, cssprofileid, type: $formElType",&$base);
+				//$base->FileObj->writeLog('jefftest',"xxx05: formname: $formName, cssprofileid, type: $formElType",&$base);
 			//}
 			switch ($formElType){
 				//- make the below actually call the real buildcontainer which will insert form fragments
@@ -371,7 +371,7 @@ class formObject {
 					$subReturnAry=$this->buildJsButton($formElAry,$dataAry,$tableFormat,&$base);
 					break;
 				case 'container':
-					$subReturnAry=$base->containerObj->insertContainerHtml($formElName,$base);
+					$subReturnAry=$base->ContainerObj->insertContainerHtml($formElName,$base);
 					break;
 				case 'select':
 					//echo "formelname: $formElName<br>";//xxx
@@ -391,12 +391,12 @@ class formObject {
 					break;
 				case 'button':
 					$subReturnAry=$this->buildButton($formElAry,$tableFormat,&$base);
-					//$base->debugObj->printDebug($subReturnAry,1,'brtn');//xxx
+					//$base->DebugObj->printDebug($subReturnAry,1,'brtn');//xxx
 					break;
 				//- same as jsbutton
 				case 'jssubmit':
 					$subReturnAry=$this->buildJsButton($formElAry,$tableFormat,&$base);
-					//$base->debugObj->printDebug($subReturnAry,1,'xxx');//xxx
+					//$base->DebugObj->printDebug($subReturnAry,1,'xxx');//xxx
 					break;
 				case 'boolean':
 					//echo "name: $formElName<br>";//xxx
@@ -416,11 +416,11 @@ class formObject {
 							break;
 						case 'text':
 							$subReturnAry=$this->buildInputText($formElAry,$dataAry,$tableFormat,&$base);
-							//$base->debugObj->printDebug($subReturnAry,1,'itrtn');//xxx
+							//$base->DebugObj->printDebug($subReturnAry,1,'itrtn');//xxx
 							break;
 						case 'password':
 							$subReturnAry=$this->buildInputText($formElAry,$dataAry,$tableFormat,&$base);
-							//$base->debugObj->printDebug($subReturnAry,1,'iprtn');//xxx
+							//$base->DebugObj->printDebug($subReturnAry,1,'iprtn');//xxx
 							break;
 						case 'checkbox':
 							$subReturnAry=$this->buildInputCheckBox($formElAry,$dataAry,$tableFormat,&$base);
@@ -440,7 +440,7 @@ class formObject {
 					$formElName=$formElAry['formelementname'];
 					$class=$formElAry['formelementclass'];
 					$formElementId=$formElAry['formelementid'];
-					$formElementId=$base->utlObj->returnFormattedString($formElementId,&$base);
+					$formElementId=$base->UtlObj->returnFormattedString($formElementId,&$base);
 					$passAry=array();
 					$passAry=$this->setTableFields($formElName,$formElLabel,$errorMsg,$tableFormat,$class,$formElementId,$formElAry,&$base);
 					$preTable=$passAry['pretable'];
@@ -451,19 +451,19 @@ class formObject {
 					$formElClassInsert="class=\"$formElClass\"";
 					//- id
 					$formElementId=$formElAry['formelementid'];
-					$formElementId=$base->utlObj->returnFormattedString($formElementId,&$base);
+					$formElementId=$base->UtlObj->returnFormattedString($formElementId,&$base);
 					if ($formElementId==NULL){$formElIdInsert=NULL;}
 					else {$formElIdInsert="id=\"$formElementId\"";}
 					//- events
 					$formElEvents_raw=$formElAry['formelementeventattributes'];
-					$formElEvents=$base->utlObj->returnFormattedString($formElEvents_raw,&$base);
+					$formElEvents=$base->UtlObj->returnFormattedString($formElEvents_raw,&$base);
 					if ($formElEvents==NULL){$formElEventsInsert=NULL;}
 					else {$formElEventsInsert=$formElEvents;}
 					//- name
 					$formElNameAry=explode('/',$formElName);
 					$imagePath=$dataAry[$formElNameAry[0]].'/'.$dataAry[$formElNameAry[1]];
 					//echo "formelnameary0: $formElNameAry[0], formelnameary1: $formElNameAry[1], imagepath: $imagePath";exit();//xxxd
-					//$base->debugObj->printDebug($dataAry,1,'xxxd');exit();//xxxd		
+					//$base->DebugObj->printDebug($dataAry,1,'xxxd');exit();//xxxd		
 					$subReturnAry=array();
 					$subReturnAry[]="$preTable<img src=\"$imagePath\" $formElClassInsert $formElIdInsert $formElEventsInsert>$postTable";
 					break;
@@ -476,24 +476,24 @@ class formObject {
 					$preTable=$passAry['pretable'];
 					$postTable=$passAry['posttable'];
 					$subReturnAry=array();
-					//$imgAry=$base->htmlObj->buildImg($formElName,&$base);
+					//$imgAry=$base->HtmlObj->buildImg($formElName,&$base);
 					$passAry=array();
 					$passAry['imagename']=$formElName;
 					$imageEvents=$formElAry['formelementeventattributes'];
-					$imageEvents=$base->utlObj->returnFormattedStringDataFed($imageEvents,$dataAry,&$base);
+					$imageEvents=$base->UtlObj->returnFormattedStringDataFed($imageEvents,$dataAry,&$base);
 					$passAry['imageevents']=$imageEvents;
 					$formElementId=$formElAry['formelementid'];
-					$formElementId=$base->utlObj->returnFormattedString($formElementId,&$base);
+					$formElementId=$base->UtlObj->returnFormattedString($formElementId,&$base);
 					$passAry['imageid']=$formElementId;
 					//echo "formelementid: $formElementId<br>";//xxxd
-					$imgAry=$base->htmlObj->buildImgPass($passAry,&$base);
-					//$base->debugObj->printDebug($imgAry,1,'xxxd');
+					$imgAry=$base->HtmlObj->buildImgPass($passAry,&$base);
+					//$base->DebugObj->printDebug($imgAry,1,'xxxd');
 					$subReturnAry[]="$preTable$imgAry[0]$postTable";
 					break;
 				default:
 				echo "form name: $formName, formel name: $formElName,  element no: $formElCtr<br>";//xx
-					$base->debugObj->placeCheck("Invalid Form type: $formElType"); //xx (c)
-					//$base->debugObj->printDebug($formElAry,1,'formelary');//xx
+					$base->DebugObj->placeCheck("Invalid Form type: $formElType"); //xx (c)
+					//$base->DebugObj->printDebug($formElAry,1,'formelary');//xx
 					break;
 			}
 			if ($tableFormat==10){
@@ -507,7 +507,7 @@ class formObject {
 		}
 		//echo "formname: $formName, tableformat: $tableFormat<br>";//xxx
 		if ($tableFormat==10){
-			//$base->debugObj->printDebug($returnAry,1,'xxx');
+			//$base->DebugObj->printDebug($returnAry,1,'xxx');
 			foreach ($returnWorkAry as $rowNo=>$colAry){
 				$returnAry[]='<tr>';
 				foreach ($colAry as $colNo=>$formElAry){
@@ -515,7 +515,7 @@ class formObject {
 				}
 				$returnAry[]='</tr>';
 			}
-			//$base->debugObj->printDebug($returnWorkAry,1,'xxxd');
+			//$base->DebugObj->printDebug($returnWorkAry,1,'xxxd');
 		}
 		if ($tableFormat != 6){
 			$returnAry[]="</table>";
@@ -529,20 +529,20 @@ class formObject {
 			//xxxd - do </div>
 			$returnAry[]="</form>";
 		}
-		$base->debugObj->printDebug("-rtn:buildForm",0); //xx (f)
-		//$base->debugObj->printDebug($returnAry,1,'xxxf');
+		$base->DebugObj->printDebug("-rtn:buildForm",0); //xx (f)
+		//$base->DebugObj->printDebug($returnAry,1,'xxxf');
 		//exit();//xxxf666
 		return $returnAry;
 	}
 //==============================================================
 	function buildInputText($formElAry,$dataAry,$tableFormat,$base){
-		$base->debugObj->printDebug("buildInputText($formElAry,$dataAry,$tableFormat,'base')",0);
+		$base->DebugObj->printDebug("buildInputText($formElAry,$dataAry,$tableFormat,'base')",0);
 		$returnAry=array();
 		$name=$formElAry['formelementname'];
 		$inputType=$formElAry['formelementsubtype'];
 		$formElementEvent=$formElAry['formelementeventattributes'];
-		$formElementEvent=$base->utlObj->returnFormattedString($formElementEvent,&$base);
-		//$base->debugObj->printDebug($formElAry,1,'fea');//xxx
+		$formElementEvent=$base->UtlObj->returnFormattedString($formElementEvent,&$base);
+		//$base->DebugObj->printDebug($formElAry,1,'fea');//xxx
 		$tabIndex_forthis=$formElAry['formelementtabindex'];
 		if ($tabIndex_forthis == NULL){$tabIndex_forthis=$formElAry['formelementno'];}
 		$tabIndexBase=$formElAry['tabindexbase'];
@@ -560,21 +560,21 @@ class formObject {
 		if ($class != ''){$classInsert="class=\"$class\"";}
 		else {$classInsert='';}
 		$formElementId=$formElary['formelementid'];
-		$formElementId=$base->utlObj->returnFormattedString($formElementId,&$base);
+		$formElementId=$base->UtlObj->returnFormattedString($formElementId,&$base);
 		$theData=$dataAry[$name];
 		$errorMsg=$base->errorProfileAry['columnerrorary'][$name];
 		$value_raw=$formElAry['formelementvalue'];	
 		if ($theData != NULL){$value_raw=$theData;}
 		$formElementDontConvert_raw=$formElAry['formelementdontconvert'];
-		$formElementDontConvert=$base->utlObj->returnFormattedData($formElementDontConvert_raw,'boolean','internal');
+		$formElementDontConvert=$base->UtlObj->returnFormattedData($formElementDontConvert_raw,'boolean','internal');
 		if ((strpos(('x'.$value_raw),'%',0)>0) && !($formElementDontConvert)) {
-			$value=$base->utlObj->returnFormattedString($value_raw,&$base);
+			$value=$base->UtlObj->returnFormattedString($value_raw,&$base);
 		}
 		else {
 			$value=$value_raw;
 		}
 		$label=$formElAry['formelementlabel'];
-		$label=$base->utlObj->returnFormattedString($label,&$base);//xxx
+		$label=$base->UtlObj->returnFormattedString($label,&$base);//xxx
 		if ($labelFill != '' && $labelCols >0){
 			$labelLen=strlen($label);
 			$fillLen=$labelCols-$labelLen;
@@ -590,25 +590,25 @@ class formObject {
 		$typeInsert="type=\"$inputType\"";
 		$nameInsert="name=\"$useName\"";
 		$id_raw=$formElAry['formelementid'];
-		$id=$base->utlObj->returnFormattedString($id_raw,&$base);
+		$id=$base->UtlObj->returnFormattedString($id_raw,&$base);
 		//echo "idraw: $id_raw, name: $useName<br>";//xxxf
-		//$base->debugObj->printDebug($formElAry,1,'xxxea');
+		//$base->DebugObj->printDebug($formElAry,1,'xxxea');
 		if ($id == NULL){$id=$useName;}
 		$idInsert="id=\"$id\"";	
 		//xxxf lets dont do this when keying in stuff yet
-		$onKeyUpIns="onkeyup=\"formObj.validateInput('$useName');\"";
+		$onKeyUpIns="onkeyup=\"FormObj.validateInput('$useName');\"";
 		//if ($formElementEvent == null){$formElementEvent=$onKeyUpIns;}
 		//echo "formname: $formName, formelname: $name, text input, onkeyupins: $onKeyUpIns, event: $formElementEvent<br>";//xxxf
 //-
 		$insertLine="$preTable<input $typeInsert $nameInsert $idInsert $classInsert $tabIndexInsert $colIns value=\"$value\" $formElementEvent>\n$postTable";
-		//if ($name=='formelementlabel'){$base->debugObj->printDebug($insertLine,1,'xxx');}
+		//if ($name=='formelementlabel'){$base->DebugObj->printDebug($insertLine,1,'xxx');}
 		$returnAry[]=$insertLine;
-		$base->debugObj->printDebug("-rtn:buildInputText",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:buildInputText",0); //xx (f)
 		return $returnAry;
 	}
 //=============================================================
 	function buildTextArea($formElAry,$dataAry,$tableFormat,$base){
-		$base->debugObj->printDebug("buildTextArea($formElAry,$dataAry,$tableFormat,'base')",0);
+		$base->DebugObj->printDebug("buildTextArea($formElAry,$dataAry,$tableFormat,'base')",0);
 		$returnAry=array();
 		$name=$formElAry['formelementname'];
 		$inputType=$formElAry['formelementsubtype'];
@@ -618,7 +618,7 @@ class formObject {
 		$formElementRows=$formElAry['formelementrows'];
 		$formElementRowsInsert="rows=\"$formElementRows\"";
 		if ($formElementRows<1){$formElementRows=5;}
-		//$base->debugObj->printDebug($formElAry,1,'fea');//xxx
+		//$base->DebugObj->printDebug($formElAry,1,'fea');//xxx
 		$tabIndexBase=$formElAry['tabindexbase'];
 		$tabIndex_forthis=$formElAry['formelementtabindex'];
 		if ($tabIndex_forthis == NULL){$tabIndex_forthis=$formElAry['formelementno'];}
@@ -636,7 +636,7 @@ class formObject {
 		if ($class != ''){$classInsert="class=\"$class\"";}
 		else {$classInsert='';}
 		$id=$formElAry['formelementid'];
-		$id=$base->utlObj->returnFormattedString($id,&$base);
+		$id=$base->UtlObj->returnFormattedString($id,&$base);
 		if ($id!=null){$idInsert="id=\"$id\"";}
 		else {$idInsert=null;}
 		$theData=$dataAry[$name];
@@ -644,7 +644,7 @@ class formObject {
 		$value=$formElAry['formelementvalue'];	
 		if ($theData != NULL){$value=$theData;}
 		$label=$formElAry['formelementlabel'];
-		$label=$base->utlObj->returnFormattedString($label,&$base);//xxx
+		$label=$base->UtlObj->returnFormattedString($label,&$base);//xxx
 		if ($labelFill != '' && $labelCols >0){
 			$labelLen=strlen($label);
 			$fillLen=$labelCols-$labelLen;
@@ -660,40 +660,40 @@ class formObject {
 		$typeInsert="type=\"$inputType\"";
 		$nameInsert="name=\"$useName\"";
 		$formElementEvents=$formElAry['formelementeventattributes'];
-		$formElementEvents=$base->utlObj->returnFormattedString($formElementEvents,&$base);
+		$formElementEvents=$base->UtlObj->returnFormattedString($formElementEvents,&$base);
 //- not sure what this is going to do but will fix it xxxf22
-		$onKeyUpIns="onkeyup=\"formObj.validateInput('$useName');\"";
+		$onKeyUpIns="onkeyup=\"FormObj.validateInput('$useName');\"";
 		if ($formElementEvents == ''){
 			$formElementEvents=$onKeyUpIns;
 		}
 		//echo "formname: $formName, formelname: $name, text area, onkeyupins: $onKeyUpIns, events: $formElementEvents<br>";//xxxf
 		$returnAry[]="$preTable<textarea $formElementRowsInsert $formElementColsInsert $typeInsert $nameInsert $idInsert $classInsert $tabIndexInsert $colIns $formElementEvents >$value</textarea>\n$postTable";
-		$base->debugObj->printDebug("-rtn:buildTextArea",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:buildTextArea",0); //xx (f)
 		return $returnAry;
 	}
 //=============================================================
 	function buildBoolean($formElAry,$dataAry,$tableFormat,$base){
-		$base->debugObj->printDebug("formObj:buildBoolean",0);
+		$base->DebugObj->printDebug("FormObj:buildBoolean",0);
 		$optionQuery="select * from standardpromptsprofile where standardpromptsname='yesno' order by standardpromptslabel";
 		$formElAry['formelementoptionsql']=$optionQuery;
 		$formElAry['formelementoptionlabelname']='standardpromptslabel';
 		$formElAry['formelementoptionvaluename']='standardpromptsvalue';
 		$subReturnAry=$this->buildSelect($formElAry,$dataAry,$tableFormat,&$base);
-		$base->debugObj->printDebug("-rtn:buildBoolean",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:buildBoolean",0); //xx (f)
 		return $subReturnAry;
 	}
 //============================================================= 
 	function buildSelect($formElAry,$dataAry,$tableFormat,$base){
-		$base->debugObj->printDebug("formObj:buildSelect($formElAry,$dataAry,$tableFormat,'base')",0);
+		$base->DebugObj->printDebug("FormObj:buildSelect($formElAry,$dataAry,$tableFormat,'base')",0);
 		$formName=$formElAry['formname'];
 		//$formElName=$formElAry['formelementname'];//xxx
 		//echo "formname in buildselect: $formName, formelname: $formElName<br>";//xxx
-		//$base->debugObj->printDebug($dataAry,1,'dta');//xxx
+		//$base->DebugObj->printDebug($dataAry,1,'dta');//xxx
 		$selectLabel=$formElAry['formelementlabel'];
 		$labelFill=$formElAry['labelfill'];
 		$labelCols=$formElAry['labelcols'];
 		$multipleSelect_raw=$formElAry['formelementmultiple'];
-		$multipleSelect=$base->utlObj->returnFormattedData($multipleSelect_raw,'boolean','internal');
+		$multipleSelect=$base->UtlObj->returnFormattedData($multipleSelect_raw,'boolean','internal');
 		if ($multipleSelect){$multipleInsert=' multiple ';}
 		else {$multipleInsert=NULL;}
 //- build label
@@ -727,12 +727,12 @@ class formObject {
 		//echo "dbtablecolumnname: $dbTableColumnName<br>";//xxx
 		$selectSize=$formElAry['formelementrows'];
 		$valueFromFormElement_raw=$formElAry['formelementvalue'];
-		$valueFromFormElement=$base->utlObj->returnFormattedString($valueFromFormElement_raw,&$base);
+		$valueFromFormElement=$base->UtlObj->returnFormattedString($valueFromFormElement_raw,&$base);
 		$formName=$formElAry['formname'];
 		$formElName=$formElAry['formelementname'];
 		$formElClass=$formElAry['formelementclass'];
 		$formElId=$formElAry['formelementid'];
-		$formElId=$base->utlObj->returnFormattedString($formElId,&$base);
+		$formElId=$base->UtlObj->returnFormattedString($formElId,&$base);
 		if ($formElId==null){$formElIdInsert=null;}
 		else {$formElIdInsert="id=\"$formElId\"";}			
 		$formElFirstLabel=$formElAry['formelementfirstlabel'];
@@ -741,7 +741,7 @@ class formObject {
 		else {$formElClassInsert='';}
 		$formName=$formElAry['formname'];
 		$dontGetData_file=$base->formProfileAry[$formName]['formdontreaddata'];
-		$dontGetData=$base->utlObj->returnFormattedData($dontGetData_file,'boolean','internal');
+		$dontGetData=$base->UtlObj->returnFormattedData($dontGetData_file,'boolean','internal');
 		if ($dontGetData){
 			$theData=$base->paramsAry[$dbTableColumnName];
 			//$this->doDebug("from paramsary($dbTableColumnName) thedata: $theData",&$base);//xxxf
@@ -750,9 +750,9 @@ class formObject {
 			$theData=$dataAry[$dbTableColumnName];
 			//$this->doDebug("from dataAry($dbTableColumnName) thedata: $theData",&$base);//xxxf
 		}
-		//$base->debugObj->printDebug($dataAry,1,' dataary');//
+		//$base->DebugObj->printDebug($dataAry,1,' dataary');//
 		//echo "thdata: $theData from $dbTableColumnName<br>";//
-		//$base->debugObj->printDebug($dataAry,1,'xxx');
+		//$base->DebugObj->printDebug($dataAry,1,'xxx');
 		$dataType=$formElAry['datatype'];
 		if ($dataType == ""){$dataType="varchar";}
 		if ($theData == ""){$theData=$valueFromFormElement;}
@@ -760,36 +760,36 @@ class formObject {
 		//name of this element, then put %elementname% into its value field
 		// I cant do it automatically because of select of parent ids using a current id which is also in the
 		// option list and in paramsary - in that case the value field would be %parentprofileid%
-		$theData_formformat=$base->utlObj->returnFormattedData($theData,$dataType,'form');
+		$theData_formformat=$base->UtlObj->returnFormattedData($theData,$dataType,'form');
 //- get option list
 //- formuseotherdb ... the form gets its data from the 'other' database
-//- formelementotherdb ... option statement gets dbconn from system001Obj->getClientConn(dbNo,base)
-//- formelementotherdbno ... dbno in system001Obj retrieved by getClientConn(dbNo,base) ... you have to set it up manually
+//- formelementotherdb ... option statement gets dbconn from System001Obj->getClientConn(dbNo,base)
+//- formelementotherdbno ... dbno in System001Obj retrieved by getClientConn(dbNo,base) ... you have to set it up manually
 //- if dbno is 0, then the options are retrieved from the same database as the data for the form
 		$useOtherDb_raw=$formElAry['formelementotherdb'];
-		$useOtherDb=$base->utlObj->returnFormattedData($useOtherDb_raw,'boolean','internal');
+		$useOtherDb=$base->UtlObj->returnFormattedData($useOtherDb_raw,'boolean','internal');
 		$dbNo=$formElAry['formelementotherdbno'];
 		//echo "query: $optionQuery<br>";//xxxf28
-		$base->fileObj->writeLog('jefftest',"option query: $optionQuery",&$base);
+		$base->FileObj->writeLog('jefftest',"option query: $optionQuery",&$base);
 		
 		if ($useOtherDb){
 			if ($dbNo>0 && $dbNo<10){
-				$theDbConn=$base->system001Obj->getClientConn($dbNo,&$base);
+				$theDbConn=$base->System001Obj->getClientConn($dbNo,&$base);
 				if ($theDbConn != NULL){
-					$result=$base->clientObj->queryClientDbTable($optionQuery,$theDbConn,'read',&$base);
-					$base->fileObj->writeLog('debug',"formname: $formName, formElName: $formElName, dbno: $dbNo from ele, dbconn: $theDbConn, option query: $optionQuery",&$base);
+					$result=$base->ClientObj->queryClientDbTable($optionQuery,$theDbConn,'read',&$base);
+					$base->FileObj->writeLog('debug',"formname: $formName, formElName: $formElName, dbno: $dbNo from ele, dbconn: $theDbConn, option query: $optionQuery",&$base);
 				}
 				else {$result=NULL;}
 			}
 			else {
 				if ($dbNo==0){
 					// query the data like the formdata does
-					$base->dbObj->setUseOtherDb(&$base);
-					$result=$base->dbObj->queryTable($optionQuery,'read',&$base);
-					$base->fileObj->writeLog('debug',"xxxf3.6: dbObj->setUseOtherDb run",&$base);
+					$base->DbObj->setUseOtherDb(&$base);
+					$result=$base->DbObj->queryTable($optionQuery,'read',&$base);
+					$base->FileObj->writeLog('debug',"xxxf3.6: DbObj->setUseOtherDb run",&$base);
 				}
 				else {
-					$base->fileObj->writeLog('debug',"xxxf3.8 dbno is not 0 so total error",&$base);
+					$base->FileObj->writeLog('debug',"xxxf3.8 dbno is not 0 so total error",&$base);
 					$result=NULL;
 				}
 			}
@@ -797,21 +797,21 @@ class formObject {
 		else {
 			// - form says to use otherdb 
 			$formUseOtherDb_raw=$base->formProfileAry[$formName]['formuseotherdb'];
-			$formUseOtherDb=$base->utlObj->returnFormattedData($formUseOtherDb_raw,'boolean','internal');
-			//$base->fileObj->writeLog('debug',"useotherdb: $useOtherDb, formuseotherdb: $formUseOtherDb so set useotherdb in dbObj, option query: $optionQuery",&$base);
-			if ($useOtherDb){$base->dbObj->setUseOtherDb(&$base);}
+			$formUseOtherDb=$base->UtlObj->returnFormattedData($formUseOtherDb_raw,'boolean','internal');
+			//$base->FileObj->writeLog('debug',"useotherdb: $useOtherDb, formuseotherdb: $formUseOtherDb so set useotherdb in DbObj, option query: $optionQuery",&$base);
+			if ($useOtherDb){$base->DbObj->setUseOtherDb(&$base);}
 			//echo "optionselect: $optionQuery, useotherdb: $useOtherDb<br>";//
-			$result=$base->dbObj->queryTable($optionQuery,'select',&$base);
+			$result=$base->DbObj->queryTable($optionQuery,'select',&$base);
 		}
 		$dmyAry=array('selectoptionvalue'=>$dataType);
 		$passAry=array('globaldatatype'=>$dmyAry);
 		//!!redo above
-		$workAry=$base->utlObj->tableToHashAryV3($result,$passAry);
-		//$base->debugObj->printDebug($workAry,1,'xxx');
+		$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+		//$base->DebugObj->printDebug($workAry,1,'xxx');
 		$returnAry=array();
 		$errorMsg=$base->errorProfileAry['columnerrorary'][$selectName];
 		$formEvent_raw=$formElAry['formelementeventattributes'];
-		$formEvent=$base->utlObj->returnFormattedString($formEvent_raw,&$base);
+		$formEvent=$base->UtlObj->returnFormattedString($formEvent_raw,&$base);
 		if ($formEvent != NULL){$formEventInsert=$formEvent;}
 		else {$formEventInsert=NULL;}
 		//xxx
@@ -825,19 +825,19 @@ class formObject {
 			$returnAry[]="$optionLine\n";
 		}
 		$formXref_raw=$formElAry['formelementxrefform'];
-		$formXref=$base->utlObj->returnFormattedData($formXref_raw,'boolean','internal');
+		$formXref=$base->UtlObj->returnFormattedData($formXref_raw,'boolean','internal');
 		$formXrefName=$formElAry['formelementoptionformxrefname'];
 		if ($formXref){
 			//- below turns off bool if the formname is already in formnamesxref - once per form?!?
 			if (array_key_exists($formName,$this->formNamesXref)){null;}
 			else {
-				$this->formAry_js[]="formObj.setOptionXrefForm('$formName');\n";
+				$this->formAry_js[]="FormObj.setOptionXrefForm('$formName');\n";
 				$this->formNamesXref[$formName]='xxx';
 			}	
 		}
 //- loop through options
 		//$chkpos=strpos($optionQuery,'columntype',0);//xxx
-		//$base->debugObj->printDebug($base->paramsAry,1,'paramsary');//xxxd
+		//$base->DebugObj->printDebug($base->paramsAry,1,'paramsary');//xxxd
 		$labelNameAry=explode(',',$labelColName);
 		$labelNameAryNo=count($labelNameAry);
 		$noOptions=count($workAry);
@@ -847,11 +847,11 @@ class formObject {
 			if ($valueColName2 != ''){
 				$optionValue.='_'.$optionRow[$valueColName2];
 			}
-			$optionValue_formformat=$base->utlObj->returnFormattedData($optionValue,$dataType,'form');
+			$optionValue_formformat=$base->UtlObj->returnFormattedData($optionValue,$dataType,'form');
 			$useLabelColName=NULL;
 			$firstTime=true;
 			$optionLabels=NULL;
-			//$base->debugObj->printDebug($optionRow,1,'optionrow');
+			//$base->DebugObj->printDebug($optionRow,1,'optionrow');
 			for ($lblCtr=0;$lblCtr<$labelNameAryNo;$lblCtr++){
 				if (!$firstTime){$optionLabels.=',';}
 				$labelName=$labelNameAry[$lblCtr];
@@ -865,7 +865,7 @@ class formObject {
 			$selectedInsert="";
 			$dataType=$formElAry['datatype'];
 			if ($dataType == ""){$dataType="varchar";}
-			$theData_formformat=$base->utlObj->returnFormattedData($theData,$dataType,'form');
+			$theData_formformat=$base->UtlObj->returnFormattedData($theData,$dataType,'form');
 			//echo "thedata: $theData_formformat, optionvalue: $optionValue_formformat<br>";//
 			if ($optionValue_formformat == $theData_formformat){
 				$selectedInsert=" selected=\"selected\" ";
@@ -878,22 +878,22 @@ class formObject {
 			//echo "name: $formName, optvalue: $optionValue, xrefbool: $formXref<br>";//xxx
 			if ($formXref){
 				$formXrefValue=$optionRow[$formXrefName];
-				$this->formAry_js[]="formObj.addOptionXref('$formName','$optionValue','$formXrefValue');\n";
+				$this->formAry_js[]="FormObj.addOptionXref('$formName','$optionValue','$formXrefValue');\n";
 			}
 		}
 		$returnAry[]="</select>$postTable\n";
-		$base->debugObj->printDebug("-rtn:buildSelect",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:buildSelect",0); //xx (f)
 		return $returnAry;
 	}
 //=============================================================
 	function buildInputSelect($formElAry,$dataAry,$tableFormat,$base){
-		$base->debugObj->printDebug("formObj:buildInputSelect($formElAry,$dataAry,$tableFormat,'base')",0);
+		$base->DebugObj->printDebug("FormObj:buildInputSelect($formElAry,$dataAry,$tableFormat,'base')",0);
 		$returnAry=array();
 		$name=$formElAry['formelementname'];
 		$label=$formElAry['formelementlabel'];
 		$class=$formElAry['formelementclass'];
 		$id=$formElAry['formelementid'];
-		$id=$base->utlObj->returnFormattedString($id,&$base);
+		$id=$base->UtlObj->returnFormattedString($id,&$base);
 		if ($class != ''){
 			$classInsert="class=\"$class\"";
 		} else { $classInsert='';}
@@ -909,12 +909,12 @@ class formObject {
 		$formElAry['formelementname'].="_select";
 		$subReturnAry = $this->buildSelect($formElAry,$dataAry,$tableFormat,&$base);
 		$returnAry=array_merge($returnAry,$subReturnAry);
-		$base->debugObj->printDebug("-rtn:buildInputSelect",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:buildInputSelect",0); //xx (f)
 		return $returnAry;
 	}
 //=============================================================
 	function buildDisplay($formElAry,$dataAry,$tableFormat,$base){
-		$base->debugObj->printDebug("buildDisplay($formElAry,$dataAry,$tableFormat,'base')",0);
+		$base->DebugObj->printDebug("buildDisplay($formElAry,$dataAry,$tableFormat,'base')",0);
 		$specificTableFormat=$formElAry['formelementtableformat'];
 		if ($specificTableFormat != null){$tableFormat=$specificTableFormat;}
 		$oldTableFormat=$tableFormat;
@@ -926,8 +926,8 @@ class formObject {
 		$theData=$dataAry[$name];
 		$value_raw=$formElAry['formelementvalue'];	
 		$useSpan_raw=$formElAry['formelementspan'];
-		$useSpan=$base->utlObj->returnFormattedData($useSpan_raw,'boolean','internal');
-		$value=$base->utlObj->returnFormattedString($value_raw,&$base);
+		$useSpan=$base->UtlObj->returnFormattedData($useSpan_raw,'boolean','internal');
+		$value=$base->UtlObj->returnFormattedString($value_raw,&$base);
 		if ($theData != ""){$value=$theData;}
 		//echo "name: $name, value_raw: $value_raw, value: $value, thedate: $theData<br>";//xxx
 		$label=$formElAry['formelementlabel'];
@@ -936,13 +936,13 @@ class formObject {
 		if ($class != NULL){$classInsert="class=\"$class\"";}
 		else {$classInsert=NULL;}
 		$id=$formElAry['formelementid'];
-		$id=$base->utlObj->returnFormattedString($id,&$base);
+		$id=$base->UtlObj->returnFormattedString($id,&$base);
 		if ($id == NULL){$id=$name;}
 		$idInsert="id=\"$id\"";
 		if ($cols != ""){$colIns=" size=\"$cols\" ";}
 		else {$colIns="";}
 		$events_raw=$formElAry['formelementeventattributes'];
-		$events=$base->utlObj->returnFormattedString($events_raw,&$base);
+		$events=$base->UtlObj->returnFormattedString($events_raw,&$base);
 		$errorMsg=$base->errorProfileAry['columnerrorary'][$name];
 		$passAry=$this->setTableFields($name,$label,$errorMsg,$tableFormat,$class,$id,$formElAry,&$base);
 		$preTable=$passAry['pretable'];
@@ -953,12 +953,12 @@ class formObject {
 		else {$usePreTable=$preTable;$usePostTable=$postTable;$useElement='div';}
 		$theLine="<$useElement $classInsert $idInsert $events>$value</$useElement>";
 		$returnAry[]=	"$usePreTable$workAry[0]$theLine$usePostTable";
-	  	$base->debugObj->printDebug("-rtn:buildDisplay",0); //xx (f)
+	  	$base->DebugObj->printDebug("-rtn:buildDisplay",0); //xx (f)
 		return $returnAry;
 	}
 //=======================================================================
 	function buildSimpleDisplay($formElAry,$dataAry,$tableFormat,$base){
-		$base->debugObj->printDebug("buildSimpleDisplay($formElAry,$dataAry,$tableFormat,'base')",0);
+		$base->DebugObj->printDebug("buildSimpleDisplay($formElAry,$dataAry,$tableFormat,'base')",0);
 		$specificTableFormat=$formElAry['formelementtableformat'];
 		if ($specificTableFormat != null){$tableFormat=$specificTableFormat;}
 		$oldTableFormat=$tableFormat;
@@ -967,8 +967,8 @@ class formObject {
 		$theData=$dataAry[$name];
 		$value_raw=$formElAry['formelementvalue'];	
 		$useSpan_raw=$formElAry['formelementspan'];
-		$useSpan=$base->utlObj->returnFormattedData($useSpan_raw,'boolean','internal');
-		$value=$base->utlObj->returnFormattedString($value_raw,&$base);
+		$useSpan=$base->UtlObj->returnFormattedData($useSpan_raw,'boolean','internal');
+		$value=$base->UtlObj->returnFormattedString($value_raw,&$base);
 		if ($theData != ""){$value=$theData;}
 		//echo "name: $name, value_raw: $value_raw, value: $value, thedate: $theData<br>";//xxx
 		$label=$formElAry['formelementlabel'];
@@ -977,13 +977,13 @@ class formObject {
 		if ($class != NULL){$classInsert="class=\"$class\"";}
 		else {$classInsert=NULL;}
 		$id=$formElAry['formelementid'];
-		$id=$base->utlObj->returnFormattedString($id,&$base);
+		$id=$base->UtlObj->returnFormattedString($id,&$base);
 		if ($id == NULL){$id=$name;}
 		$idInsert="id=\"$id\"";
 		if ($cols != ""){$colIns=" size=\"$cols\" ";}
 		else {$colIns="";}
 		$events_raw=$formElAry['formelementeventattributes'];
-		$events=$base->utlObj->returnFormattedString($events_raw,&$base);
+		$events=$base->UtlObj->returnFormattedString($events_raw,&$base);
 		$errorMsg=$base->errorProfileAry['columnerrorary'][$name];
 		$passAry=$this->setTableFields($name,$label,$errorMsg,$tableFormat,$class,$id,$formElAry,&$base);
 		$preTable=$passAry['pretable'];
@@ -994,33 +994,33 @@ class formObject {
 		else {$usePreTable=$preTable;$usePostTable=$postTable;$useElement='div';}
 		$theLine="<$useElement $classInsert $idInsert $events>$value</$useElement>";
 		$returnAry[]=	"$usePreTable$theLine$usePostTable";
-	  	$base->debugObj->printDebug("-rtn:buildDisplay",0); //xx (f)
+	  	$base->DebugObj->printDebug("-rtn:buildDisplay",0); //xx (f)
 		return $returnAry;
 	}
 //===============================================================
 	function buildJsButton($formElAry,$dataAry, $tableFormat,$base){
-		$base->debugObj->printDebug("buildJsButton($formElAry,$dataAry,$tableFormat,'base')",0);
+		$base->DebugObj->printDebug("buildJsButton($formElAry,$dataAry,$tableFormat,'base')",0);
 		$specificTableFormat=$formElAry['formelementtableformat'];
 		if ($specificTableFormat != null){$tableFormat=$specificTableFormat;}
 		$oldTableFormat=$tableFormat;
 		$returnAry=array();
 		$name=$formElAry['formelementname'];
 		$useSpan_raw=$formElAry['formelementspan'];
-		$useSpan=$base->utlObj->returnFormattedData($useSpan_raw,'boolean','internal');
+		$useSpan=$base->UtlObj->returnFormattedData($useSpan_raw,'boolean','internal');
 	//- label
 		$label_raw=$formElAry['formelementlabel'];	
-		$label=$base->utlObj->returnFormattedString($label_raw,&$base);
+		$label=$base->UtlObj->returnFormattedString($label_raw,&$base);
 //- class
 		$class=$formElAry['formelementclass'];
 		if ($class != NULL){$classInsert="class=\"$class\"";}
 		else {$classInsert=NULL;}
 //- id
 		$id=$formElAry['formelementid'];
-		$id=$base->utlObj->returnFormattedString($id,&$base);
+		$id=$base->UtlObj->returnFormattedString($id,&$base);
 		if ($id == NULL){$id=$name;}
 		$idInsert="id=\"$id\"";
 		$events_raw=$formElAry['formelementeventattributes'];
-		$events=$base->utlObj->returnFormattedString($events_raw,&$base);
+		$events=$base->UtlObj->returnFormattedString($events_raw,&$base);
 		$errorMsg=$base->errorProfileAry['columnerrorary'][$name];
 		//echo "tableformat: $tableFormat<br>";//xxxd
 		$nullLabel='&nbsp;';
@@ -1033,23 +1033,23 @@ class formObject {
 		else {$usePreTable=$preTable;$usePostTable=$postTable;$useElement='div';}
 		$theLine="<$useElement $classInsert $idInsert $events>$label</$useElement>";
 		$returnAry[]="$usePreTable$theLine$usePostTable";
-	  	$base->debugObj->printDebug("-rtn:buildDisplay",0); //xx (f)
+	  	$base->DebugObj->printDebug("-rtn:buildDisplay",0); //xx (f)
 		return $returnAry;
 	}
 //===============================================================
 	function buildUrl($formElAry,$dataAry,$tableFormat,$base){
-		$base->debugObj->printDebug("formObj:buildUrl",0);
+		$base->DebugObj->printDebug("FormObj:buildUrl",0);
 		$htmlElementAry=array();
 		$htmlElementAry['label']=$formElAry['formelementlabel'];
 		$htmlElementAry['htmlelementclass']=$formElAry['formelementclass'];
 		$formElementId_raw=$formElAry['formelementid'];
-		$formElementId=$base->utlObj->returnFormattedStringDataFed($formElementId_raw,$dataAry,&$base);
+		$formElementId=$base->UtlObj->returnFormattedStringDataFed($formElementId_raw,$dataAry,&$base);
 		//echo "formelementid: $formElementId<br>";//xxxf
-		//$base->debugObj->printDebug($formElAry,1,'xxxf');
+		//$base->DebugObj->printDebug($formElAry,1,'xxxf');
 		$htmlElementAry['htmlelementid']=$formElementId;
 		$htmlElementAry['joblink']=$formElAry['formelementvalue'];
 		$formElEvents_raw=$formElAry['formelementeventattributes'];
-		$formElEvents=$base->utlObj->returnFormattedStringDataFed($formElEvents_raw,$dataAry,&$base);
+		$formElEvents=$base->UtlObj->returnFormattedStringDataFed($formElEvents_raw,$dataAry,&$base);
 		//$formElEvents=$formElEvents_raw;
 		$htmlElementAry['htmlelementeventattributes']=$formElEvents;
 		$theName_raw=$formElAry['formelementname'];
@@ -1057,29 +1057,29 @@ class formObject {
 		$theName=$theNameAry[0];
 		$base->paramsAry[$theName]=$dataAry[$theName];
 		//xxxf22
-		//$base->debugObj->printDebug($base->paramsAry,1,'xxxf: paramsary');
-		//$base->debugObj->printDebug($dataAry,1,'xxxf1: dataary');
-		//$base->debugObj->printDebug($htmlElementAry,1,'xxxf1: htmlelementary');
-		//$base->debugObj->printDebug($htmlElementAry,1,'xxxf');//xxxf
-		$workAry=$base->htmlObj->buildUrl($htmlElementAry,&$base);
-		//$base->debugObj->printDebug($workAry,1,'xxxf');
+		//$base->DebugObj->printDebug($base->paramsAry,1,'xxxf: paramsary');
+		//$base->DebugObj->printDebug($dataAry,1,'xxxf1: dataary');
+		//$base->DebugObj->printDebug($htmlElementAry,1,'xxxf1: htmlelementary');
+		//$base->DebugObj->printDebug($htmlElementAry,1,'xxxf');//xxxf
+		$workAry=$base->HtmlObj->buildUrl($htmlElementAry,&$base);
+		//$base->DebugObj->printDebug($workAry,1,'xxxf');
 		//exit();
 		$class=$formElAry['formelementclass'];
 		$id=$formElAry['formelementid'];
-		$id=$base->utlObj->returnFormattedString($id,&$base);
+		$id=$base->UtlObj->returnFormattedString($id,&$base);
 		$passAry=$this->setTableFields('','','',$tableFormat,$class,$id,$formElAry,&$base);
 		$preTable=$passAry['pretable'];
 		$postTable=$passAry['posttable'];
 		$returnAry=array();
 		$returnAry[]=$preTable.$workAry[0].$postTable;
-		//$base->debugObj->printDebug($returnAry,1,'xxx');
-		$base->debugObj->printDebug("-rtn:buildUrl",0); //xx (f)
+		//$base->DebugObj->printDebug($returnAry,1,'xxx');
+		$base->DebugObj->printDebug("-rtn:buildUrl",0); //xx (f)
 		return $returnAry;
 	}
 //==================================================================xxx
 //- if regular call then need to do table manipulation, else not
 	function buildInputHidden($formElAry,$dataAry,$tableFormat,$base){
-		$base->debugObj->printDebug("buildInputHidden($formElAry,$dataAry,$tableFormat,'base')",0);
+		$base->DebugObj->printDebug("buildInputHidden($formElAry,$dataAry,$tableFormat,'base')",0);
 		$returnAry=array();
 //- name, usename, usenametoread
 		$formElName=$formElAry['formelementname'];
@@ -1096,7 +1096,7 @@ class formObject {
 		$label='';
 //- id
 		$id=$formElAry['formelementid'];
-		$id=$base->utlObj->returnFormattedString($id,&$base);
+		$id=$base->UtlObj->returnFormattedString($id,&$base);
 		if ($id!=null){$idInsert="id=\"$id\"";}
 		else {$idInsert=null;}
 //- class
@@ -1106,9 +1106,9 @@ class formObject {
 //- value
 		$value_raw=$formElAry['formelementvalue'];	
 		//- try to get out of data file first
-		$value_mid=$base->utlObj->returnFormattedString($value_raw,&$base);
+		$value_mid=$base->UtlObj->returnFormattedString($value_raw,&$base);
 		$value=$value_mid;
-		$value=$base->utlObj->returnFormattedStringDataFed($value_mid,$dataAry,&$base);
+		$value=$base->UtlObj->returnFormattedStringDataFed($value_mid,$dataAry,&$base);
 		if ($value==null){
 			$value=$dataAry[$useFormElNameToRead];
 		}
@@ -1125,19 +1125,19 @@ class formObject {
 		$hiddenAreaInsert =	"$preTable<input type=\"hidden\" name=\"$useFormElName\" $idInsert $classInsert value=\"$value\">$postTable\n";
 		$returnAry[]=$hiddenAreaInsert;
 		//if ($useFormElName == 'cssprofileid'){
-			//$base->fileObj->writeLog('jefftest3',"formname: $this->formName, formelname: $formElName, useformelname: $useFormElName, insert: $hiddenAreaInsert",&$base);
+			//$base->FileObj->writeLog('jefftest3',"formname: $this->formName, formelname: $formElName, useformelname: $useFormElName, insert: $hiddenAreaInsert",&$base);
 		//}
-		$base->debugObj->printDebug("-rtn:buildInputHidden",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:buildInputHidden",0); //xx (f)
 		return $returnAry;
 	}
 //===================================
 	function buildFormLine($base){
-		$base->debugObj->printDebug("formObj:buildFormLine('base')",0);
+		$base->DebugObj->printDebug("FormObj:buildFormLine('base')",0);
 		//echo "xxxd22";
 		$formAry=$base->formProfileAry;		
 		$formAction=$formAry['formaction'];
 		$formId_raw=$formAry['formid'];
-		$formId=$base->utlObj->returnFormattedString($formId_raw,&$base);
+		$formId=$base->UtlObj->returnFormattedString($formId_raw,&$base);
 		$formClass=$formAry['formclass'];	
 		$formLineAry=array();
 		$formLineAry[0]="<form";
@@ -1154,7 +1154,7 @@ class formObject {
 		//- end
 		$formLineAry[0].=">";
 		if ($formName='insertpictureprofile'){
-			$base->debugObj->printDebug($formLineAry,1,'xxxf');exit();//xxxf
+			$base->DebugObj->printDebug($formLineAry,1,'xxxf');exit();//xxxf
 		}
 // ----- do type="hidden" name="operation"
 		$subtype="hidden";
@@ -1171,22 +1171,22 @@ class formObject {
 		$tempAry=array("formelementname"=>$name,"formelementvalue"=>$value,"formelementsubtype"=>"hidden","mode"=>"noprepost");
 		$hiddenInputAry=$this->buildInputHidden($tempAry,"",0,&$base);
 		$formLineAry[2]=$hiddenInputAry[0];
-		$base->debugObj->printDebug("-rtn:buildFormLine",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:buildFormLine",0); //xx (f)
 		return $formLineAry;
 	}
 //=============================================
 //--------------------------------
 	function buildButton($formElAry,$tableFormat,$base){
-		$base->debugObj->printDebug("formObj:buildButton($formElAry,$tableFormat,'base')",0);
+		$base->DebugObj->printDebug("FormObj:buildButton($formElAry,$tableFormat,'base')",0);
 		$specificTableFormat=$formElAry['formelementtableformat'];
 		if ($specificTableFormat != null){$tableFormat=$specificTableFormat;}
 		$returnAry=array();
 		$subtype=$formElAry['formelementsubtype'];
 		$label_raw=$formElAry['formelementlabel'];
-		$label=$base->utlObj->returnFormattedString($label_raw,&$base);
+		$label=$base->UtlObj->returnFormattedString($label_raw,&$base);
 		$class=$formElAry['formelementclass'];
 		$id=$formElAry['formelementid'];
-		$id=$base->utlObj->returnFormattedString($id,&$base);
+		$id=$base->UtlObj->returnFormattedString($id,&$base);
 		if ($id != ''){$idInsert="id=\"$id\"";}
 		else {$idInsert='';}
 		$value=$formElAry['formelementvalue'];
@@ -1195,39 +1195,39 @@ class formObject {
 		if ($value != ''){$valueInsert="value=\"$value\"";}
 		else {$valueInsert='';}
 		$eventInsert_raw=$formElAry['formelementeventattributes'];
-		$eventInsert=$base->utlObj->returnFormattedString($eventInsert_raw,&$base);
+		$eventInsert=$base->UtlObj->returnFormattedString($eventInsert_raw,&$base);
 //-		
 		$passAry=$this->setTableFields("","","",$tableFormat,$class,$id,$formElAry,&$base);
 		$preTable=$passAry['pretable'];
 		$postTable=$passAry['posttable'];
 		$returnAry[]="$preTable<button type=\"$subtype\" $classInsert $idInsert $eventInsert>$label</button>\n$postTable";
-		//$base->debugObj->printDebug($returnAry,1,'brtn');//xxx
-		$base->debugObj->printDebug("-rtn:buildButton",0); //xx (f)
+		//$base->DebugObj->printDebug($returnAry,1,'brtn');//xxx
+		$base->DebugObj->printDebug("-rtn:buildButton",0); //xx (f)
 		return $returnAry;
 	}
 //--------------------------------
 	function buildInputSubmit($formElAry,$dataAry,$tableFormat,&$base){
-		$base->debugObj->printDebug("formObj:buildButton($formElAry,$tableFormat,'base')",0);
+		$base->DebugObj->printDebug("FormObj:buildButton($formElAry,$tableFormat,'base')",0);
 		$specificTableFormat=$formElAry['formelementtableformat'];
 		if ($specificTableFormat != null){$tableFormat=$specificTableFormat;}
 		$returnAry=array();
 		$subtype=$formElAry['formelementsubtype'];
 		//- label
 		$label_raw=$formElAry['formelementlabel'];
-		$label=$base->utlObj->returnFormattedString($label_raw,&$base);
+		$label=$base->UtlObj->returnFormattedString($label_raw,&$base);
 		//- id
 		$id=$formElAry['formelementid'];
-		$id=$base->utlObj->returnFormattedString($id,&$base);
+		$id=$base->UtlObj->returnFormattedString($id,&$base);
 		//- class
 		$class=$formElAry['formelementclass'];
 		if ($class != ''){$classInsert="class=\"$class\"";}
 		else {$classInsert='';}
 		//- event
 		$eventInsert_raw=$formElAry['formelementeventattributes'];
-		$eventInsert=$base->utlObj->returnFormattedString($eventInsert_raw,&$base);
+		$eventInsert=$base->UtlObj->returnFormattedString($eventInsert_raw,&$base);
 		//- value
 		$value_raw=$formElAry['formelementvalue'];
-		$value=$base->utlObj->returnFormattedString($value_raw,&$base);
+		$value=$base->UtlObj->returnFormattedString($value_raw,&$base);
 		if ($value == null){$valueInsert=null;}
 		else {$valueInsert="value=\"$value\"";}
 		//- name
@@ -1243,22 +1243,22 @@ class formObject {
 		else {
 			$returnAry[]="$preTable<input type=\"submit\" $nameInsert $classInsert $eventInsert $valueInsert />\n$postTable";
 		}
-		//$base->debugObj->printDebug($returnAry,1,'brtn');//xxx
-		$base->debugObj->printDebug("-rtn:buildButton",0); //xx (f)
+		//$base->DebugObj->printDebug($returnAry,1,'brtn');//xxx
+		$base->DebugObj->printDebug("-rtn:buildButton",0); //xx (f)
 		return $returnAry;
 	}
 //--------------------------------xxxd22
 	function buildIframe($formElAry,$dataAry,$tableFormat,&$base){
-		$base->debugObj->printDebug("formObj:buildIframe($formElAry,$dataAry,$tableFormat,'base')",0);
+		$base->DebugObj->printDebug("FormObj:buildIframe($formElAry,$dataAry,$tableFormat,'base')",0);
 		$specificTableFormat=$formElAry['formelementtableformat'];
 		if ($specificTableFormat != null){$tableFormat=$specificTableFormat;}
 		$returnAry=array();
 		//-label
 		$label_raw=$formElAry['formelementlabel'];
-		$label=$base->utlObj->returnFormattedString($label_raw,&$base);
+		$label=$base->UtlObj->returnFormattedString($label_raw,&$base);
 		//-id
 		$id=$formElAry['formelementid'];
-		$id=$base->utlObj->returnFormattedString($id,&$base);
+		$id=$base->UtlObj->returnFormattedString($id,&$base);
 		if ($id == null){$idInsert=null;}
 		else {$idInsert="id=\"$id\"";}
 		//-class
@@ -1271,7 +1271,7 @@ class formObject {
 		else {$valueInsert='';}
 		//- event
 		$eventInsert_raw=$formElAry['formelementeventattributes'];
-		$eventInsert=$base->utlObj->returnFormattedString($eventInsert_raw,&$base);
+		$eventInsert=$base->UtlObj->returnFormattedString($eventInsert_raw,&$base);
 		//- src
 		$formElSrc=$formElAry['formelementsrc'];
 		if ($formElSrc == null){$srcInsert=null;}
@@ -1289,24 +1289,24 @@ class formObject {
 		$postTable=$passAry['posttable'];
 		$iFrameLine="<iframe $idInsert $nameInsert $srcInsert $styleInsert></iframe>";
 		$returnAry[]="$preTable\n$iFrameLine\n$postTable\n";
-		//$base->debugObj->printDebug($returnAry,1,'brtn');//xxxd22
+		//$base->DebugObj->printDebug($returnAry,1,'brtn');//xxxd22
 		//exit();//xxxd22
-		$base->debugObj->printDebug("-rtn:buildButton",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:buildButton",0); //xx (f)
 		return $returnAry;
 	}
 //-------------------------------
 	function buildComment($comment,$base){
-		$base->debugObj->printDebug("dbObj:buildComment($comment,'base')",0); //xx (h)
+		$base->DebugObj->printDebug("DbObj:buildComment($comment,'base')",0); //xx (h)
 		$comment=str_replace('<','{',$comment);
 		$comment=str_replace('>','}',$comment);
 		$returnAry=array(0=>"<!-- $comment -->\n");
-		$base->debugObj->printDebug("-rtn:buildComment",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:buildComment",0); //xx (f)
 		return $returnAry;
 	}
 //-------------------------------
 	function buildJsSubmit($formElAry,$tableFormat,$base){
-		$base->debugObj->printDebug("buildJsSubmit($formElAry,$tableFormat,'base')",0);
-		//$base->debugObj->printDebug($formElAry,1,'formelary');//xxx
+		$base->DebugObj->printDebug("buildJsSubmit($formElAry,$tableFormat,'base')",0);
+		//$base->DebugObj->printDebug($formElAry,1,'formelary');//xxx
 		$formName=$formElAry['formname'];
 		$returnAry=array();
 		$returnAry[]="<a href=\"javascript:document.$formName.submit();\">\n";
@@ -1314,16 +1314,16 @@ class formObject {
 		$imageSource=$base->imageProfileAry[$imageName]['imagesource'];
 		$imageClass=$base->imageProfileAry[$imageName]['imageclass'];
 		$urlAry=array('joblink'=>$imageSource,'htmlelementimagename'=>$imageName,'imageclass'=>$imageClass);
-		$workAry=$base->htmlObj->buildOldImg($urlAry,&$base);
+		$workAry=$base->HtmlObj->buildOldImg($urlAry,&$base);
 		$returnAry=array_merge($returnAry,$workAry);
 		$returnAry[]='</a>'."\n";
-		//$base->debugObj->printDebug($returnAry,1,'workaryxxxd');//xxx
-		$base->debugObj->printDebug("-rtn:buildJsSubmit",0);
+		//$base->DebugObj->printDebug($returnAry,1,'workaryxxxd');//xxx
+		$base->DebugObj->printDebug("-rtn:buildJsSubmit",0);
 		return $returnAry;
 	}
 //------------------------------- 
 	function setTableFields($name,$label,$errorMsg,$tableTypeNo,$theClass,$theId,$formElAry,$base){
-		$base->debugObj->printDebug("setTableFields($name,$label,$errorMsg,$tableTypeNo,$theClass,$theId,'base')",0);
+		$base->DebugObj->printDebug("setTableFields($name,$label,$errorMsg,$tableTypeNo,$theClass,$theId,'base')",0);
 		if ($theClass != null){
 			$theClassInsert="class=\"$theClass\"";
 			$theLabelSuffix="_label";
@@ -1477,37 +1477,37 @@ class formObject {
 			$postTable="";
 		}
 		$returnAry=array('pretable'=>$preTable,'pretablespan'=>$preTableSpan,'posttable'=>$postTable,'posttablespan'=>$postTableSpan);
-		$base->debugObj->printDebug("-rtn:setTableFields",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:setTableFields",0); //xx (f)
 		return $returnAry;
 	}
 //======================================================================== !!! this must be made more generic(jobname used?)
 	function buildInputCheckBox($formElAry,$dataAry,$tableFormat,&$base){
-		$base->debugObj->printDebug("formObj:buildInputCheckBox",0);
+		$base->DebugObj->printDebug("FormObj:buildInputCheckBox",0);
 		unset ($base->errorProfileAry['converterror']);
 		$returnAry=array();
 		$checkBoxName=$formElAry['formelementname'];
 		$useOtherDb_raw=$formElAry['formelementotherdb'];
-		$useOtherDb=$base->utlObj->returnFormattedData($useOtherDb_raw,'boolean','internal',&$base);
+		$useOtherDb=$base->UtlObj->returnFormattedData($useOtherDb_raw,'boolean','internal',&$base);
 		$useSql_raw=$formElAry['formelementusesql'];
 		$checkBoxValue=$formElAry['formelementvalue'];
 		$checkBoxLabel=$formElAry['formelementlabel'];
 		$checkBoxClass=$formElAry['formelementclass'];
 		if ($checkBoxClass != NULL){$checkBoxClassInsert="class=\"$checkBoxClass\"";}
 		else {$checkBoxClassInsert=NULL;}
-		//$base->debugObj->printDebug($formElAry,1,'xxx');
+		//$base->DebugObj->printDebug($formElAry,1,'xxx');
 		//echo "name: $checkBoxName, usesql: $useSql_raw, useotherdb: $useOtherDb_raw<br>";//xxxd
-		$useSql=$base->utlObj->returnFormattedData($useSql_raw,'boolean','internal',&$base);
+		$useSql=$base->UtlObj->returnFormattedData($useSql_raw,'boolean','internal',&$base);
 		if ($useSql){
 		if ($useOtherDb){
 			$dbNo=$formElAry['formelementotherdbno'];
 			$theQuery_raw=$formElAry['formelementoptionsql'];
-			$theQuery=$base->utlObj->returnFormattedString($theQuery_raw,&$base);
+			$theQuery=$base->UtlObj->returnFormattedString($theQuery_raw,&$base);
 			if ($dbNo>0 && $dbNo<10){
-				$theDbConn=$base->system001Obj->getClientConn($dbNo,&$base);
+				$theDbConn=$base->System001Obj->getClientConn($dbNo,&$base);
 				if ($theDbConn != NULL){
 					$errorReturn=$base->errorProfileAry['converterror'];
 					if ($errorReturn==NULL){
-						$result=$base->clientObj->queryClientDbTable($theQuery,$theDbConn,'read',&$base);
+						$result=$base->ClientObj->queryClientDbTable($theQuery,$theDbConn,'read',&$base);
 					}
 					else {$result=NULL;}
 					//echo "query: $theQuery<br>";//xxxd
@@ -1516,7 +1516,7 @@ class formObject {
 			}
 			else {$result=NULL;}
 			$passAry=array();
-			$dataAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+			$dataAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 			$checkBoxCnt=count($dataAry);
 			$classInsert=NULL;
 			$idInsert=NULL;
@@ -1530,14 +1530,14 @@ class formObject {
 				$returnAry[]="</td></tr>\n";	
 			}
 			$returnAry[]="</table>";
-			//$base->debugObj->printDebug($dataAry,1,'dataary');
+			//$base->DebugObj->printDebug($dataAry,1,'dataary');
 		} // end useotherdb
 		else {
 			$theQuery_raw=$formElAry['formelementoptionsql'];
-			$theQuery=$base->utlObj->returnFormattedString($theQuery_raw,&$base);
-			$result=$base->dbObj->queryTable($theQuery,'read',&$base);
+			$theQuery=$base->UtlObj->returnFormattedString($theQuery_raw,&$base);
+			$result=$base->DbObj->queryTable($theQuery,'read',&$base);
 			$passAry=array();
-			$dataAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+			$dataAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 			$checkBoxCnt=count($dataAry);
 			$classInsert=NULL;
 			$idInsert=NULL;
@@ -1546,7 +1546,7 @@ class formObject {
 				$jobName=$dataAry[$ctr]['jobname'];
 				$returnAry[]="<tr><td>\n";
 				$useCheckBoxName=$checkBoxName.'_'.$ctr;
-				$theLabel=$base->utlObj->returnFormattedStringDataFed($checkBoxLabel,$dataAry[$ctr],&$base);
+				$theLabel=$base->UtlObj->returnFormattedStringDataFed($checkBoxLabel,$dataAry[$ctr],&$base);
 				$theValue=$dataAry[$ctr][$checkBoxValue];
 				$checkBox_html="<input name=\"$useCheckBoxName\" type=\"checkbox\" value=\"$theValue\">";
 				$returnAry[]="$checkBox_html</td><td><span $checkBoxClassInsert>$theLabel</span>\n";
@@ -1561,7 +1561,7 @@ class formObject {
 			$returnAry[]="$checkBox_html</td><td><span $checkBoxClassInsert>$checkBoxLabel</span>\n";
 			$returnAry[]="</td></tr>\n";
 		} // end else usesql
-		$base->debugObj->printDebug("-rtn:buildInputCheckBox",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:buildInputCheckBox",0); //xx (f)
 		return $returnAry;
 	}
 //================================
@@ -1577,7 +1577,7 @@ class formObject {
 				$formFragment=str_replace('"','\"',$formFragment_raw);
 				$formFragment=str_replace("'","\'",$formFragment);
 				$formFragment=str_replace("\n",'&#10;',$formFragment);
-				$this->formAry_js[]="formObj.addFragment('$formName','$formFragment');\n";
+				$this->formAry_js[]="FormObj.addFragment('$formName','$formFragment');\n";
 			}	
 		}	
 	}
@@ -1587,7 +1587,7 @@ class formObject {
 		$returnAry=array();
 		$class=$formElAry['formelementclass'];
 		$id=$formElAry['formelementid'];
-		$id=$base->utlObj->returnFormattedString($id,&$base);
+		$id=$base->UtlObj->returnFormattedString($id,&$base);
 		if ($id==NULL){$id='formobj:buildcontainer:none';}
 		if ($class==NULL){$class='formobj:buildcontainer:none';}
 		$returnAry[]="<div class=$dq$class$dq id=$dq$id$dq>";
@@ -1599,7 +1599,7 @@ class formObject {
 	}
 //-----------------------------------------------------------
 	function writeDbFromAjaxMultiple($base){
-		//$base->debugObj->printDebug($base->paramsAry,1,'xxxd');
+		//$base->DebugObj->printDebug($base->paramsAry,1,'xxxd');
 		$sendData=$base->paramsAry['senddata'];
 		$sendDataAry=explode('`',$sendData);
 		$workAry=array();
@@ -1632,14 +1632,14 @@ class formObject {
 		}
 		$dbControlsAry=array('dbtablename'=>$dbTableName);
 		$dbControlsAry['writerowsary']=$writeRowsAry;
-		$successBool=$base->dbObj->writeToDb($dbControlsAry,&$base);
+		$successBool=$base->DbObj->writeToDb($dbControlsAry,&$base);
 		echo "okdonothing";
 	}
 //==========================================
 	function doDebug($theMsg,$base){
-		//$base->fileObj->turnOnLog(&$base);//xxxf
-		//$base->fileObj->writeLog('debug',$theMsg,&$base);
-		//$base->fileObj->turnOffLog(&$base);//xxxf
+		//$base->FileObj->turnOnLog(&$base);//xxxf
+		//$base->FileObj->writeLog('debug',$theMsg,&$base);
+		//$base->FileObj->turnOffLog(&$base);//xxxf
 	}
 //---
 	function status(){

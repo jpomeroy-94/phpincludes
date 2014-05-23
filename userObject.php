@@ -1,9 +1,9 @@
 <?php
-class userObject{
+class UserObject{
 	var $userAry = array();
 	var $deptAry = array();
 	//=====================================
-	function userObject($base){
+	function UserObject($base){
 //- below is deprecated old method
 		$this->userAry['username']='guest';
 		$this->userAry['userfirstname']='guest';
@@ -12,11 +12,11 @@ class userObject{
 	}
 //=========================================
 	function displayUserSetups($base){
-		$base->debugObj->printDebug($this->userAry,1,'userary');	
+		$base->DebugObj->printDebug($this->userAry,1,'userary');	
 	}
 //=========================================
 	function isAccessAll($base){
-		$returnBoolean=$base->utlObj->returnBoolean($this->userAry['profile']['accessallcompanies'],&$base);
+		$returnBoolean=$base->UtlObj->returnBoolean($this->userAry['profile']['accessallcompanies'],&$base);
 		return $returnBoolean;
 	}
 //=========================================
@@ -24,19 +24,19 @@ class userObject{
 		$userName='guest';
 //- get user stuff
 		$query="select * from userprofileview where username='$userName'";
-		$result=$base->dbObj->queryTable($query,'read',&$base);	
+		$result=$base->DbObj->queryTable($query,'read',&$base);	
 		$passAry=array();
-		$workAry=$base->utlObj->tableToHashAryV3($result,$passAry,&$base);
+		$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry,&$base);
 		$this->userAry['profile']=$workAry;
 		$curDir=getcwd();
 		$this->userAry['curdir']=$curDir;
 		//echo "xxxf8";
 //- get xref stuff
 		$query="select * from usercompanyxrefview where username='guest' or username='guest' and companyallowsaccesstoall=true";
-		$result=$base->dbObj->queryTable($query,'read',&$base);	
+		$result=$base->DbObj->queryTable($query,'read',&$base);	
 		$passAry=array();
-		$workAry=$base->utlObj->tableToHashAryV3($result,$passAry,&$base);
-		//$base->debugObj->printDebug($workAry,1,'xxxf');
+		$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry,&$base);
+		//$base->DebugObj->printDebug($workAry,1,'xxxf');
 		//exit('xxxf');	
 		$this->userAry['profile']=array();
 		$this->userAry['profile']['username']='guest';
@@ -46,8 +46,8 @@ class userObject{
 		$this->userAry['companyselect']=array();
 		$gotAll=false;
 		foreach ($workAry as $ctr=>$thisWorkAry){
-			$userCompanyAccess=$base->utlObj->returnBoolean($thisWorkAry['usercompanyaccess'],&$base);
-			$userCompanySelect=$base->utlObj->returnBoolean($thisWorkAry['usercompanyselect'],&$base);	
+			$userCompanyAccess=$base->UtlObj->returnBoolean($thisWorkAry['usercompanyaccess'],&$base);
+			$userCompanySelect=$base->UtlObj->returnBoolean($thisWorkAry['usercompanyselect'],&$base);	
 			$userCompanySelectOrder=$thisWorkAry['usercompanyselectorder'];
 			$companyName=$thisWorkAry['companyname'];
 			if ($companyName=='All'){$gotAll=true;}
@@ -63,10 +63,10 @@ class userObject{
 		if (!$gotAll){
 			echo "need All company setup to go to guest!!!<br>";
 			$query="select companyname,companyprofileid from companyprofile where companyname='All'";
-			$result=$base->dbObj->queryTable($query,'read',&$base);	
+			$result=$base->DbObj->queryTable($query,'read',&$base);	
 			$passAry=array('delimit1'=>'companyname');
-			$workAry=$base->utlObj->tableToHashAryV3($result,$passAry,&$base);
-			//$base->debugObj->printDebug($workAry,1,'xxxf');
+			$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry,&$base);
+			//$base->DebugObj->printDebug($workAry,1,'xxxf');
 			$companyProfileId=$workAry['All']['companyprofileid'];
 			$this->userAry['companyaccess'][$companyProfileId]=array('companyname'=>'All');
 			$this->userAry['companyselect'][]=$companyProfileId;			
@@ -92,29 +92,29 @@ class userObject{
 	function setUserFields($userName,$userPassword,$base){
 //- get user stuff
 		$query="select * from userprofileview where username='$userName'";
-		$result=$base->dbObj->queryTable($query,'read',&$base);	
+		$result=$base->DbObj->queryTable($query,'read',&$base);	
 		$passAry=array();
-		$workAry=$base->utlObj->tableToHashAryV3($result,$passAry,&$base);
+		$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry,&$base);
 		$chkPassword=$workAry[0]['userpassword'];
 		//echo "username: $userName, userpassword: $userPassword";//xxxf
 		if ($chkPassword == $userPassword){
 			unset($this->userAry['profile']);
 			$this->userAry['profile']=$workAry[0];
-			$accessAllCompanies=$base->utlObj->returnboolean($workAry[0]['accessallcompanies'],&$base);
+			$accessAllCompanies=$base->UtlObj->returnboolean($workAry[0]['accessallcompanies'],&$base);
 			//- below is old legacy which should be deprecated
 			$this->userAry['username']=$this->userAry['profile']['username'];
 			$this->userAry['userfirstname']=$this->userAry['profile']['userfirstname'];
 //- get user xref stuff		
 			if ($userName == 'admin'){$query="select * from usercompanyxrefview";}
 			else {$query="select * from usercompanyxrefview where username='$userName' or where companyallowsaccesstoall=true";}
-			$result=$base->dbObj->queryTable($query,'read',&$base);	
+			$result=$base->DbObj->queryTable($query,'read',&$base);	
 			$passAry=array();
-			$workAry=$base->utlObj->tableToHashAryV3($result,$passAry,&$base);
+			$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry,&$base);
 			$this->userAry['companyaccess']=array();
 			$this->userAry['companyselect']=array();
 			foreach ($workAry as $ctr=>$thisWorkAry){
-				$userCompanyAccess=$base->utlObj->returnBoolean($thisWorkAry['usercompanyaccess'],&$base);
-				$userCompanySelect=$base->utlObj->returnBoolean($thisWorkAry['usercompanyselect'],&$base);	
+				$userCompanyAccess=$base->UtlObj->returnBoolean($thisWorkAry['usercompanyaccess'],&$base);
+				$userCompanySelect=$base->UtlObj->returnBoolean($thisWorkAry['usercompanyselect'],&$base);	
 				$userCompanySelectOrder=$thisWorkAry['usercompanyselectorder'];
 				$companyName=$thisWorkAry['companyname'];
 				$companyProfileId=$thisWorkAry['companyprofileid'];
@@ -127,8 +127,8 @@ class userObject{
 			} // end foreach workary
 //- if access all then fill in rest of companies
 		} // end if pwd=chkpwd
-		//$base->debugObj->printDebug($workAry,1,'xxx');
-		//$base->debugObj->printDebug($this->userAry,1,'xxx');
+		//$base->DebugObj->printDebug($workAry,1,'xxx');
+		//$base->DebugObj->printDebug($this->userAry,1,'xxx');
 		//exit('xxx');
 	}	
 //=====================================

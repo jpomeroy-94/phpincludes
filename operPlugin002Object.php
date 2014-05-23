@@ -1,5 +1,5 @@
 <?php
-class operPlugin002Object {
+class OperPlugin002Object {
 	// 1/20/13 inserttoalbum changes but possibly not
 	// 1/29/13 batchtransactions fix for bad date which I shouldnt have had to do
 	// put in thishadtobebad
@@ -11,21 +11,21 @@ class operPlugin002Object {
 		$this->callNo ++;
 	}
 	// ====================================================
-	function operPlugin002Object() {
+	function OperPlugin002Object() {
 		$this->incCalls ();
 		$this->statusMsg = 'tag Object is fired up and ready for work!';
 	}
 	// ====================================================
 	function insertImageToAlbumthishastobebad($base) {
 		// echo "xxxf";
-		$base->debugObj->printDebug ( $base->paramsAry, 1, 'xxxf' );
+		$base->DebugObj->printDebug ( $base->paramsAry, 1, 'xxxf' );
 	}
 	// ====================================================
 	function buildAlbumReport($base) {
-		$base->fileObj->initLog ( 'jefftest', &$base );
+		$base->FileObj->initLog ( 'jefftest', &$base );
 		$colon = '&#58;';
 		$thePipe = '&#124;';
-		$localPath = $base->clientObj->getBasePath ( &$base );
+		$localPath = $base->ClientObj->getBasePath ( &$base );
 		$reportLoadId = $base->paramsAry ['loadid'];
 		if ($reportLoadId == null) {
 			$reportLoadId = 'albumreporthdcontentid';
@@ -51,8 +51,8 @@ class operPlugin002Object {
 		// --- get all album info
 		$query = "select * from albumprofileview where albumprofileid=$albumProfileId";
 		$passAry = array ();
-		$result = $base->dbObj->queryTable ( $query, 'select', &$base );
-		$albumAry = $base->utlObj->tableToHashAryV3 ( $result, $passAry );
+		$result = $base->DbObj->queryTable ( $query, 'select', &$base );
+		$albumAry = $base->UtlObj->tableToHashAryV3 ( $result, $passAry );
 		$albumImageLength = $albumAry [0] ['albumimagelength'];
 		$albumImageSettings = $albumAry [0] ['albumimagesettings'];
 		switch ($albumImageSettings) {
@@ -68,11 +68,11 @@ class operPlugin002Object {
 				$maxHeight = 0;
 				$maxWidth = 0;
 		}
-		// $base->debugObj->printDebug($albumAry,1,'xxxf');
+		// $base->DebugObj->printDebug($albumAry,1,'xxxf');
 		$query = "select * from pictureprofileview where albumprofileid=$albumProfileId order by pictureno";
-		$result = $base->dbObj->queryTable ( $query, 'select', &$base );
-		$base->fileObj->writeLog ( 'jefftest', "query: $query", &$base );
-		$pictureAry = $base->utlObj->tableToHashAryV3 ( $result, $passAry );
+		$result = $base->DbObj->queryTable ( $query, 'select', &$base );
+		$base->FileObj->writeLog ( 'jefftest', "query: $query", &$base );
+		$pictureAry = $base->UtlObj->tableToHashAryV3 ( $result, $passAry );
 		$pictureNamesAry = array ();
 		foreach ( $pictureAry as $id => $thePictureAry ) {
 			$pictureName = $thePictureAry ['picturename'];
@@ -82,22 +82,22 @@ class operPlugin002Object {
 		// --- get all directory info
 		$albumDirectory = $albumAry [0] ['albumdirectory'];
 		$albumDirectoryFullPath = $localPath . '/' . $albumDirectory;
-		$base->fileObj->writeLog ( 'jefftest', "albumdirectoryfullpath: $albumDirectoryFullPath", &$base );
+		$base->FileObj->writeLog ( 'jefftest', "albumdirectoryfullpath: $albumDirectoryFullPath", &$base );
 		if (is_dir ( $albumDirectoryFullPath )) {
-			$base->fileObj->writeLog ( 'jefftest', "it is a directory", &$base );
+			$base->FileObj->writeLog ( 'jefftest', "it is a directory", &$base );
 			$totalSizeInAlbum;
 			$totalCntInAlbum;
 			$totalSizeNotInAlbum;
 			$totalCntNotInAlbum;
 			$theDir = opendir ( $albumDirectory );
 			$otherFileNamesAry = array ();
-			$base->fileObj->writeLog ( 'jefftest', "loop thru dir", &$base );
+			$base->FileObj->writeLog ( 'jefftest', "loop thru dir", &$base );
 			$ctr = 0;
 			$itemList = '';
 			while ( ($theFileName = readdir ( $theDir )) !== false ) {
 				$ctr ++;
 				if ($ctr > 10) {
-					$base->fileObj->writeLog ( 'jefftest', "item list: $itemList", &$base );
+					$base->FileObj->writeLog ( 'jefftest', "item list: $itemList", &$base );
 					$ctr = 0;
 					$itemList = '';
 				}
@@ -132,7 +132,7 @@ class operPlugin002Object {
 			}
 			closedir ( $theDir );
 			$albumName = $albumAry [0] ['albumname'];
-			$base->fileObj->writeLog ( 'jefftest', "albumname: $albumName, reporttype: $reportType", &$base );
+			$base->FileObj->writeLog ( 'jefftest', "albumname: $albumName, reporttype: $reportType", &$base );
 			// --- do the different report types here
 			switch ($reportType) {
 				case 'totals' :
@@ -157,7 +157,7 @@ class operPlugin002Object {
 					$reportMsg .= "&nbsp;&nbsp;Album Pictures<br />album: $albumName<br \>directory: $albumDirectory<br \>------------------------------------------------------------<br \>";
 					$reportMsg .= "<table>\n<tr>\n<th>no</th><th>title</th><th>filename</th><th>size(k)</th><th>width</th><th>height</th><th>type</th>";
 					$noPictures = count ( $pictureAry );
-					$base->fileObj->initLog ( 'jefftest', &$base );
+					$base->FileObj->initLog ( 'jefftest', &$base );
 					for($pLp = 0; $pLp < $noPictures; $pLp ++) {
 						$thePictureAry = $pictureAry [$pLp];
 						$pictureFileName = $thePictureAry ['picturefilename'];
@@ -173,7 +173,7 @@ class operPlugin002Object {
 						$pictureTitle = $thePictureAry ['picturetitle'];
 						$pictureType = $thePictureAry ['picturetype'];
 						$picturePath = "$localPath/$albumDirectory/$pictureFileName";
-						// $base->fileObj->writeLog('jefftest99',$picturePath,&$base);
+						// $base->FileObj->writeLog('jefftest99',$picturePath,&$base);
 						if (file_exists ( $picturePath ) && ! is_dir ( $picturePath ) && $isGoodFile) {
 							$thePicture = new Imagick ( $picturePath );
 							$pictureFileSize = filesize ( $picturePath );
@@ -244,20 +244,20 @@ class operPlugin002Object {
 						$base->paramsAry ['picturefilename'] = $otherFileName;
 						$base->paramsAry ['picturetype'] = 'active';
 						$base->paramsAry ['picturename'] = $otherFileNameAlone;
-						$insertToAlbumAry = $base->htmlObj->buildImg ( 'inserttoalbumbutton', &$base );
-						// $base->debugObj->printDebug($base->imageProfileAry,1,'xxxf');
+						$insertToAlbumAry = $base->HtmlObj->buildImg ( 'inserttoalbumbutton', &$base );
+						// $base->DebugObj->printDebug($base->imageProfileAry,1,'xxxf');
 						// foreach ($base->paramsAry as $theName=>$theValue){echo "$theName:$theValue,";}
 						// exit();
 						$insertToAlbumLine = $insertToAlbumAry [0];
 						// $insertToAlbumLine=str_replace("<",'{',$insertToAlbumLine);//xxxf
 						// $insertToAlbumLine=str_replace(">",'}',$insertToAlbumLine);//xxxf
 						// $insertToAlbumLine='<pre>'.substr($insertToAlbumLine,0,10000).'</pre>';//xxxf
-						$deleteAry = $base->htmlObj->buildImg ( 'deletebutton', &$base );
+						$deleteAry = $base->HtmlObj->buildImg ( 'deletebutton', &$base );
 						$deleteLine = $deleteAry [0];
 						$reportMsg .= "<tr><td>$otherFileName</td><td>$useOtherFileSize</td><td>$otherMsg</td>";
 						$reportMsg .= "<td>$pictureWidthUse</td><td>$pictureHeightUse</td><td>$insertToAlbumLine</td>";
 						$reportMsg .= "<td>$deleteLine</td></tr>";
-						$base->fileObj->writeLog ( 'jefftest', "inserttoalbumline: $insertToAlbumLine", &$base );
+						$base->FileObj->writeLog ( 'jefftest', "inserttoalbumline: $insertToAlbumLine", &$base );
 						// $pos=strpos($reportMsg,':',0);//xxxf
 						// $reportMsg = str_replace(":", "%colon%", $reportMsg);
 						// $pos2=strpos($reportMsg,':',0);//xxxf
@@ -272,7 +272,7 @@ class operPlugin002Object {
 			}
 		} else {
 			$reportMsg .= "This album has no directory or the directory is invalid! album directory: $albumDirectory";
-			$base->fileObj->writeLog ( 'jefftest', "$reportMsg", &$base );
+			$base->FileObj->writeLog ( 'jefftest', "$reportMsg", &$base );
 		}
 		// --- end
 		echo "okupd|$reportLoadId|$reportMsg";
@@ -294,7 +294,7 @@ class operPlugin002Object {
 		}
 		$albumProfileId = $paramsUseAry ['albumprofileid'];
 		$query = "delete from pictureprofile where albumprofileid=$albumProfileId and picturetype='hidden'";
-		$base->dbObj->queryTable ( $query, 'delete', &$base );
+		$base->DbObj->queryTable ( $query, 'delete', &$base );
 		echo "okdonothing";
 	}
 	// ====================================================
@@ -332,20 +332,20 @@ class operPlugin002Object {
 		);
 		$writeRowsAry [] = $theRow;
 		$dbControlsAry ['writerowsary'] = $writeRowsAry;
-		// $base->debugObj->printDebug($dbControlsAry,1,'xxxf');exit();
-		$successFlg = $base->dbObj->writeToDb ( $dbControlsAry, &$base );
+		// $base->DebugObj->printDebug($dbControlsAry,1,'xxxf');exit();
+		$successFlg = $base->DbObj->writeToDb ( $dbControlsAry, &$base );
 		if ($successFlg) {
-			$base->utlObj->reorderAlbumInt ( $albumProfileId, 5, &$base );
+			$base->UtlObj->reorderAlbumInt ( $albumProfileId, 5, &$base );
 			echo "okdonothing|";
 		} else {
 			echo "error|";
-			$base->errorObj->printAllErrors ( &$base );
+			$base->ErrorObj->printAllErrors ( &$base );
 		}
 	}
 	// ====================================================
 	function getJobObjects($base) {
 		// - setup database stuff for the later building of the html
-		$base->fileObj->writeLog ( 'debug', "--- enter jobobjects ---", &$base );
+		$base->FileObj->writeLog ( 'debug', "--- enter jobobjects ---", &$base );
 		$paramsStrg = "\n-----------start paramsary-------------";
 		foreach ( $base->paramsAry as $name => $value ) {
 			if ($name == 'senddata') {
@@ -354,88 +354,88 @@ class operPlugin002Object {
 			$paramsStrg .= "\n$name: $value, ";
 		}
 		$paramsStrg .= "\n---------end paramsary----------";
-		$base->fileObj->writeLog ( 'debug', "getjobobjects(paramsary): $paramsStrg", &$base ); // xxxflog
-		$base->plugin001Obj->updateSession ( &$base );
+		$base->FileObj->writeLog ( 'debug', "getjobobjects(paramsary): $paramsStrg", &$base ); // xxxflog
+		$base->Plugin001Obj->updateSession ( &$base );
 		$testsavetosession = $base->paramsAry ['savetosession'];
 		$testsessionname = $base->paramsAry ['sessionname'];
-		$base->fileObj->writeLog ( 'debug', "session name after updatesession: $testsessionname, savetosessionname: $testsavetosession", &$base ); // xxxf
+		$base->FileObj->writeLog ( 'debug', "session name after updatesession: $testsessionname, savetosessionname: $testsavetosession", &$base ); // xxxf
 		$fromDomainName = $base->paramsAry ['fromdomainname'];
 		$toDomainName = $base->paramsAry ['todomainname'];
 		$dbStrg = 'dbstatus: ';
 		if ($fromDomainName != NULL) {
-			$fromConn = $base->clientObj->getClientConn ( $fromDomainName, &$base );
+			$fromConn = $base->ClientObj->getClientConn ( $fromDomainName, &$base );
 			$dbNo = 1;
-			$base->system001Obj->setClientConn ( $fromConn, $dbNo, &$base );
+			$base->System001Obj->setClientConn ( $fromConn, $dbNo, &$base );
 			$dbStrg .= " set from to db1 using the name: $fromDomainName. ";
 		}
 		if ($toDomainName != NULL && $this->toDomainName != 'NULL') {
-			$toConn = $base->clientObj->getClientConn ( $toDomainName, &$base );
+			$toConn = $base->ClientObj->getClientConn ( $toDomainName, &$base );
 			$dbNo = 2;
-			$base->system001Obj->setClientConn ( $toConn, $dbNo, &$base );
+			$base->System001Obj->setClientConn ( $toConn, $dbNo, &$base );
 			$dbStrg .= " set to to db2 using the name: $toDomainName.";
 		}
 		// - build report if you have domain/company/job
 		$fromCompanyProfileId = $base->paramsAry ['fromcompanyprofileid'];
 		$fromJobProfileId = $base->paramsAry ['fromjobprofileid'];
 		$returnMsg = null;
-		// $base->fileObj->writeLog('debug','xxxf3: '.$dbStrg,&$base);//xxxf
+		// $base->FileObj->writeLog('debug','xxxf3: '.$dbStrg,&$base);//xxxf
 		if ($fromDomainName != null && $fromCompanyProfileId != null && $fromJobProfileId != null) {
 			$passAry = array ();
 			// - containers xxxf22 - work in progress
 			$theQuery = "select containername from containerprofileview where jobprofileid=$fromJobProfileId order by containername";
-			$result = $base->clientObj->queryClientDbTable ( $theQuery, $fromConn, 'read', &$base );
-			$containerAry = $base->utlObj->tableToHashAryV3 ( $result, $passAry );
+			$result = $base->ClientObj->queryClientDbTable ( $theQuery, $fromConn, 'read', &$base );
+			$containerAry = $base->UtlObj->tableToHashAryV3 ( $result, $passAry );
 			// - tables
 			$theQuery = "select tablename from tableprofileview where jobprofileid=$fromJobProfileId order by tablename";
-			$result = $base->clientObj->queryClientDbTable ( $theQuery, $fromConn, 'read', &$base );
-			$tableAry = $base->utlObj->tableToHashAryV3 ( $result, $passAry );
-			$base->fileObj->writeLog ( 'debug', 'xxxf3.5: ' . $dbStrg, &$base ); // xxxf
+			$result = $base->ClientObj->queryClientDbTable ( $theQuery, $fromConn, 'read', &$base );
+			$tableAry = $base->UtlObj->tableToHashAryV3 ( $result, $passAry );
+			$base->FileObj->writeLog ( 'debug', 'xxxf3.5: ' . $dbStrg, &$base ); // xxxf
 			                                                                     // - forms
 			$theQuery = "select formname from formprofileview where jobprofileid=$fromJobProfileId order by formname";
-			$result = $base->clientObj->queryClientDbTable ( $theQuery, $fromConn, 'read', &$base );
-			$formAry = $base->utlObj->tableToHashAryV3 ( $result, $passAry );
+			$result = $base->ClientObj->queryClientDbTable ( $theQuery, $fromConn, 'read', &$base );
+			$formAry = $base->UtlObj->tableToHashAryV3 ( $result, $passAry );
 			// - css
 			$theQuery = "select distinct prefix from cssprofileview where jobprofileid=$fromJobProfileId order by prefix";
-			$result = $base->clientObj->queryClientDbTable ( $theQuery, $fromConn, 'read', &$base );
-			$cssAry = $base->utlObj->tableToHashAryV3 ( $result, $passAry );
+			$result = $base->ClientObj->queryClientDbTable ( $theQuery, $fromConn, 'read', &$base );
+			$cssAry = $base->UtlObj->tableToHashAryV3 ( $result, $passAry );
 			// - menu
 			$theQuery = "select menuname from menuprofileview where jobprofileid=$fromJobProfileId order by menuname";
-			$result = $base->clientObj->queryClientDbTable ( $theQuery, $fromConn, 'read', &$base );
-			$menuAry = $base->utlObj->tableToHashAryV3 ( $result, $passAry );
+			$result = $base->ClientObj->queryClientDbTable ( $theQuery, $fromConn, 'read', &$base );
+			$menuAry = $base->UtlObj->tableToHashAryV3 ( $result, $passAry );
 			// - images
 			$theQuery = "select imagename from imageprofileview where jobprofileid=$fromJobProfileId order by imagename";
-			$result = $base->clientObj->queryClientDbTable ( $theQuery, $fromConn, 'read', &$base );
-			$imageAry = $base->utlObj->tableToHashAryV3 ( $result, $passAry );
+			$result = $base->ClientObj->queryClientDbTable ( $theQuery, $fromConn, 'read', &$base );
+			$imageAry = $base->UtlObj->tableToHashAryV3 ( $result, $passAry );
 		}
 		$toCompanyProfileId = $base->paramsAry ['tocompanyprofileid'];
 		$toJobProfileId = $base->paramsAry ['tojobprofileid'];
-		$base->fileObj->writeLog ( 'debug', "tojobprofileid: $toJobProfileId", &$base ); // xxxf
+		$base->FileObj->writeLog ( 'debug', "tojobprofileid: $toJobProfileId", &$base ); // xxxf
 		if ($toDomainName != null && $toCompanyProfileId != null && $toJobProfileId != null) {
 			$passAry = array ();
 			// - containers
 			$theQuery = "select containername from containerprofileview where jobprofileid=$toJobProfileId order by containername";
-			$result = $base->dbObj->queryTable ( $theQuery, 'read', &$base );
-			$toContainerAry = $base->utlObj->tableToHashAryV3 ( $result, $passAry );
+			$result = $base->DbObj->queryTable ( $theQuery, 'read', &$base );
+			$toContainerAry = $base->UtlObj->tableToHashAryV3 ( $result, $passAry );
 			// - tables
 			$theQuery = "select tablename from tableprofileview where jobprofileid=$toJobProfileId order by tablename";
-			$result = $base->dbObj->queryTable ( $theQuery, 'read', &$base );
-			$toTableAry = $base->utlObj->tableToHashAryV3 ( $result, $passAry );
+			$result = $base->DbObj->queryTable ( $theQuery, 'read', &$base );
+			$toTableAry = $base->UtlObj->tableToHashAryV3 ( $result, $passAry );
 			// - forms
 			$theQuery = "select formname from formprofileview where jobprofileid=$toJobProfileId order by formname";
-			$result = $base->dbObj->queryTable ( $theQuery, 'read', &$base );
-			$toFormAry = $base->utlObj->tableToHashAryV3 ( $result, $passAry );
+			$result = $base->DbObj->queryTable ( $theQuery, 'read', &$base );
+			$toFormAry = $base->UtlObj->tableToHashAryV3 ( $result, $passAry );
 			// - css
 			$theQuery = "select distinct prefix from cssprofileview where jobprofileid=$toJobProfileId order by prefix";
-			$result = $base->dbObj->queryTable ( $theQuery, 'read', &$base );
-			$toCssAry = $base->utlObj->tableToHashAryV3 ( $result, $passAry );
+			$result = $base->DbObj->queryTable ( $theQuery, 'read', &$base );
+			$toCssAry = $base->UtlObj->tableToHashAryV3 ( $result, $passAry );
 			// - menu
 			$theQuery = "select menuname from menuprofileview where jobprofileid=$toJobProfileId order by menuname";
-			$result = $base->dbObj->queryTable ( $theQuery, 'read', &$base );
-			$toMenuAry = $base->utlObj->tableToHashAryV3 ( $result, $passAry );
+			$result = $base->DbObj->queryTable ( $theQuery, 'read', &$base );
+			$toMenuAry = $base->UtlObj->tableToHashAryV3 ( $result, $passAry );
 			// - images
 			$theQuery = "select imagename from imageprofileview where jobprofileid=$toJobProfileId order by imagename";
-			$result = $base->dbObj->queryTable ( $theQuery, 'read', &$base );
-			$toImageAry = $base->utlObj->tableToHashAryV3 ( $result, $passAry );
+			$result = $base->DbObj->queryTable ( $theQuery, 'read', &$base );
+			$toImageAry = $base->UtlObj->tableToHashAryV3 ( $result, $passAry );
 		}
 		// ===================== build return Message
 		$sessionName = $base->paramsAry ['sessionname'];
@@ -447,8 +447,8 @@ class operPlugin002Object {
 		foreach ( $containerAry as $ctr => $theContainerAry ) {
 			$containerName = $theContainerAry ['containername'];
 			$batchStrg = "rmo2:clientadminsetup!copyjobobject!sessionname!$sessionName!fromjobprofileid!$fromJobProfileId!tojobprofileid!$toJobProfileId!objectname!$containerName!objecttype!container|w";
-			// $base->fileObj->writeLog('debug',$batchStrg,&$base);//xxxf
-			$returnMsg .= "<td><span class=\"jobobjects\" onclick=\"menuObj.runBatch('$batchStrg');\">$containerName</span><td>";
+			// $base->FileObj->writeLog('debug',$batchStrg,&$base);//xxxf
+			$returnMsg .= "<td><span class=\"jobobjects\" onclick=\"MenuObj.runBatch('$batchStrg');\">$containerName</span><td>";
 			$breakCtr ++;
 			if ($breakCtr > 2) {
 				$returnMsg .= "</tr><tr>";
@@ -464,7 +464,7 @@ class operPlugin002Object {
 		foreach ( $cssAry as $ctr => $theCssAry ) {
 			$prefix = $theCssAry ['prefix'];
 			$batchStrg = "rmo2:clientadminsetup!copyjobobject!sessionname!$sessionName!fromjobprofileid!$fromJobProfileId!tojobprofileid!$toJobProfileId!objectname!$prefix!objecttype!css|w";
-			$returnMsg .= "<td><span class=\"jobobjects\" onclick=\"menuObj.runBatch('$batchStrg');\">$prefix</span><td>";
+			$returnMsg .= "<td><span class=\"jobobjects\" onclick=\"MenuObj.runBatch('$batchStrg');\">$prefix</span><td>";
 			$breakCtr ++;
 			if ($breakCtr > 2) {
 				$returnMsg .= "</tr><tr>";
@@ -480,8 +480,8 @@ class operPlugin002Object {
 		foreach ( $formAry as $ctr => $theFormAry ) {
 			$formName = $theFormAry ['formname'];
 			$batchStrg = "rmo2:clientadminsetup!copyjobobject!sessionname!$sessionName!fromjobprofileid!$fromJobProfileId!tojobprofileid!$toJobProfileId!objectname!$formName!objecttype!form|w";
-			$returnMsg .= "<td><span class=\"jobobjects\" onclick=\"menuObj.runBatch('$batchStrg');\">$formName</span><td>";
-			// $base->fileObj->writeLog('debug',"batch: $batchStrg",&$base);
+			$returnMsg .= "<td><span class=\"jobobjects\" onclick=\"MenuObj.runBatch('$batchStrg');\">$formName</span><td>";
+			// $base->FileObj->writeLog('debug',"batch: $batchStrg",&$base);
 			$breakCtr ++;
 			if ($breakCtr > 2) {
 				$returnMsg .= "</tr><tr>";
@@ -497,7 +497,7 @@ class operPlugin002Object {
 		foreach ( $menuAry as $theMenuAry ) {
 			$menuName = $theMenuAry ['menuname'];
 			$batchStrg = "rmo2:clientadminsetup!copyjobobject!sessionname!$sessionName!fromjobprofileid!$fromJobProfileId!tojobprofileid!$toJobProfileId!objectname!$menuName!objecttype!menu|w";
-			$returnMsg .= "<td><span class=\"jobobjects\" onclick=\"menuObj.runBatch('$batchStrg');\">$menuName</span><td>";
+			$returnMsg .= "<td><span class=\"jobobjects\" onclick=\"MenuObj.runBatch('$batchStrg');\">$menuName</span><td>";
 			$breakCtr ++;
 			if ($breakCtr > 2) {
 				$returnMsg .= "</tr><tr>";
@@ -513,7 +513,7 @@ class operPlugin002Object {
 		foreach ( $tableAry as $ctr => $theTableAry ) {
 			$tableName = $theTableAry ['tablename'];
 			$batchStrg = "rmo2:clientadminsetup!copyjobobject!sessionname!$sessionName!fromjobprofileid!$fromJobProfileId!tojobprofileid!$toJobProfileId!objectname!$tableName!objecttype!table|w";
-			$returnMsg .= "<td><span class=\"jobobjects\" onclick=\"menuObj.runBatch('$batchStrg');\">$tableName</span><td>";
+			$returnMsg .= "<td><span class=\"jobobjects\" onclick=\"MenuObj.runBatch('$batchStrg');\">$tableName</span><td>";
 			$breakCtr ++;
 			if ($breakCtr > 2) {
 				$returnMsg .= "</tr><tr>";
@@ -529,7 +529,7 @@ class operPlugin002Object {
 		foreach ( $imageAry as $ctr => $theImageAry ) {
 			$imageName = $theImageAry ['imagename'];
 			$batchStrg = "rmo2:clientadminsetup!copyjobobject!sessionname!$sessionName!fromjobprofileid!$fromJobProfileId!tojobprofileid!$toJobProfileId!objectname!$imageName!objecttype!image|w";
-			$returnMsg .= "<td><span class=\"jobobjects\" onclick=\"menuObj.runBatch('$batchStrg');\">$imageName</span><td>";
+			$returnMsg .= "<td><span class=\"jobobjects\" onclick=\"MenuObj.runBatch('$batchStrg');\">$imageName</span><td>";
 			$breakCtr ++;
 			if ($breakCtr > 2) {
 				$returnMsg .= "</tr><tr>";
@@ -538,14 +538,14 @@ class operPlugin002Object {
 		}
 		$returnMsg .= "</tr></table>";
 		$returnMsg .= "</div>";
-		// $base->fileObj->writeLog('jeffdebug.txt',$returnMsg,&$base);//xxxf
+		// $base->FileObj->writeLog('jeffdebug.txt',$returnMsg,&$base);//xxxf
 		// - destination stuff
 		$toJobProfileId = $base->paramsAry ['tojobprofileid'];
 		$toCompanyProfileId = $base->paramsAry ['tocompanyprofileid'];
 		if ($toCompanyProfileId != null && $toJobProfileId != null) {
 			// - null
 		}
-		// $base->fileObj->writeLog('jeffdebug.txt',$returnMsg,&$base);//xxxf
+		// $base->FileObj->writeLog('jeffdebug.txt',$returnMsg,&$base);//xxxf
 		$base->sentenceProfileAry ['objectlist'] ['objectlist'] ['sentencetext'] = $returnMsg;
 	}
 	// ====================================================
@@ -559,7 +559,7 @@ class operPlugin002Object {
 			$paramsStrg .= "\n$name: $value, ";
 		}
 		$paramsStrg .= "\n---------end paramsary----------";
-		$base->fileObj->writeLog ( 'debug', "copyjobobjects(paramsary): $paramsStrg", &$base ); // xxxflog
+		$base->FileObj->writeLog ( 'debug', "copyjobobjects(paramsary): $paramsStrg", &$base ); // xxxflog
 		$errorFlg = false;
 		$errorMsg = null;
 		$objectName = $base->paramsAry ['objectname'];
@@ -568,16 +568,16 @@ class operPlugin002Object {
 		$fromDomainName = $base->paramsAry ['fromdomainname'];
 		$toDomainName = $base->paramsAry ['todomainname'];
 		if ($fromDomainName != NULL) {
-			$fromConn = $base->clientObj->getClientConn ( $fromDomainName, &$base );
+			$fromConn = $base->ClientObj->getClientConn ( $fromDomainName, &$base );
 		} else {
-			$base->fileObj->writeLog ( 'debug', "copyjobobject  fromdomainname: $fromDomainName ", &$base ); // xxxf
+			$base->FileObj->writeLog ( 'debug', "copyjobobject  fromdomainname: $fromDomainName ", &$base ); // xxxf
 			$errorFlg = true;
 			$errorMsg = "fromdomainname bad: $fromDomainName";
 		}
 		if ($toDomainName != NULL) {
-			$toConn = $base->clientObj->getClientConn ( $toDomainName, &$base );
+			$toConn = $base->ClientObj->getClientConn ( $toDomainName, &$base );
 		} else {
-			$base->fileObj->writeLog ( 'debug', "copyjobobject todomainname: $toDomainName", &$base ); // xxxf
+			$base->FileObj->writeLog ( 'debug', "copyjobobject todomainname: $toDomainName", &$base ); // xxxf
 			$errorFlg = true;
 			$errorMsg = "todomainname bad: $toDomainName";
 		}
@@ -595,7 +595,7 @@ class operPlugin002Object {
 			$errorFlg = true;
 			$errorMsg = "no tojobprofileid";
 		}
-		$base->fileObj->writeLog ( 'debug', "objectname: $objectName, objectype: $objectType, errorflg: $errorFlg, errormsg: $errorMsg", &$base ); // xxxf
+		$base->FileObj->writeLog ( 'debug', "objectname: $objectName, objectype: $objectType, errorflg: $errorFlg, errormsg: $errorMsg", &$base ); // xxxf
 		                                                                                                                                           // - doit if no errors
 		if (! $errorFlg) {
 			$objectType = $base->paramsAry ['objecttype'];
@@ -610,7 +610,7 @@ class operPlugin002Object {
 			if ($this->dataMovObj == '') {
 				$this->dataMoveObj = new dataMoveObject ( $fromConn, $toConn );
 			}
-			$base->fileObj->writeLog ( 'debug', "objectname: $objectName, objectype: $objectType, fromconn: $fromConn, toconn: $toConn", &$base ); // xxxf
+			$base->FileObj->writeLog ( 'debug', "objectname: $objectName, objectype: $objectType, fromconn: $fromConn, toconn: $toConn", &$base ); // xxxf
 			switch ($objectType) {
 				case 'container' :
 					$rtnMsg = $this->dataMoveObj->copyContainer ( $passAry, &$base );
@@ -635,7 +635,7 @@ class operPlugin002Object {
 					exit ();
 			}
 		}
-		$base->fileObj->writeLog ( 'debug', "objecttype: $objectType, rtnmsg: $rtnMsg", &$base ); // xxxf
+		$base->FileObj->writeLog ( 'debug', "objecttype: $objectType, rtnmsg: $rtnMsg", &$base ); // xxxf
 		$theStatus = "$rtnMsg";
 		echo "okupd|jobobjectstatusid|$theStatus";
 	}
@@ -658,17 +658,17 @@ class operPlugin002Object {
 			$value = substr ( $value, 0, 50 );
 			$strg .= ", $name: $value";
 		}
-		$base->fileObj->writeLog ( 'debug1', $strg, &$base );
+		$base->FileObj->writeLog ( 'debug1', $strg, &$base );
 		echo "ok";
 	}
 	// ====================================================
 	function getSupportStuff($base) {
-		$useParamsAry = $base->ajaxObj->getAllParams ( &$base );
+		$useParamsAry = $base->AjaxObj->getAllParams ( &$base );
 		$reportLoadId = $useParamsAry ['updateid'];
 		$supportCode = $useParamsAry ['supportcode'];
 		switch ($supportCode) {
 			case 'menucodes' :
-				$menuProgramCodeAry = $base->fileObj->getFileArray ( '/home/owner/base/lib/includes.js/menuObject.js' );
+				$menuProgramCodeAry = $base->FileObj->getFileArray ( '/home/owner/base/lib/includes.js/MenuObject.js' );
 				$theMenuLen = count ( $menuProgramCodeAry );
 
 				$menuCodesAry = array ();
@@ -699,26 +699,26 @@ class operPlugin002Object {
 				}
 				$theStrg .= "</table>\n";
 				break;
-			case 'tableObject.js' :
-			case 'formObject.js' :
-			case 'menuObject.js' :
+			case 'TableObject.js' :
+			case 'FormObject.js' :
+			case 'MenuObject.js' :
 			case 'imageObject.js' :
-			case 'containerObject.js' :
+			case 'ContainerObject.js' :
 				$thePath = "/home/owner/base/lib/includes.js/$supportCode";
-				$programCodeAry = $base->fileObj->getFileArray ( $thePath );
-				// $base->fileObj->writeLog('debug1',$programCodeAry[1],&$base);exit();
+				$programCodeAry = $base->FileObj->getFileArray ( $thePath );
+				// $base->FileObj->writeLog('debug1',$programCodeAry[1],&$base);exit();
 				$theStrg = "<table>";
 				$theCodeLength = count ( $programCodeAry );
-				$base->fileObj->writeLog ( 'debug5', 'thecodelength: ' . $theCodeLength, &$base );
+				$base->FileObj->writeLog ( 'debug5', 'thecodelength: ' . $theCodeLength, &$base );
 				for($theLp = 0; $theLp < $theCodeLength; $theLp ++) {
 					$theLine = $programCodeAry [$theLp];
 					$theChk = strpos ( $theLine, '?@', 0 );
 					if ($theLp > 28 && $theLp < 50) {
-						// $base->fileObj->writeLog('debug1','theline: '$theLine,&$base);//xxxf
-						$base->fileObj->writeLog ( 'debug5', $theLp . ') thechk... (' . $theChk . '), ' . $theLine, &$base );
+						// $base->FileObj->writeLog('debug1','theline: '$theLine,&$base);//xxxf
+						$base->FileObj->writeLog ( 'debug5', $theLp . ') thechk... (' . $theChk . '), ' . $theLine, &$base );
 					}
 					if ($theChk > - 1) {
-						$base->fileObj->writeLog ( 'debug1', 'thechk: ' + $theChk, &$base );
+						$base->FileObj->writeLog ( 'debug1', 'thechk: ' + $theChk, &$base );
 						$workAry = explode ( '?@', $theLine );
 						$theLine = $workAry [1];
 						$theLineAry = explode ( '?C', $theLine );
@@ -737,7 +737,7 @@ class operPlugin002Object {
 				break;
 			case 'ascii.txt' :
 				$thePath = "/home/owner/jeffstuff/computernotes/$supportCode";
-				$theStrgAry = $base->fileObj->getFileArray ( $thePath );
+				$theStrgAry = $base->FileObj->getFileArray ( $thePath );
 				$theCnt = count ( $theStrgAry );
 				for($lp = 0; $lp < $theCnt; $lp ++) {
 					$theLine_raw = $theStrgAry [$lp];
@@ -748,7 +748,7 @@ class operPlugin002Object {
 				break;
 			default :
 				$thePath = "/home/owner/jeffstuff/computernotes/$supportCode";
-				$theStrgAry = $base->fileObj->getFileArray ( $thePath );
+				$theStrgAry = $base->FileObj->getFileArray ( $thePath );
 				$theStrgAryLen = count ( $theStrgAry );
 				for($lp = 0; $lp < $theStrgAryLen; $lp ++) {
 					$theLine_raw = $theStrgAry [$lp];
@@ -766,22 +766,22 @@ class operPlugin002Object {
 	}
 	// =======================================================
 	function updateCsv($base) {
-		$base->fileObj->writeLog ( 'updatecsv', "---operPlugin002Obj.updateCsv---", &$base );
+		$base->FileObj->writeLog ( 'updatecsv', "---OperPlugin002Obj.updateCsv---", &$base );
 		$strg = '';
-		$sendDataAry = $base->utlObj->breakOutSendData ( &$base );
+		$sendDataAry = $base->UtlObj->breakOutSendData ( &$base );
 		foreach ( $sendDataAry as $name => $value ) {
 			$strg .= "$name($value),";
 		}
-		$base->fileObj->writeLog ( 'updatecsv', "xxxd2 senddataary: $strg", &$base );
+		$base->FileObj->writeLog ( 'updatecsv', "xxxd2 senddataary: $strg", &$base );
 		$csvPath = $sendDataAry ['csvfilepathid'];
 		$csvCode = $sendDataAry ['csvtypeid'];
 		$csvLoadId = $sendDataAry ['csvloadid'];
-		//$base->fileObj->writeLog ( 'updatecsv', "xxxd2: csvpath: $csvPath, csvcode: $csvCode, csvloadidid: $csvLoadId", &$base ); // xxxd
+		//$base->FileObj->writeLog ( 'updatecsv', "xxxd2: csvpath: $csvPath, csvcode: $csvCode, csvloadidid: $csvLoadId", &$base ); // xxxd
 		$strg = '';
 		// foreach ($base->sentenceProfileAry['uploadfielddefs'] as $name=>$value){$strg.="$name($value)";}
 		$theCodeWorkAry = array ();
 		$theCodes = $base->sentenceProfileAry ['uploadfielddefs'] [$csvCode] ['sentencetext'];
-		//$base->debugObj->printDebug($base->sentenceProfileAry['uploadfielddefs'],1,'xxxd');//xxxd
+		//$base->DebugObj->printDebug($base->sentenceProfileAry['uploadfielddefs'],1,'xxxd');//xxxd
 		//echo "$csvCode, $theCodes";exit();//xxxd
 		//xxxd
 		if ($theCodes != '') {
@@ -795,7 +795,7 @@ class operPlugin002Object {
 				$strg .= "$theCode($theCodeValues),";
 			}
 		}
-		$base->fileObj->writeLog ( 'updatecsv', "xxxd3: thecodename: $csvCode, thecodes: $theCodes, strg: $strg", &$base ); // xxxd
+		$base->FileObj->writeLog ( 'updatecsv', "xxxd3: thecodename: $csvCode, thecodes: $theCodes, strg: $strg", &$base ); // xxxd
 		$theColumnNames = $theCodeWorkAry ['columndefs'];
 		$theColumnNamesAry = explode ( '?!', $theColumnNames );
 		$dbTableName = $theCodeWorkAry ['dbtablename'];
@@ -809,11 +809,11 @@ class operPlugin002Object {
 		$theAccountFieldName = $theAccountNameFieldsAry [0];
 		$theAccountName = $theAccountNameFieldsAry [1];
 		$strg = "codename: $csvCode, dbtablename: $dbTableName, startrow: $startRow, accountfieldname: $theAccountFieldName, accountname: $theAccountName, thecolumnnames: $theColumnNames";
-		$base->fileObj->writeLog ( 'updatecsv', "xxxd4: $strg", &$base ); // xxxxd last record
-		$csvAry = $base->fileObj->getFileArray ( $csvPath );
+		$base->FileObj->writeLog ( 'updatecsv', "xxxd4: $strg", &$base ); // xxxxd last record
+		$csvAry = $base->FileObj->getFileArray ( $csvPath );
 		$noLines = count ( $csvAry );
 		$strg = "xxxd5: nolines: $noLines,from csvpath($csvPath) now do loop";
-		$base->fileObj->writeLog ( 'updatecsv', "xxxd5: $strg", &$base );
+		$base->FileObj->writeLog ( 'updatecsv', "xxxd5: $strg", &$base );
 		if ($noLines > 0) {
 			// xxxd - need to do editting here to make sure it all works
 			$theMsg = '';
@@ -831,23 +831,23 @@ class operPlugin002Object {
 					$theValue_raw = $entryLineAry [$workLp2];
 					$theValue = trim ( $theValue_raw );
 					$writeRowAry [$theName] = $theValue;
-					// $base->fileObj->writeLog('debug1',"name: $theName, value: $theValue",&$base);//xxxd
+					// $base->FileObj->writeLog('debug1',"name: $theName, value: $theValue",&$base);//xxxd
 				}
 				$writeRowAry [$accountColumnName] = $accountName;
 				$writeRowsAry [] = $writeRowAry;
 				// $testit=$writeRowAry['umpquacredit'];
-				// $base->fileObj->writeLog('debug1',"umpquacredit: $testit",&$base);
+				// $base->FileObj->writeLog('debug1',"umpquacredit: $testit",&$base);
 				$strg = '';
 				// wont put in a total null record
-				// $base->debugObj->printDebug($writeRowAry,1,'xxxd');
+				// $base->DebugObj->printDebug($writeRowAry,1,'xxxd');
 			}
 			$strg = "xxxd6 end of loop";
-			$base->fileObj->writeLog ( 'updatecsv', "xxxd7: $strg", &$base );
+			$base->FileObj->writeLog ( 'updatecsv', "xxxd7: $strg", &$base );
 			$dbControlsAry = array (
 					'dbtablename' => $dbTableName,
 					'writerowsary' => $writeRowsAry 
 			);
-			//$base->debugObj->printDebug($dbControlsAry,1,'xxxf');exit();//xxxf
+			//$base->DebugObj->printDebug($dbControlsAry,1,'xxxf');exit();//xxxf
 			$totStrg = '';
 			foreach ( $dbControlsAry ['writerowsary'] as $ctr => $anAry ) {
 				$strg = '';
@@ -861,35 +861,35 @@ class operPlugin002Object {
 			foreach ( $dbControlsAry as $name => $value ) {
 				$strg .= "$name($value),";
 			}
-			$base->fileObj->writeLog ( 'updatecsv', "xxxd8 do write: $strg", &$base );
-			//$base->debugObj->printDebug($dbControlsAry,1,'xxxf');exit();//xxxf
-			$successBool = $base->dbObj->writeToDb ( $dbControlsAry, &$base ); // xxxf
-			$base->fileObj->writeLog ( 'updatecsv', "xxxd9 ---done with writetodb--- successbool: $successBool", &$base ); // xxxf update failed
+			$base->FileObj->writeLog ( 'updatecsv', "xxxd8 do write: $strg", &$base );
+			//$base->DebugObj->printDebug($dbControlsAry,1,'xxxf');exit();//xxxf
+			$successBool = $base->DbObj->writeToDb ( $dbControlsAry, &$base ); // xxxf
+			$base->FileObj->writeLog ( 'updatecsv', "xxxd9 ---done with writetodb--- successbool: $successBool", &$base ); // xxxf update failed
 			if ($successBool) {
 				$theMsg = ($noLines - $startRow) . ' lines updated';
 			} else {
 				$theMsg = "There were errors in the csvData <br>";
-				$theMsg2 = $base->errorObj->retrieveAllErrors ( &$base );
+				$theMsg2 = $base->ErrorObj->retrieveAllErrors ( &$base );
 				$theMsg = $theMsg . $theMsg2;
 			}
 		} else {
 			$theMsg = "invalid csv path: $csvPath";
 		}
-		$base->fileObj->writeLog ( 'updatecsv', "xxxd10: $theMsg", &$base );
+		$base->FileObj->writeLog ( 'updatecsv', "xxxd10: $theMsg", &$base );
 		$statusKey = 'loadinnerhtml';
 		echo "$statusKey|$theMsg|$csvLoadId";
 	}
 	// ========================================================
 	function retrieveCsv($base) {
-		$base->fileObj->writeLog ( 'retrievecsv', '!!operPlugin002Obj.retrieveCsv!!', &$base );
+		$base->FileObj->writeLog ( 'retrievecsv', '!!OperPlugin002Obj.retrieveCsv!!', &$base );
 		$paragraphName = $base->paramsAry ['paragraphname'];
 		$sentenceName = $base->paramsAry ['sentencename'];
 		$csvType = $base->paramsAry ['csvtype'];
 		$csvPath = $base->paramsAry ['csvfilepath'];
-		$csvAry = $base->fileObj->getFileArray ( $csvPath );
+		$csvAry = $base->FileObj->getFileArray ( $csvPath );
 		// doesn't make it here
 		$noEntries = count ( $csvAry );
-		$base->fileObj->writeLog ( 'retrievecsv', 'csvary noentries: ' . $noEntries, &$base );
+		$base->FileObj->writeLog ( 'retrievecsv', 'csvary noentries: ' . $noEntries, &$base );
 		if ($noEntries > 0) {
 			if ($csvType != '') {
 				$tableDefs = $base->sentenceProfileAry ['uploadfielddefs'] [$csvType] ['sentencetext'];
@@ -942,12 +942,12 @@ class operPlugin002Object {
 		}
 		$displayStrg .= "</table>";
 		$theLen = strlen ( $displayStrg );
-		$base->fileObj->writeLog ( 'retrievecsv', "$paragraphName, $sentenceName, $theLen", &$base );
+		$base->FileObj->writeLog ( 'retrievecsv', "$paragraphName, $sentenceName, $theLen", &$base );
 		$base->sentenceProfileAry [$paragraphName] [$sentenceName] ['sentencetext'] = $displayStrg;
 	}
 	// ========================================================
 	function batchUmpquaHistory($base) {
-		$base->fileObj->writeLog ( 'debug1', '!!operPlugin002Obj.batchUmpquaHistory!!', &$base );
+		$base->FileObj->writeLog ( 'debug1', '!!OperPlugin002Obj.batchUmpquaHistory!!', &$base );
 		$scanCategoriesAry = $base->sentenceProfileAry ['umpquabatchcategories'];
 		$workCategoriesAry = array ();
 		foreach ( $scanCategoriesAry as $categoryName => $categoryAry ) {
@@ -964,7 +964,7 @@ class operPlugin002Object {
 		}
 		$query = "select umpquabankhistoryid,umpquacategory, umpquatype, umpquadescription, umpquadate from umpquabankhistoryview where umpquatype = '' or umpquacategory = '' ";
 		$passAry = array ();
-		$workAry = $base->dbObj->queryTableRead ( $query, $passAry, &$base );
+		$workAry = $base->DbObj->queryTableRead ( $query, $passAry, &$base );
 		foreach ( $workAry as $rowCtr => $workRowAry ) {
 			$description_raw = $workRowAry ['umpquadescription'];
 			$description = strtolower ( $description_raw );
@@ -1000,14 +1000,14 @@ class operPlugin002Object {
 			$theType = $workAry [$rowCtr] ['umpquatype'];
 			$theDate = $workAry [$rowCtr] ['umpquadate'];
 			unset ( $workAry [$rowCtr] ['umpquadate'] );
-			$base->fileObj->writeLog ( 'debug', "rowctr: $rowCtr, date: $theDate, type: $theType, cat: $theCat, desc: $description", &$base );
+			$base->FileObj->writeLog ( 'debug', "rowctr: $rowCtr, date: $theDate, type: $theType, cat: $theCat, desc: $description", &$base );
 		}
 		$dbControlsAry = array (
 				'dbtablename' => 'umpquabankhistory',
 				'writerowsary' => $workAry 
 		);
-		$successBool = $base->dbObj->writeToDb ( $dbControlsAry, &$base );
-		$base->errorObj->printAllErrors ( &$base );
+		$successBool = $base->DbObj->writeToDb ( $dbControlsAry, &$base );
+		$base->ErrorObj->printAllErrors ( &$base );
 		if ($successBool) {
 			echo "ok";
 		} else {
@@ -1016,7 +1016,7 @@ class operPlugin002Object {
 	}
 	// ========================================================
 	function batchTransactions($base) {
-		$base->fileObj->writeLog ( 'debug1', '!!operPlugin002Obj.batchJeffTransactions!!', &$base );
+		$base->FileObj->writeLog ( 'debug1', '!!OperPlugin002Obj.batchJeffTransactions!!', &$base );
 		// - settings
 		$settingsParagraphAry = $base->sentenceProfileAry ['settings'];
 		$settingsSentenceAry = $settingsParagraphAry ['dbtablename'];
@@ -1042,11 +1042,11 @@ class operPlugin002Object {
 		}
 		$query = "select * from $dbTableNameView where jefftype = '' or jeffcategory = '' ";
 		$passAry = array ();
-		$workAry = $base->dbObj->queryTableRead ( $query, $passAry, &$base );
+		$workAry = $base->DbObj->queryTableRead ( $query, $passAry, &$base );
 		foreach ( $workAry as $rowCtr => $workRowAry ) {
 			// - fix date from internal to entered external
 			$workDt = $workRowAry ['jeffdate'];
-			$workDt_fmt = $base->utlObj->convertDate ( $workDt, 'date1', &$base );
+			$workDt_fmt = $base->UtlObj->convertDate ( $workDt, 'date1', &$base );
 			$workAry [$rowCtr] ['jeffdate'] = $workDt_fmt;
 			// echo "workdtfmt: $workDt_fmt";exit();//xxxf
 			$description_raw = $workRowAry ['jeffdesc'];
@@ -1088,17 +1088,17 @@ class operPlugin002Object {
 				'dbtablename' => $dbTableName,
 				'writerowsary' => $workAry 
 		);
-		$successBool = $base->dbObj->writeToDb ( $dbControlsAry, &$base );
+		$successBool = $base->DbObj->writeToDb ( $dbControlsAry, &$base );
 		if ($successBool) {
 			echo "ok";
 		} else {
 			echo "error";
 		}
-		$base->errorObj->printAllErrors ( &$base ); // xxxf
+		$base->ErrorObj->printAllErrors ( &$base ); // xxxf
 	}
 	// ====================================================
 	function cloneStyleGroup($base) {
-		$sendDataAry = $base->utlObj->breakoutSendData ( &$base );
+		$sendDataAry = $base->UtlObj->breakoutSendData ( &$base );
 		$prefix = $sendDataAry ['newprefix'];
 		$cssClass = $sendDataAry ['newcssclass'];
 		$cssId = $sendDataAry ['newcssid'];
@@ -1114,7 +1114,7 @@ class operPlugin002Object {
 		// check if new clone is already on file
 		$getCssIdQuery = "select cssprofileid from cssprofileview where jobprofileid=$jobProfileId and prefix='$prefix' and cssclass='$cssClass' and cssid='$cssId' and htmltag='$htmlTag'";
 		$passAry = array ();
-		$workAry = $base->dbObj->queryTableRead ( $getCssIdQuery, $passAry, &$base );
+		$workAry = $base->DbObj->queryTableRead ( $getCssIdQuery, $passAry, &$base );
 		$checkCssProfileId = $workAry [0] ['cssprofileid'];
 		if ($cssProfileId == '') {
 			$errorMsg = "source style group is not on file";
@@ -1141,10 +1141,10 @@ class operPlugin002Object {
 					0 => $writeRowAry 
 			);
 			$dbControlsAry ['writerowsary'] = $writeRowsAry;
-			$successfullBool = $base->dbObj->writeToDb ( $dbControlsAry, &$base );
+			$successfullBool = $base->DbObj->writeToDb ( $dbControlsAry, &$base );
 			if ($successfullBool) {
 				$passAry = array ();
-				$workAry = $base->dbObj->queryTableRead ( $getCssIdQuery, $passAry, &$base );
+				$workAry = $base->DbObj->queryTableRead ( $getCssIdQuery, $passAry, &$base );
 				$newCssProfileId = $workAry [0] ['cssprofileid'];
 				if ($newCssProfileId == '') {
 					$errorMsg = "cant create new style group, getcssidquery: $getCssIdQuery";
@@ -1158,7 +1158,7 @@ class operPlugin002Object {
 		if (! $dontConvert) {
 			// read/write csselementprofile records
 			$query = "select * from csselementprofileview where cssprofileid=$cssProfileId";
-			$writeRowsAry = $base->dbObj->queryTableRead ( $query, $passAry, &$base );
+			$writeRowsAry = $base->DbObj->queryTableRead ( $query, $passAry, &$base );
 			if (count ( $writeRowsAry ) > 0) {
 				$elementNameStrg = '';
 				$delim = '';
@@ -1173,14 +1173,14 @@ class operPlugin002Object {
 						'dbtablename' => 'csselementprofile' 
 				);
 				$dbControlsAry ['writerowsary'] = $writeRowsAry;
-				// $base->debugObj->printDebug($dbControlsAry,1,'xxxf');
+				// $base->DebugObj->printDebug($dbControlsAry,1,'xxxf');
 				// exit();
-				$base->dbObj->writeToDb ( $dbControlsAry, &$base );
+				$base->DbObj->writeToDb ( $dbControlsAry, &$base );
 				$errorMsg .= elementNameStrg;
 			}
 			// read/write csseventprofile records
 			$query = "select * from csseventprofileview where cssprofileid=$cssProfileId";
-			$writeRowsAry = $base->dbObj->queryTableRead ( $query, $passAry, &$base );
+			$writeRowsAry = $base->DbObj->queryTableRead ( $query, $passAry, &$base );
 			if (count ( $writeRowsAry ) > 0) {
 				$eventNameStrg = '';
 				$delim = '';
@@ -1195,7 +1195,7 @@ class operPlugin002Object {
 						'dbtablename' => 'csseventprofile' 
 				);
 				$dbControlsAry ['writerowsary'] = $writeRowsAry;
-				$base->dbObj->writeToDb ( $dbControlsAry, &$base );
+				$base->DbObj->writeToDb ( $dbControlsAry, &$base );
 			}
 		}
 		echo "loadinnerhtml|$prelimStrg<br><br>properties cloned<br>$elementNameStrg<br><br>events cloned<br>$eventNameStrg|$reportId";
@@ -1207,7 +1207,7 @@ class operPlugin002Object {
 		$jobName = $base->paramsAry ['jobname'];
 		$query = "select * from csselementprofileview where jobprofileid=$jobProfileId order by prefix,cssclass,cssid,htmltag";
 		$passAry = array ();
-		$workAry = $base->dbObj->queryTableRead ( $query, $passAry, &$base );
+		$workAry = $base->DbObj->queryTableRead ( $query, $passAry, &$base );
 		$styleSheet = '';
 		$oldPrefix = '';
 		$oldCss = '';
@@ -1237,7 +1237,7 @@ class operPlugin002Object {
 				$writeName = $jobName . '_' . $oldPrefix . '.css';
 				if ($styleSheet != '') {
 					$writePath = $writePathBase . '/' . $writeName;
-					$base->fileObj->writeFile ( $writePath, $styleSheet, &$base );
+					$base->FileObj->writeFile ( $writePath, $styleSheet, &$base );
 				}
 				$styleSheet = '';
 			} else if ($cssClass != $oldClass && $oldClass != '') {
@@ -1285,13 +1285,13 @@ class operPlugin002Object {
 		if ($styleSheet != '') {
 			$writeName = $jobName . '_' . $oldPrefix . '.css';
 			$writePath = $writePathBase . '/' . $writeName;
-			$base->fileObj->writeFile ( $writePath, $styleSheet, &$base );
+			$base->FileObj->writeFile ( $writePath, $styleSheet, &$base );
 		}
 		echo "ok";
 	}
 	// ====================================================
 	function createCsvData($passedInfoAry, $base) {
-		$nameAry = $base->fileObj->getFileArray ( '/home/jeff/etc/csvdatanames.txt' );
+		$nameAry = $base->FileObj->getFileArray ( '/home/jeff/etc/csvdatanames.txt' );
 		// - payments
 		$nameNoMax = count ( $nameAry ) - 2;
 		$nameNo = 0;
@@ -1321,13 +1321,13 @@ class operPlugin002Object {
 				}
 			}
 		}
-		$base->fileObj->writeFile ( "csvdata.csv", $csvFile, &$base );
+		$base->FileObj->writeFile ( "csvdata.csv", $csvFile, &$base );
 		echo "done";
-		// $base->debugObj->printDebug($startDateAry,1,'xxxf');
+		// $base->DebugObj->printDebug($startDateAry,1,'xxxf');
 	}
 	// ====================================================
 	function clearDataTable($base) {
-		$sendDataAry = $base->utlObj->breakOutSendData ( &$base );
+		$sendDataAry = $base->UtlObj->breakOutSendData ( &$base );
 		$dbTableName = $sendDataAry ['dbtablename'];
 		$dmyTest = strtolower ( $dbTableName );
 		$pos = strpos ( $dmyTest, 'demo', 0 );
@@ -1335,7 +1335,7 @@ class operPlugin002Object {
 			$theMsg = "I will clear $dbTableName";
 			if ($dbTableName == 'demotransactions') {
 				$query = "delete from $dbTableName";
-				$result = $base->dbObj->queryTable ( $query, 'delete', &$base );
+				$result = $base->DbObj->queryTable ( $query, 'delete', &$base );
 			}
 		} else {
 			$theMsg = "$dbTableName is a restricted table";
@@ -1348,38 +1348,38 @@ class operPlugin002Object {
 		// - basic table setup for byrdlandevents
 		$passAry = array ();
 		$query = "select * from dbcolumnprofileview where dbtablename='byrdlandevents'";
-		$metaDbAry = $base->dbObj->getSqlDbAry ( $query, $passAry, &$base );
+		$metaDbAry = $base->DbObj->getSqlDbAry ( $query, $passAry, &$base );
 		$colAry = array ();
 		foreach ( $metaDbAry as $theKey => $theValueAry ) {
 			$colName = $theValueAry ['dbcolumnname'];
 			$colType = $theValueAry ['dbcolumntype'];
 			$colAry [$colName] = $colType;
 		}
-		$colAry_json = $base->xmlObj->array2Json ( $colAry, &$base );
+		$colAry_json = $base->XmlObj->array2Json ( $colAry, &$base );
 		
 		// - basic table setup for byrdlandyoutube
 		
 		$query = "select * from dbcolumnprofileview where dbtablename='byrdlandyoutubevideos'";
-		$metaDbAry = $base->dbObj->getSqlDbAry ( $query, $passAry, &$base );
+		$metaDbAry = $base->DbObj->getSqlDbAry ( $query, $passAry, &$base );
 		$colYoutubeAry = array ();
 		foreach ( $metaDbAry as $theKey => $theValueAry ) {
 			$colName = $theValueAry ['dbcolumnname'];
 			$colType = $theValueAry ['dbcolumntype'];
 			$colYoutubeAry [$colName] = $colType;
 		}
-		$colYoutubeAry_json = $base->xmlObj->array2Json ( $colYoutubeAry, &$base );
+		$colYoutubeAry_json = $base->XmlObj->array2Json ( $colYoutubeAry, &$base );
 		
 		// - basic table setup for byrdlandmembers
 		
 		$query = "select * from dbcolumnprofileview where dbtablename='byrdlandmembers'";
-		$metaDbAry = $base->dbObj->getSqlDbAry ( $query, $passAry, &$base );
+		$metaDbAry = $base->DbObj->getSqlDbAry ( $query, $passAry, &$base );
 		$colMembersAry = array ();
 		foreach ( $metaDbAry as $theKey => $theValueAry ) {
 			$colName = $theValueAry ['dbcolumnname'];
 			$colType = $theValueAry ['dbcolumntype'];
 			$colMembersAry [$colName] = $colType;
 		}
-		$colMembersAry_json = $base->xmlObj->array2Json ( $colMembersAry, &$base );
+		$colMembersAry_json = $base->XmlObj->array2Json ( $colMembersAry, &$base );
 		
 		// - events json
 		
@@ -1387,31 +1387,31 @@ class operPlugin002Object {
 		$dbControlsAry = array (
 				'dbtablename' => 'byrdlandevents' 
 		);
-		$base->dbObj->getDbTableInfo ( &$dbControlsAry, &$base );
+		$base->DbObj->getDbTableInfo ( &$dbControlsAry, &$base );
 		$passAry = array (
 				'dbcontrolsary' => $dbControlsAry 
 		);
-		$eventAry = $base->dbObj->getSqlDbAry ( $query, $passAry, &$base );
-		$eventAry_json = $base->xmlObj->array2Json ( $eventAry, &$base );
+		$eventAry = $base->DbObj->getSqlDbAry ( $query, $passAry, &$base );
+		$eventAry_json = $base->XmlObj->array2Json ( $eventAry, &$base );
 		
 		// - youtube json
 		$dbControlsAry = array (
 				'dbtablename' => 'byrdlandyoutubevideos' 
 		);
-		$base->dbObj->getDbTableInfo ( &$dbControlsAry, &$base );
+		$base->DbObj->getDbTableInfo ( &$dbControlsAry, &$base );
 		$passAry = array (
 				'dbcontrolsary' => $dbControlsAry 
 		);
 		//
 		$query = "select * from byrdlandyoutubevideos where youtubeshow order by youtubedesc";
-		$youtubeAry = $base->dbObj->getSqlDbAry ( $query, $passAry, &$base );
-		// $base->debugObj->printDebug($youtubeAry,1,'xxxf');
-		$youtubeAry_json = $base->xmlObj->array2Json ( $youtubeAry, &$base );
+		$youtubeAry = $base->DbObj->getSqlDbAry ( $query, $passAry, &$base );
+		// $base->DebugObj->printDebug($youtubeAry,1,'xxxf');
+		$youtubeAry_json = $base->XmlObj->array2Json ( $youtubeAry, &$base );
 		// - byrdlandmembers json
 		$passAry = array ();
 		$query = "select * from byrdlandmembers order by membersorder";
-		$membersAry = $base->dbObj->getSqlDbAry ( $query, $passAry, &$base );
-		$membersAry_json = $base->xmlObj->array2Json ( $membersAry, &$base );
+		$membersAry = $base->DbObj->getSqlDbAry ( $query, $passAry, &$base );
+		$membersAry_json = $base->XmlObj->array2Json ( $membersAry, &$base );
 		
 		// - send string
 		
@@ -1456,7 +1456,7 @@ class operPlugin002Object {
 			// - get table meta
 			
 			$query = "select * from dbcolumnprofileview where dbtablename='$dbTableName'";
-			$metaDbAry = $base->dbObj->getSqlDbAry ( $query, $passAry, &$base );
+			$metaDbAry = $base->DbObj->getSqlDbAry ( $query, $passAry, &$base );
 			$colCreateStrgBeg = "";
 			$colCreateStrgMid = "";
 			$colCreateStrgEnd = "";
@@ -1474,15 +1474,15 @@ class operPlugin002Object {
 				$colKey = $theValueAry ['dbcolumnkey'];
 				
 				$colForeignKey_raw = $theValueAry ['dbcolumnforeignkey'];
-				$colForeignKey = $base->utlObj->returnFormattedData ( $colForeignKey_raw, 'boolean', 'internal' );
+				$colForeignKey = $base->UtlObj->returnFormattedData ( $colForeignKey_raw, 'boolean', 'internal' );
 				$colForeignTableName = $theValueAry ['dbcolumnforeigntable'];
 				
 				$colForeignField_raw = $theValueAry ['dbcolumnforeignfield'];
-				$colForeignField = $base->utlObj->returnFormattedData ( $colForeignField_raw, 'boolean', 'internal' );
+				$colForeignField = $base->UtlObj->returnFormattedData ( $colForeignField_raw, 'boolean', 'internal' );
 				$colForeignKeyName = $theValueAry ['dbcolumnforeignkeyname'];
 				
 				$colNotNull = $theValueAry ['dbcolumnnotnull'];
-				$colNotNull = $base->utlObj->returnFormattedData ( $colNotNull, 'boolean', 'internal' );
+				$colNotNull = $base->UtlObj->returnFormattedData ( $colNotNull, 'boolean', 'internal' );
 				
 				// - use it
 				if ($colNotNull) {
@@ -1543,7 +1543,7 @@ class operPlugin002Object {
 			$dbTableViewName = $dbTableName . "view";
 			
 			$colCreateViewStrg = "create view $dbTableViewName as select * $foreignFieldStrg from $dbTableName $foreignTableStrg where $foreignTableName.$foreignKeyName = $dbTableName.$foreignKeyName";
-			$colAry_json = $base->xmlObj->array2Json ( $colAry, &$base );
+			$colAry_json = $base->XmlObj->array2Json ( $colAry, &$base );
 			// - build create table sql statement
 			
 			// - get table data
@@ -1552,12 +1552,12 @@ class operPlugin002Object {
 			$dbControlsAry = array (
 					'dbtablename' => $dbTableName 
 			);
-			$base->dbObj->getDbTableInfo ( &$dbControlsAry, &$base );
+			$base->DbObj->getDbTableInfo ( &$dbControlsAry, &$base );
 			$passAry = array (
 					'dbcontrolsary' => $dbControlsAry 
 			);
-			$dataAry = $base->dbObj->getSqlDbAry ( $query, $passAry, &$base );
-			$dataAry_json = $base->xmlObj->array2Json ( $dataAry, &$base );
+			$dataAry = $base->DbObj->getSqlDbAry ( $query, $passAry, &$base );
+			$dataAry_json = $base->XmlObj->array2Json ( $dataAry, &$base );
 			
 			// - sendstrg commands to create table
 			$sendStrg = $sendStrg . "drptbl?:$dbTableName?:dmy\n";
@@ -1570,15 +1570,15 @@ class operPlugin002Object {
 		echo "$sendStrg";
 	}
 	function cloneForm($base) {
-		$sendDataAry = $base->utlObj->breakOutSendData ( &$base );
+		$sendDataAry = $base->UtlObj->breakOutSendData ( &$base );
 		// echo "xxxxxf";
 		$fromFormId = $base->paramsAry ['formprofileid'];
 		$toName = $base->paramsAry ['formnamenew'];
 		// echo "fromformid: $fromFormId, toname: $toName<br>";
-		// $base->debugObj->printDebug($base->paramsAry,1,'operplugin002: xxxf');
+		// $base->DebugObj->printDebug($base->paramsAry,1,'operplugin002: xxxf');
 		$query = "select * from formprofileview where formprofileid=$fromFormId";
 		$passAry = array ();
-		$formAry = $base->dbObj->getSqlDbAry ( $query, $passAry, &$base );
+		$formAry = $base->DbObj->getSqlDbAry ( $query, $passAry, &$base );
 		
 		$formAry [0] ['formprofileid'] = '';
 		$formAry [0] ['formname'] = $toName;
@@ -1587,13 +1587,13 @@ class operPlugin002Object {
 		);
 		$dbControlsAry ['writerowsary'] = array ();
 		$dbControlsAry ['writerowsary'] [0] = $formAry [0];
-		// $base->debugObj->printDebug($dbControlsAry,1,'xxxf');exit();
-		$base->dbObj->setRtnIdFlg ();
-		$successBool = $base->dbObj->writeToDb ( $dbControlsAry, &$base );
-		$formProfileId = $base->errorObj->retrieveError ( "newkeyid", &$base );
+		// $base->DebugObj->printDebug($dbControlsAry,1,'xxxf');exit();
+		$base->DbObj->setRtnIdFlg ();
+		$successBool = $base->DbObj->writeToDb ( $dbControlsAry, &$base );
+		$formProfileId = $base->ErrorObj->retrieveError ( "newkeyid", &$base );
 		if ($formProfileId != "") {
 			$query = "select * from formelementprofileview where formprofileid=$fromFormId";
-			$formEleAry = $base->dbObj->getSqlDbAry ( $query, $passAry, &$base );
+			$formEleAry = $base->DbObj->getSqlDbAry ( $query, $passAry, &$base );
 			foreach ( $formEleAry as $ctr => $theAry ) {
 				//echo "ctr: $ctr, formprofileid: $formProfileId<br>";//xxxf
 				$formEleAry [$ctr] ['formprofileid'] = $formProfileId;
@@ -1602,17 +1602,17 @@ class operPlugin002Object {
 			$dbControlsAry=array();
 			$dbControlsAry['dbtablename']='formelementprofile';
 			$dbControlsAry['writerowsary']=$formEleAry;
-			//$base->debugObj->printDebug($dbControlsAry,1,'xxxf');exit();
-			$successBool=$base->dbObj->writeToDb($dbControlsAry,&$base);
-			//$base->debugObj->printDebug ( $formEleAry, 1, 'formelearyxxxf' );
+			//$base->DebugObj->printDebug($dbControlsAry,1,'xxxf');exit();
+			$successBool=$base->DbObj->writeToDb($dbControlsAry,&$base);
+			//$base->DebugObj->printDebug ( $formEleAry, 1, 'formelearyxxxf' );
 		} else {
-			$base->errorObj->setError ( 'cloneform', "failure to write formobj: $toName" );
+			$base->ErrorObj->setError ( 'cloneform', "failure to write formobj: $toName" );
 		}
 	}
 	function calcUmpquaBalances($base){
 		$query="select * from umpquabankhistory order by umpquadate, umpquabankhistoryid";
 		$passAry=array();
-		$workAry = $base->dbObj->getSqlDbAry ( $query, $passAry, &$base );
+		$workAry = $base->DbObj->getSqlDbAry ( $query, $passAry, &$base );
 		$totalSeriesBal=0;
 		$totalCheckingBal=0;
 		foreach ($workAry as $ctr=>$umpquaAry){
@@ -1620,7 +1620,7 @@ class operPlugin002Object {
 			$theCredit=$umpquaAry['umpquacredit'];
 			$theDebit=$umpquaAry['umpquadebit'];
 			$theDate=$umpquaAry['umpquadate'];
-			$theDate=$base->utlObj->convertDate($theDate,'date1',&$base);
+			$theDate=$base->UtlObj->convertDate($theDate,'date1',&$base);
 			$umpquaAry['umpquadate']=$theDate;
 			$theId=$umpquaAry['umpquabankhistoryid'];
 			$theAccountType=$umpquaAry['umpquaaccount'];
@@ -1632,7 +1632,7 @@ class operPlugin002Object {
 				$totalCheckingBal+=($theCredit-$theDebit);
 				$totalBal=$totalCheckingBal;
 			}
-			$useTotalBal=$base->utlObj->formatNumber($totalBal,"2_",&$base);
+			$useTotalBal=$base->UtlObj->formatNumber($totalBal,"2_",&$base);
 			$umpquaAry['umpquabalance']=$useTotalBal;
 			$workAry[$ctr]=$umpquaAry;
 			//$pos=strpos("514_515_516_519",$theId,0);
@@ -1640,9 +1640,9 @@ class operPlugin002Object {
 		}
 		$dbControlsAry=array("dbtablename"=>"umpquabankhistory");
 		$dbControlsAry['writerowsary']=$workAry;
-		//$base->debugObj->printDebug($dbControlsAry,1,'xxxf');
-		$base->dbObj->writeToDb($dbControlsAry,&$base);
-		$base->errorObj->printAllErrors(&$base);
+		//$base->DebugObj->printDebug($dbControlsAry,1,'xxxf');
+		$base->DbObj->writeToDb($dbControlsAry,&$base);
+		$base->ErrorObj->printAllErrors(&$base);
 		//
 		echo "done";exit();
 	}

@@ -1,12 +1,12 @@
 <?php
-class fileObject {
+class FileObject {
 // version: 1.1.1
 	var $statusMsg;
 	var $callNo = 0;
 	var $ctr = 0;
 	var $loggingIsOn = true;
 //---
-	function fileObject() {
+	function FileObject() {
 		$this->incCalls();
 		$this->statusMsg='file Object is fired up and ready for work!';
 	}
@@ -62,7 +62,7 @@ class fileObject {
 		fwrite($fileHandle, $theFile);
 		fclose($fileHandle);
 		//- xxxf dont understand how fwrite can work, but chmod does not?
-		$returnBool=$base->utlObj->tryToChangeMod($path,0777,&$base);
+		$returnBool=$base->UtlObj->tryToChangeMod($path,0777,&$base);
 	}
 	//===============================================
 	function retrieveFileNames($dirPath,$selectionString,$base){
@@ -141,8 +141,8 @@ class fileObject {
 			$pos=strpos('x'.$useLogName,'.log',0);
 			if ($pos<1){$useLogName.=".log";}
 			$passAry=array('thedate'=>'today');
-			if ($base->utlObj != null){
-    			$dateAry=$base->utlObj->getDateInfo($passAry,&$base);
+			if ($base->UtlObj != null){
+    			$dateAry=$base->UtlObj->getDateInfo($passAry,&$base);
    				$currentDate=$dateAry['date_v1'];
    				$currentTime=$dateAry['time_v1'];
    				$domainName=$base->systemAry['domainname'];
@@ -156,11 +156,11 @@ class fileObject {
 					}
 					fwrite($fileHandle, $logMsg."\n");
         			fclose($fileHandle);
-        			$returnBool=$base->utlObj->tryToChangeMod($logPath,0777,&$base);
+        			$returnBool=$base->UtlObj->tryToChangeMod($logPath,0777,&$base);
    				}
 			}
 			else {
-				echo "!!!!! base->utlObj is null. Tried to write log: $logMsg to $logName! last param(base) must be bad!";
+				echo "!!!!! base->UtlObj is null. Tried to write log: $logMsg to $logName! last param(base) must be bad!";
 			}
 		}
 	}
@@ -176,7 +176,7 @@ class fileObject {
 		}
         fwrite($fileHandle, NULL);
         fclose($fileHandle);
-		$returnBool=$base->utlObj->tryToChangeMod($logPath,0777,&$base);
+		$returnBool=$base->UtlObj->tryToChangeMod($logPath,0777,&$base);
 		}
 	}
 //-------------------------------------------
@@ -216,7 +216,7 @@ class fileObject {
 		}
 		$imageDirectoryPath=$paramsUseAry['picturedirectory'];
 		$imageFileName=$paramsUseAry['picturefilename'];
-		$localPath=$base->clientObj->getBasePath(&$base);
+		$localPath=$base->ClientObj->getBasePath(&$base);
 		$fullPath=$localPath.'/'.$imageDirectoryPath.'/'.$imageFileName;
 		$bashCmd="rm -f $fullPath";
 		//$this->writeLog('jefftest66',"bashcmd: $bashCmd",&$base);

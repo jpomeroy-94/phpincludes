@@ -1,11 +1,11 @@
 <?php
-class htmlObject {
+class HtmlObject {
 	var $statusMsg;
 	var $callNo = 0;
 	var $delim = '!!';
 	var $metaProfileAry = array();
 	//=======================================
-	function htmlObject($base) {
+	function HtmlObject($base) {
 		$this->incCalls();
 		//- check metaprofile
 		$this->statusMsg='html Object is fired up and ready for work!';
@@ -17,20 +17,20 @@ class htmlObject {
 		$delimit1='metaname';
 		$passAry['viewname']=$viewName;
 		$passAry['delimit1']=$delimit1;
-		//$base->debugObj->printDebug($passAry,1,'xxxdpassary');
-		$this->metaProfileAry=$base->initObj->getGenericProfile($passAry,&$base);
-		//$base->debugObj->printDebug($this->metaProfileAry,1,'xxxd');
+		//$base->DebugObj->printDebug($passAry,1,'xxxdpassary');
+		$this->metaProfileAry=$base->InitObj->getGenericProfile($passAry,&$base);
+		//$base->DebugObj->printDebug($this->metaProfileAry,1,'xxxd');
 		//exit();//xxxd
 	}
 	//=======================================
 	function processHtmlFile($base){
-		$base->debugObj->printDebug("htmlObj:processHtmlFile('base')",0);
-		$base->fileObj->writeLog('debug1','!!processhtmlfile!!',&$base);
+		$base->DebugObj->printDebug("HtmlObj:processHtmlFile('base')",0);
+		$base->FileObj->writeLog('debug1','!!processhtmlfile!!',&$base);
 		$this->getMetaProfile(&$base);
 		//
 		$htmlName=$base->htmlProfileAry['htmlname'][0];
 		//$htmlPathSt="$basePathSt/$htmlDirSt/$htmlNameSt";
-		$workAry=$base->clientObj->getSystemData(&$base);
+		$workAry=$base->ClientObj->getSystemData(&$base);
 		$baseLocal=$workAry['baselocal'];
 		//- need to make below more generic
 		$domainName=$workAry['domainname'];
@@ -48,13 +48,13 @@ class htmlObject {
 			else {$htmlAry=array();}
 		}
 		else {
-			$htmlAry=$base->fileObj->getFileArray($htmlPath);
+			$htmlAry=$base->FileObj->getFileArray($htmlPath);
 		}
-		//$base->debugObj->printDebug($htmlAry,1,'xxx: htmlary in html');
+		//$base->DebugObj->printDebug($htmlAry,1,'xxx: htmlary in html');
 		$operAry=$base->currentOperationAry;
 		$htmlAry_print=array();
 		$htmlCnt=count($htmlAry);
-		$base->fileObj->writeLog('debug1','xxxd2',&$base);//xxxd666
+		$base->FileObj->writeLog('debug1','xxxd2',&$base);//xxxd666
 		for ($htmlCtr=0;$htmlCtr<$htmlCnt;$htmlCtr++){
 			$htmlLineSt=$htmlAry[$htmlCtr];
 			//echo "$htmlCtr, htmlline: $htmlLineSt";//xxxd
@@ -80,41 +80,41 @@ class htmlObject {
 					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/prototype-1.6.1.js"></script>'."\n";
 					$htmlAry_print[]='<script type="text/javascript" src="/yui/build/yui/yui-min.js"></script>'."\n";
 					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/general.js"></script>'."\n";
-					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/calendarObject.js"></script>'."\n";
-					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/formObject.js"></script>'."\n";
-					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/menuObject.js"></script>'."\n";
-					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/containerObject.js"></script>'."\n";
-					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/tableObject.js"></script>'."\n";
+					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/CalendarObject.js"></script>'."\n";
+					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/FormObject.js"></script>'."\n";
+					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/MenuObject.js"></script>'."\n";
+					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/ContainerObject.js"></script>'."\n";
+					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/TableObject.js"></script>'."\n";
 					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/ajax.js"></script>'."\n";
 					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/utilObject.js"></script>'."\n";
 					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/yuiObject.js"></script>'."\n";
 					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/imageObject.js"></script>'."\n";
-					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/userObject.js"></script>'."\n";
+					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/UserObject.js"></script>'."\n";
 					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/albumObject.js"></script>'."\n";
-					//- cant get to work $htmlAry_print[]='<script type="text/javascript" src="/includes.js/ajaxObject.js"></script>'."\n";
+					//- cant get to work $htmlAry_print[]='<script type="text/javascript" src="/includes.js/AjaxObject.js"></script>'."\n";
 				} // end if (strpos
 				$htmlAry_print[]="$htmlLineSt";
 			} // end else
 		} // end for
 		//- print it all after buffered
 		$tst=false;
-		$base->fileObj->writeLog('debug1',"xxxd8",&$base);//xxxd
+		$base->FileObj->writeLog('debug1',"xxxd8",&$base);//xxxd
 		if ($tst==true){
 			$htmlFile=implode("",$htmlAry_print);
-			$base->fileObj->writeFile('/home/jeff/logs/programdebug',$htmlFile,&$base);
+			$base->FileObj->writeFile('/home/jeff/logs/programdebug',$htmlFile,&$base);
 		}
-		$base->fileObj->writeLog('debug1',"xxxd9",&$base);
+		$base->FileObj->writeLog('debug1',"xxxd9",&$base);
 		$htmlPrintCnt=count($htmlAry_print);
-		$base->fileObj->writeLog('debug1','xxxd10: htmlprintcnt: '+$htmlPrintCnt,&$base);
+		$base->FileObj->writeLog('debug1','xxxd10: htmlprintcnt: '+$htmlPrintCnt,&$base);
 		for ($htmlCtr=0;$htmlCtr<$htmlPrintCnt;$htmlCtr++){echo $htmlAry_print[$htmlCtr];}
-		$base->fileObj->writeLog('debug1','xxxd11',&$base);
+		$base->FileObj->writeLog('debug1','xxxd11',&$base);
 	}
 	//=======================================
 	function convertHtmlLine($htmlLine, $base){
-		$base->debugObj->printDebug("htmlObj:convertHtmlLine($htmlLine,'base')",0);
+		$base->DebugObj->printDebug("HtmlObj:convertHtmlLine($htmlLine,'base')",0);
 		//echo "htmlobj: xxxd2 htmlline: $htmlLine<br>";//xxxd66
 		$returnAry=array();
-		$insertCodeAry=$base->utlObj->extractInsertCode($htmlLine);
+		$insertCodeAry=$base->UtlObj->extractInsertCode($htmlLine);
 		$pluginName=$insertCodeAry['insertcode'];
 		$insertSubCode=$insertCodeAry['insertsubcode'];
 		$paramFeed=array();
@@ -126,19 +126,19 @@ class htmlObject {
 		//echo "pluginname: $pluginName, htmlline: $htmlLine<br>";//xxxd
 		if ($pluginName != ""){
 			//echo "htmlobj: run pluginname: $pluginName<br>";//xxxd666
-			$returnAry=$base->pluginObj->runTagPlugin($pluginName,$paramFeed,&$base);
+			$returnAry=$base->PluginObj->runTagPlugin($pluginName,$paramFeed,&$base);
 			//echo "htmlobj: back from it";//xxxd666
 		}
-		$base->debugObj->printDebug("-rtn:convertHtmlLine",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:convertHtmlLine",0); //xx (f)
 		//echo "htmlobj: xxxd2-end<br>";//xxxd666
 		return $returnAry;
 	}
 	//=======================================
 	function buildOldImg($urlAry,$base){
-		$base->debugObj->printDebug("htmlObj:buildOldImg($urlAry,'base')",0); //xx (h)
+		$base->DebugObj->printDebug("HtmlObj:buildOldImg($urlAry,'base')",0); //xx (h)
 		$jobLink=$urlAry['joblink'];
 		if ($jobLink == NULL){$jobLink=$urlAry['label'];}
-		$jobLink_html=$base->utlObj->returnFormattedData($jobLink,'varchar','html',&$base);
+		$jobLink_html=$base->UtlObj->returnFormattedData($jobLink,'varchar','html',&$base);
 		$eventAttributes=$urlAry['htmlelementeventattributes'];
 		$imageName=$urlAry['htmlelementimagename'];
 		if ($imageName == NULL){$imageName=$urlAry['htmlelementname'];}
@@ -149,14 +149,14 @@ class htmlObject {
 		if ($imageClass != NULL){$imageClassInsert="class=\"$imageClass\"";}
 		else {$imageClassInsert=NULL;}
 		if ($eventAttributes != NULL){
-			$eventAttributes_html=$base->utlObj->returnFormattedData($eventAttributes,'varchar','html',&$base);
+			$eventAttributes_html=$base->UtlObj->returnFormattedData($eventAttributes,'varchar','html',&$base);
 			$eventAttributesInsert=$eventAttributes_html;
 		}
 		else {$eventAttributesInsert=NULL;}
 		//-
 		$imageUseMap=$urlAry['imageusemap'];
 		//echo "imageusemap: $imageUseMap";//xxx
-		//$base->debugObj->printDebug($urlAry,1,'urlary');//xxx
+		//$base->DebugObj->printDebug($urlAry,1,'urlary');//xxx
 		if ($imageUseMap != NULL){$imageUseMapInsert="usemap=\"$imageUseMap\"";}
 		else {$imageUseMapInsert=NULL;}
 		//echo "name: $imageName, src: $jobLink_html<br>";//xxx
@@ -170,7 +170,7 @@ class htmlObject {
 	}
 	//=======================================
 	function buildImgPass($passAry,$base){
-		$base->debugObj->printDebug("htmlObj:buildImg($urlAry,'base')",0); //xx (h)
+		$base->DebugObj->printDebug("HtmlObj:buildImg($urlAry,'base')",0); //xx (h)
 		$imageName=$passAry['imagename'];
 		$passedImageEvents=$passAry['imageevents'];
 		$passedImageId=$passAry['imageid'];
@@ -178,8 +178,8 @@ class htmlObject {
 		if ($passedImageEvents != null){$imageAry['imageevents']=$passedImageEvents;}
 		//-
 		$imageSource_raw=$imageAry['imagesource'];
-		$imageSource=$base->utlObj->returnFormattedString($imageSource_raw,&$base);
-		$imageSource_html=$base->utlObj->returnFormattedData($imageSource,'varchar','html',&$base);
+		$imageSource=$base->UtlObj->returnFormattedString($imageSource_raw,&$base);
+		$imageSource_html=$base->UtlObj->returnFormattedData($imageSource,'varchar','html',&$base);
 		//-
 		$imageId=$imageAry['imageid'];
 		if ($imageId == NULL){$imageId=$passedImageId;}
@@ -197,12 +197,12 @@ class htmlObject {
 		//-
 		$eventAttributes=$imageAry['imageevents'];
 		if ($eventAttributes != NULL){
-			$eventAttributes_html=$base->utlObj->returnFormattedData($eventAttributes,'varchar','html',&$base);
-			$eventAttributes_html=$base->utlObj->returnFormattedString($eventAttributes_html,&$base);
+			$eventAttributes_html=$base->UtlObj->returnFormattedData($eventAttributes,'varchar','html',&$base);
+			$eventAttributes_html=$base->UtlObj->returnFormattedString($eventAttributes_html,&$base);
 			$eventAttributesInsert=$eventAttributes_html;
 		}
 		else {$eventAttributesInsert=NULL;}
-		//$base->debugObj->printDebug($eventAttributes_html,1,'xxxd');
+		//$base->DebugObj->printDebug($eventAttributes_html,1,'xxxd');
 		//-
 		$imageUseMap=$imageAry['imageusemap'];
 		if ($imageUseMap != NULL){$imageUseMapInsert="usemap=\"$imageUseMap\"";}
@@ -215,12 +215,12 @@ class htmlObject {
 	}
 	//=======================================
 	function buildImg($imageName,$base){
-		$base->debugObj->printDebug("htmlObj:buildImg($urlAry,'base')",0); //xx (h)
+		$base->DebugObj->printDebug("HtmlObj:buildImg($urlAry,'base')",0); //xx (h)
 		$imageAry=$base->imageProfileAry[$imageName];
 		//-
 		$imageSource_raw=$imageAry['imagesource'];
-		$imageSource=$base->utlObj->returnFormattedString($imageSource_raw,&$base);
-		$imageSource_html=$base->utlObj->returnFormattedData($imageSource,'varchar','html',&$base);
+		$imageSource=$base->UtlObj->returnFormattedString($imageSource_raw,&$base);
+		$imageSource_html=$base->UtlObj->returnFormattedData($imageSource,'varchar','html',&$base);
 		//-
 		$imageId=$imageAry['imageid'];
 		if ($imageId != NULL){$imageIdInsert="id=\"$imageId\"";}
@@ -236,7 +236,7 @@ class htmlObject {
 		//-
 		$eventAttributes=$imageAry['imageevents'];
 		if ($eventAttributes != NULL){
-			$eventAttributes_html=$base->utlObj->returnFormattedData($eventAttributes,'varchar','html',&$base);
+			$eventAttributes_html=$base->UtlObj->returnFormattedData($eventAttributes,'varchar','html',&$base);
 			$eventAttributesInsert=$eventAttributes_html;
 		}
 		else {$eventAttributesInsert=NULL;}
@@ -252,11 +252,11 @@ class htmlObject {
 	}
 	//=======================================
 	function buildInputSelect($elementAry,$base){
-		$base->debugObj->printDebug("htmlObj:buildInputSelect($urlAry,'base')",0); //xx (h)
+		$base->DebugObj->printDebug("HtmlObj:buildInputSelect($urlAry,'base')",0); //xx (h)
 		$elementName=$elementAry['htmlelementname'];
 		$elementLabel=$elementAry['htmlelementlabel'];
 		$eventAttributes=$elementAry['htmlelementeventattributes'];
-		$eventAttributes_html=$base->utlObj->returnFormattedData($eventAttributes,'varchar','html',&$base);
+		$eventAttributes_html=$base->UtlObj->returnFormattedData($eventAttributes,'varchar','html',&$base);
 		$elementClass=$elementAry['htmlelementclass'];
 		if ($elementClass != ''){
 			$insertClass="class=\"$elementClass\"";
@@ -267,27 +267,27 @@ class htmlObject {
 		$returnAry=array();
 		$newLine="$elementLabel<input type=\"text\" name=\"$elementName\" id=\"$elementId\" $insertClass $eventAttributes_html>";
 		$returnAry[]=$newLine;
-		$base->debugObj->printDebug("-rtn:buildInputSelect",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:buildInputSelect",0); //xx (f)
 		return $returnAry;
 	}
 	//=======================================
 	function buildCssLink($eleAry,$base){
-		$base->debugObj->printDebug("htmlObj:buildCssLink($eleAry,'base')",0); //xx (h)
+		$base->DebugObj->printDebug("HtmlObj:buildCssLink($eleAry,'base')",0); //xx (h)
 		$cssPath=$eleAry['joblink'];
 		$returnAry[]="<link rel=\"stylesheet\" type=\"text/css\" href=\"$cssPath\">";
 		return $returnAry;
 	}
 	//=======================================
 	function buildUrl($urlAry,$base){
-		$base->debugObj->printDebug("htmlObj:buildUrl($urlAry,'base')",0); //xx (h)
+		$base->DebugObj->printDebug("HtmlObj:buildUrl($urlAry,'base')",0); //xx (h)
 		$returnAry=array();
 		$label_raw=$urlAry['label'];
-		$label=$base->utlObj->returnFormattedString($label_raw,&$base);
+		$label=$base->UtlObj->returnFormattedString($label_raw,&$base);
 		$class=$urlAry['htmlelementclass'];
 		$imageName=$urlAry['htmlelementimagename'];
 		$savedTableName=$urlAry['htmlelementsavedtablename'];
 		$htmlElementEventAttributes_raw=$urlAry['htmlelementeventattributes'];
-		$htmlElementEventAttributes=$base->utlObj->returnFormattedString($htmlElementEventAttributes_raw,&$base);
+		$htmlElementEventAttributes=$base->UtlObj->returnFormattedString($htmlElementEventAttributes_raw,&$base);
 		//- target
 		$htmlElementTarget=$urlAry['htmlelementtarget'];
 		if ($htmlElementTarget != null){$targetInsert="target=\"$htmlElementTarget\"";}
@@ -297,9 +297,9 @@ class htmlObject {
 		$menuElementAltInsert=$urlAry['menuelementaltinsert'];
 		$bulletInsert=$urlAry['bulletpath'];
 		//echo "htmlevent: $htmlElementEventAttributes<br>";//xxx
-		//$base->debugObj->printDebug($urlAry,1,'url');//xxx
+		//$base->DebugObj->printDebug($urlAry,1,'url');//xxx
 		if ($imageName != NULL){
-			$imageAry_html=$base->htmlObj->buildImg($imageName,&$base);
+			$imageAry_html=$base->HtmlObj->buildImg($imageName,&$base);
 			//!!! the below better be right !!!
 			$label=$imageAry_html[0];
 		}
@@ -309,7 +309,7 @@ class htmlObject {
 		if ($id != ''){$idInsert="id=\"$id\"";}
 		else {$idInsert='';}
 		$jobLink_raw=$urlAry['joblink'];
-		$jobLink=$base->utlObj->returnFormattedString($jobLink_raw,&$base);
+		$jobLink=$base->UtlObj->returnFormattedString($jobLink_raw,&$base);
 		$pos=strpos($jobLink,'mapsprofileid',0);//xxxd
 		//- add in session stuff if name in params
 		$sessionName=$base->paramsAry['sessionname'];
@@ -326,20 +326,20 @@ class htmlObject {
 		//- do conversions
 		$itIsThere=true;
 		while ($itIsThere){
-			$extractedStr=$base->utlObj->extractStr('%',$jobLink);
+			$extractedStr=$base->UtlObj->extractStr('%',$jobLink);
 			//echo "extractedstr: $extractedStr<br>";//xxx
 			if ($extractedStr != ''){
 				//- get it from retrievevalue using dbfilename first
 				$dbTableName=$urlAry['htmlelementdbtablename'];
 				//echo "dbtablename: $dbTableName<br>";//xxx
 				if ($dbTableName != ''){
-					$overrideName=$base->utlObj->retrieveValue('overridename_'.$dbTableName,&$base);
-					$overrideValue=$base->utlObj->retrieveValue('overridevalue_'.$dbTableName,&$base);
+					$overrideName=$base->UtlObj->retrieveValue('overridename_'.$dbTableName,&$base);
+					$overrideValue=$base->UtlObj->retrieveValue('overridevalue_'.$dbTableName,&$base);
 				} else {$overrideName = '';}
 				if ($extractedStr == $overrideName && $overrideValue != NULL){
 					//- got it overridename, overridevalue from session so do it
-					$jobLink = $base->utlObj->replaceStr($jobLink,'%'.$extractedStr.'%',$overrideValue,&$base);
-					$base->utlObj->saveValue($extractedStr.'-urlsave',$overrideValue,&$base);
+					$jobLink = $base->UtlObj->replaceStr($jobLink,'%'.$extractedStr.'%',$overrideValue,&$base);
+					$base->UtlObj->saveValue($extractedStr.'-urlsave',$overrideValue,&$base);
 				}
 				else {
 					//- get it from params since not in session
@@ -351,15 +351,15 @@ class htmlObject {
 					} // end if overridevalue==null savedtablename!=null
 					if ($overrideValue == NULL){
 						//- get it from save of this name last time as last resort
-						$overrideValue=$base->utlObj->retrieveValue($extractedStr.'-urlsave',&$base);
+						$overrideValue=$base->UtlObj->retrieveValue($extractedStr.'-urlsave',&$base);
 					} // end if overridevalue
 					if ($overrideValue == NULL){
 						//- if still null try to get it from default htmlprofileary
 						$overrideValue=$base->htmlProfileAry['default'][$extractedStr];
-						if ($overrideValue == NULL){$overrideValue='cantgetinhtmlObjbuildUrl';}
+						if ($overrideValue == NULL){$overrideValue='cantgetinHtmlObjbuildUrl';}
 					} // end if overridevalue
-					$jobLink = $base->utlObj->replaceStr($jobLink,'%'.$extractedStr.'%',$overrideValue,&$base);
-					$base->utlObj->saveValue($extractedStr.'-urlsave',$overrideValue,&$base);
+					$jobLink = $base->UtlObj->replaceStr($jobLink,'%'.$extractedStr.'%',$overrideValue,&$base);
+					$base->UtlObj->saveValue($extractedStr.'-urlsave',$overrideValue,&$base);
 				} // end else
 			}
 			else {$itIsThere=false;}
@@ -372,17 +372,17 @@ class htmlObject {
 			$insertHRef="href=\"#\"";
 		}
 		else {
-			$jobLink_html=$base->utlObj->returnFormattedData($jobLink,'url','html',&$base);
+			$jobLink_html=$base->UtlObj->returnFormattedData($jobLink,'url','html',&$base);
 			$insertHRef="href=\"$jobLink_html\"";
 		}
 		//xxxp - removed <p $classInsert>...</p>
 		$returnAry[]="$bulletInsert<a $insertHRef $targetInsert $idInsert $classInsert $menuElementAltInsert $htmlElementEventAttributes>$label</a>";
-		$base->debugObj->printDebug("-rtn:buildUrl",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:buildUrl",0); //xx (f)
 		return $returnAry;
 	}
 	//=======================================xx needs to be totally rethought
 	function buildDisplay($eleAry,$base){
-		$base->debugObj->printDebug("htmlObj:buildDisplay($eleAry,'base')",0); //xx (h)
+		$base->DebugObj->printDebug("HtmlObj:buildDisplay($eleAry,'base')",0); //xx (h)
 		$returnAry=array();
 		$name=$eleAry['htmlelementname'];
 		$label=$eleAry['label'];
@@ -397,18 +397,18 @@ class htmlObject {
 		switch ($dataKeyType){
 			case 'session':
 				$userAry=$_SESSION['userobj']->getCurrentUserAry();
-				//$base->debugObj->printDebug($userAry,1,'usa');//xxx
+				//$base->DebugObj->printDebug($userAry,1,'usa');//xxx
 				//echo "datakey: $dataKey";//xxx
 				$dataValue=$userAry[$dataKey];
 				break;
 			case 'sessionfield':
-				$dataValue=$base->utlObj->retrieveValue($dataKey,&$base);
+				$dataValue=$base->UtlObj->retrieveValue($dataKey,&$base);
 				break;
 			case 'params':
 				$dataValue=$base->paramsAry[$dataKey];
 				break;
 			case 'old':
-				$dataValue=$base->utlObj->retrieveValue($dataKey,&$base);
+				$dataValue=$base->UtlObj->retrieveValue($dataKey,&$base);
 				if ($dataValue == NULL){
 					$dataValue=$base->paramsAry[$dataKey];
 				}
@@ -425,16 +425,16 @@ class htmlObject {
 		$displayInsert=$label;
 		$cnt=0;
 		$displayInsert=str_replace('%'.$dataKey.'%',$dataValue,$displayInsert);
-		$displayInsert=$base->utlObj->returnFormattedString($displayInsert,&$base);// - more than one variable
+		$displayInsert=$base->UtlObj->returnFormattedString($displayInsert,&$base);// - more than one variable
 		$returnAry[]="<div $nameInsert $idInsert $classInsert>$displayInsert</div>\n";
-		$base->debugObj->printDebug("-rtn:buildDisplay",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:buildDisplay",0); //xx (f)
 		return $returnAry;
 	}
 	//=======================================
 	function buildMap($mapName,$base){
-		$base->debugObj->printDebug("htmlObj:buildMap($mapName,'base')",0);
+		$base->DebugObj->printDebug("HtmlObj:buildMap($mapName,'base')",0);
 		//echo "mapname: $mapName";//xxx
-		//$base->debugObj->printDebug($base->mapProfileAry,1,'mapprofileary');//xxx
+		//$base->DebugObj->printDebug($base->mapProfileAry,1,'mapprofileary');//xxx
 		$mapProfileId=$base->mapProfileId[$mapName]['mapprofileid'];
 		$mapClass=$base->mapProfileAry['main'][$mapProfileId]['mapclass'];
 		if ($mapClass != NULL){$mapClassInsert="class=\"$mapClass\"";}
@@ -451,14 +451,14 @@ class htmlObject {
 			foreach ($workAry as $colName=>$colAry){
 				$mapElementHref=$colAry['mapelementhref'];
 				if ($mapElementHref != NULL && $mapElementHref != '#'){
-					$mapElementHref_html=$base->utlObj->returnFormattedData($mapElementHref,'url','html',&$base);
+					$mapElementHref_html=$base->UtlObj->returnFormattedData($mapElementHref,'url','html',&$base);
 					$mapElementHrefInsert="href=\"$mapElementHref_html\"";
 				}
 				else {$mapElementHrefInsert='href="#"';}
 				$mapElementShape=$colAry['mapelementshape'];
 				$mapElementShapeInsert="shape=\"$mapElementShape\"";
 				$mapElementEventAttributes_raw=$colAry['mapelementeventattributes'];
-				$mapElementEventAttributes=$base->utlObj->returnFormattedString($mapElementEventAttributes_raw,&$base);
+				$mapElementEventAttributes=$base->UtlObj->returnFormattedString($mapElementEventAttributes_raw,&$base);
 				$mapElementPointax=$colAry['mapelementpointax'];
 				$mapElementPointay=$colAry['mapelementpointay'];
 				$mapElementPointbx=$colAry['mapelementpointbx'];
@@ -468,8 +468,8 @@ class htmlObject {
 			}
 		}
 		$returnAry[]='</map>';
-		//$base->debugObj->printDebug($returnAry,1,'rtnary');//xxx
-		$base->debugObj->printDebug("-rtn:buildMap",0); //xx (f)
+		//$base->DebugObj->printDebug($returnAry,1,'rtnary');//xxx
+		$base->DebugObj->printDebug("-rtn:buildMap",0); //xx (f)
 		return $returnAry;
 	}
 	//=======================================
@@ -477,17 +477,17 @@ class htmlObject {
 		$albumAry=$base->albumProfileAry['main'][$albumProfileId];
 		$albumName=$albumAry['albumname'];
 		$picturesAry=$base->albumProfileAry[$albumName];
-		//$base->debugObj->printDebug($picturesAry,1,'xxxd');
+		//$base->DebugObj->printDebug($picturesAry,1,'xxxd');
 		$albumClass=$albumAry['albumclass'];
 		$albumId=$albumAry['albumid'];
 		$albumUseThumbNail_raw=$albumAry['albumusethumbnail'];
-		$albumUseThumbNail=$base->utlObj->returnFormattedData($albumUseThumbNail_raw,'boolean','internal');
+		$albumUseThumbNail=$base->UtlObj->returnFormattedData($albumUseThumbNail_raw,'boolean','internal');
 		$albumDirectory=$albumAry['albumdirectory'];
 		$albumEventAttributes_raw=$albumAry['albumeventattributes'];
 		$albumAlt=$albumAry['albumalt'];
 		if ($albumAlt != null){$albumAltInsert="alt=\"$albumAlt\"";}
 		else {$albumAltInsert=null;}
-		$albumEventAttributes=$base->utlObj->returnFormattedString($albumEventAttributes_raw,&$base);
+		$albumEventAttributes=$base->UtlObj->returnFormattedString($albumEventAttributes_raw,&$base);
 		if ($albumId == NULL){$albumIdInsert=NULL;}
 		else {$albumIdInsert="id=\"$albumId\"";}
 		$pictureTextSuffix="text";
@@ -528,7 +528,7 @@ class htmlObject {
 				}
 				$base->paramsAry['pictureno']=$pictureNo;
 				$pictureNo++;
-				$albumEventAttributes=$base->utlObj->returnFormattedString($albumEventAttributes_raw,&$base);
+				$albumEventAttributes=$base->UtlObj->returnFormattedString($albumEventAttributes_raw,&$base);
 				$pictureDirectory=$pictureAry['picturedirectory'];
 				if ($pictureDirectory == NULL){$pictureDirectory=$albumDirectory;}
 				if ($albumUseThumbNail){$pictureDirectory.="/thumbnails";}
@@ -564,7 +564,7 @@ class htmlObject {
 		$returnAry[]="<!-- end menu element albumtable: $albumName -->\n";
 		$returnAllAry=array('returnary'=>$returnAry);
 		$albumPassAry=array();
-		//$base->debugObj->printDebug($jsAlbumPicturesAry,1,'xxxd');//xxxd
+		//$base->DebugObj->printDebug($jsAlbumPicturesAry,1,'xxxd');//xxxd
 		$albumPassAry['jsalbumpicturesary']=$jsAlbumPicturesAry;
 		$albumPassAry['jsalbumtitlesary']=$jsAlbumTitlesAry;
 		$albumPassAry['jsalbumcaptionsary']=$jsAlbumCaptionsAry;
@@ -572,12 +572,12 @@ class htmlObject {
 		$albumPassAry['jsvideoidary']=$jsVideoIdAry;//xxxdnew
 		$returnAllAry[$albumName]=$albumPassAry;
 		$returnAllAry['albumname']=$albumName;
-		//$base->debugObj->printDebug($returnAry,1,'rtnaryxxxa');
+		//$base->DebugObj->printDebug($returnAry,1,'rtnaryxxxa');
 		return $returnAllAry;
 	}
 	//=======================================
 	function buildTableHeaders($tableName,$base){
-		$base->debugObj->printDebug("htmlObj:buildTableHeaders('base')",0);
+		$base->DebugObj->printDebug("HtmlObj:buildTableHeaders('base')",0);
 		$returnAry=array();
 		$rowProfileAry=$base->rowProfileAry[$tableName];
 		$tableProfile=$base->tableProfileAry[$tableName];

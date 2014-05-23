@@ -1,13 +1,13 @@
 <?php
-class tableObject {
+class TableObject {
 	var $statusMsg;
 	var $callNo = 0;
 	var $tableJsAry=array();
 //====================================================
-	function tableObject() {
+	function TableObject() {
 		$this->incCalls();
 		$this->statusMsg='table Object is fired up and ready for work!';
-		$this->tableJsAry[]="var tableObj = new tableObject();\n";
+		$this->tableJsAry[]="var TableObj = new TableObject();\n";
 	}
 //====================================================
 	function getTableJs(&$base){
@@ -47,7 +47,7 @@ class tableObject {
 				$attributes='';$ajaxAttributes='';
 				$theComma=null;$ajaxDelim=null;
 				foreach ($valueAry as $colName=>$colValue){
-					$colValue_js=$base->utlObj->returnFormattedData($colValue,'varchar','js');
+					$colValue_js=$base->UtlObj->returnFormattedData($colValue,'varchar','js');
 					$attributes .= $theComma.$colValue_js;
 					$ajaxAttributes .= $ajaxDelim.$colValue;
 					$theComma=',';$ajaxDelim="~";
@@ -55,7 +55,7 @@ class tableObject {
 				$ajaxLine="displayary|$ajaxAttributes\n";
 				$ajaxAry[]=$ajaxLine;
 				$jsTableSelectString=$jsTableSelectAry[$rowNo];
-				$jsTableSelectString_js=$base->utlObj->returnFormattedData($jsTableSelectString,'varchar','js');
+				$jsTableSelectString_js=$base->UtlObj->returnFormattedData($jsTableSelectString,'varchar','js');
 				$ajaxAry[]="selectary|$jsTableSelectString\n";
 			} // end foreach rowno
 		}
@@ -63,7 +63,7 @@ class tableObject {
 		$nameString="";
 		$delim="";
 		$theDataAry=$base->tableProfileAry[$tableName]['jsalldataary'];
-		//$base->debugObj->printDebug($base->tableProfileAry,1,'xxx');
+		//$base->DebugObj->printDebug($base->tableProfileAry,1,'xxx');
 		if (count($theDataAry[0])>0){
 			foreach ($theDataAry[0] as $name=>$theBody){
 				$nameString.="$delim$name";
@@ -95,7 +95,7 @@ class tableObject {
 //====================================================
 	function getTableForAjax($paramFeed,$base){
 		//- have to manually do the below
-		//$ajaxAry=$base->ajaxObj->getContainerForAjax($paramFeed,&$base);
+		//$ajaxAry=$base->AjaxObj->getContainerForAjax($paramFeed,&$base);
 		$ajaxAry=array();
 		$tableName=$paramFeed['param_1'];
 		$ajaxAry[]="!!table!!\n";
@@ -130,7 +130,7 @@ class tableObject {
 				$attributes='';$ajaxAttributes='';
 				$theComma=null;$ajaxDelim=null;
 				foreach ($valueAry as $colName=>$colValue){
-					$colValue_js=$base->utlObj->returnFormattedData($colValue,'varchar','js');
+					$colValue_js=$base->UtlObj->returnFormattedData($colValue,'varchar','js');
 					//xxxf
 					$tst=strpos($colValue_js,'coming off!!!',0);
 					if ($tst>0){echo "tableobj.php: colvalue_js: $colValue_js";exit();}
@@ -141,7 +141,7 @@ class tableObject {
 				$ajaxLine="displayary|$ajaxAttributes\n";
 				$ajaxAry[]=$ajaxLine;
 				$jsTableSelectString=$jsTableSelectAry[$rowNo];
-				$jsTableSelectString_js=$base->utlObj->returnFormattedData($jsTableSelectString,'varchar','js');
+				$jsTableSelectString_js=$base->UtlObj->returnFormattedData($jsTableSelectString,'varchar','js');
 				$ajaxAry[]="selectary|$jsTableSelectString\n";
 			} // end foreach rowno
 		}
@@ -151,9 +151,9 @@ class tableObject {
 		$keyName=$base->tableProfileAry['etc'][$tableName]['keyname'];
 		$dbTableName=$base->tableProfileAry['etc'][$tableName]['dbtablename'];
 		if ($dbTableName == null || $theDataDefsAry == null){
-			echo "tableObj.getTableForAjax, tablename: $tableName<br>\n";
+			echo "TableObj.getTableForAjax, tablename: $tableName<br>\n";
 			echo "dbtablename: $dbTablname<br>\nkeyName: $keyName<br>\ntheDataDefsAry:<br>\n";
-			$base->debugObj->printDebug($theDataDefsAry,1,'thedatadefs ary from jsdatadefs, tablename');
+			$base->DebugObj->printDebug($theDataDefsAry,1,'thedatadefs ary from jsdatadefs, tablename');
 			exit();
 		}
 		$nameString="";
@@ -226,7 +226,7 @@ class tableObject {
 	}	
 //==================================================== 
 	function insertTableHtml($paramFeed,$base){
-		$base->debugObj->printDebug("tagObj:insertTable($paramFeed,'base')",0);
+		$base->DebugObj->printDebug("TagObj:insertTable($paramFeed,'base')",0);
 		$tableName=$paramFeed['param_1'];
 		$tableType=$base->tableProfileAry[$tableName]['tabletype'];
 		$tableRepeatNo=$base->tableProfileAry[$tableName]['tablerepeatno'];
@@ -237,7 +237,7 @@ class tableObject {
 		$jsTableSelectAry=array();
 		$htmlLineSt=$paramFeed['param_2'];
 		//echo "tablename: $tableName<br>";//xxx
-		//$base->debugObj->printDebug($base->tableProfileAry,1,'xxx');
+		//$base->DebugObj->printDebug($base->tableProfileAry,1,'xxx');
 		//exit('xxx');
 		$rowProfileAry=$base->rowProfileAry[$tableName];
 		$tableProfileAry=$base->tableProfileAry[$tableName];
@@ -253,7 +253,7 @@ class tableObject {
 		if ($tableOddRowClass != NULL){$oddRowClassInsert="class=\"$tableOddRowClass\"";}
 		else {$tableOddRowClass=NULL;}
 		$saveForReference_table=$tableProfileAry['tablesaveforreference'];
-		$saveForReference=$base->utlObj->returnFormattedData($saveForReference_table,'boolean','internal');
+		$saveForReference=$base->UtlObj->returnFormattedData($saveForReference_table,'boolean','internal');
 		//echo "saveforreference: $saveForReference, internal: $saveForReference_internal";//xxx
 		if ($tableClass != NULL){
 			$attributes.=" class=\"$tableClass\""; 
@@ -293,15 +293,15 @@ class tableObject {
 		}
 		$columnsAry=$base->columnProfileAry[$tableName];
 		//echo "tablename: $tableName<br>";//xxx
-		//$base->debugObj->printDebug($base->columnProfileAry,1,'xxx');
+		//$base->DebugObj->printDebug($base->columnProfileAry,1,'xxx');
 		$columnsSortOrder=$base->columnProfileAry['sortorderary_'.$tableName];
-		//$base->debugObj->printDebug($base->columnProfileAry,1,'xxxd');
+		//$base->DebugObj->printDebug($base->columnProfileAry,1,'xxxd');
 		//xxxf blows up below
-		$workAry=$base->tagObj->breakOutTable($columnsAry,$columnsSortOrder,&$base);
+		$workAry=$base->TagObj->breakOutTable($columnsAry,$columnsSortOrder,&$base);
 		$columnsAry=$workAry['columnsary'];
-		//$base->debugObj->printDebug($columnsAry,1,'col');//xxx
+		//$base->DebugObj->printDebug($columnsAry,1,'col');//xxx
 		$columnsSortOrder=$workAry['columnssortorderary'];
-		//$base->debugObj->printDebug($columnsSortOrder,1,'sort');//xxx
+		//$base->DebugObj->printDebug($columnsSortOrder,1,'sort');//xxx
 		$totCols=count($columnsAry);
 		//echo "totcols: $totCols<br>";//xxx
 //-------------------------------------------------  column heading
@@ -358,7 +358,7 @@ class tableObject {
 			$columnName=$columnsSortOrder[$colCtr];
 			$columnAry=$columnsAry[$columnName];
 			$columnTitleSt_raw=$columnAry['columntitle'];
-			$columnTitleSt=$base->utlObj->returnFormattedString($columnTitleSt_raw,&$base);
+			$columnTitleSt=$base->UtlObj->returnFormattedString($columnTitleSt_raw,&$base);
 			$columnName=$columnAry['columnname'];
 			$columnType=$columnAry['columntype'];
 			$columnTitleClass=$columnAry['columntitleclass'];
@@ -366,7 +366,7 @@ class tableObject {
 			else {$columnTitleClassInsert=null;}
 			if ($columnType == 'url'){
 				$columnSortName=$columnAry['urlname'];
-				$extractedStr=$base->utlObj->extractStr('%',$columnSortName);
+				$extractedStr=$base->UtlObj->extractStr('%',$columnSortName);
 				if ($extractedStr != ''){$columnSortName=$extractedStr;}
 			} else {$columnSortName=$columnName;}
 			//$jobOverride=$base->paramsAry['jobname'];
@@ -389,17 +389,17 @@ class tableObject {
 //----------------------------------------------------  get the data
 	$debugStrg='paramsary: ';
 	foreach ($base->paramsAry as $name=>$theValue){$debugStrg.=$name.',';}
-	$base->fileObj->writeLog('debug',$debugStrg,&$base);
-	$passDataAry=$base->dbObj->getTableData($tableName,&$base);
+	$base->FileObj->writeLog('debug',$debugStrg,&$base);
+	$passDataAry=$base->DbObj->getTableData($tableName,&$base);
 	$cnt=count($passDataAry['dbtableary']);
-	$base->fileObj->writeLog('dbobject','cnt: '.$cnt,&$base);
+	$base->FileObj->writeLog('dbobject','cnt: '.$cnt,&$base);
 //--- end get the data
 	if ($saveForReference===true){
 		//echo "save for reference: $tableName";//xxx
 		$base->insertedTablesAry[$tableName]=$passDataAry['dbtableary'];
 	}
 	//echo "insert $tableName into insertedtablesary";//xxx
-	//if ($tableName = 'parenttable'){$base->debugObj->printDebug($base->insertedTablesAry,1,'pass');}//xxx
+	//if ($tableName = 'parenttable'){$base->DebugObj->printDebug($base->insertedTablesAry,1,'pass');}//xxx
 	$columnDataAry=$passDataAry['dbtableary'];
 	$dbTableMetaAry=$passDataAry['dbtablemetaary'];
 	$parentSelectorName=$passDataAry['parentselectorname'];
@@ -421,7 +421,7 @@ class tableObject {
 //--------------------------------------------------------- loop through data
 		$rowIsOdd=false;
 		//echo "$tableName: $dataCnt<br>";//xxxd
-		//$base->debugObj->printDebug($passDataAry,1,'xxxd');
+		//$base->DebugObj->printDebug($passDataAry,1,'xxxd');
 		for ($dataCtr=0;$dataCtr<$dataCnt;$dataCtr++){
 			//echo "datactr: $dataCtr<br>";//xxx
 			$base->paramsAry['tablerowno']=$dataCtr;//xxx
@@ -447,11 +447,11 @@ class tableObject {
 					$columnAry=$columnsAry[$colAccessName];
 					$colName=$columnAry['columnname'];
 					//echo "tablename: $tableName, colname: $colName<br>";//xxxd
-					//$base->debugObj->printDebug($columnAry,1,'xxxd columnary');
+					//$base->DebugObj->printDebug($columnAry,1,'xxxd columnary');
 					$columnSave_raw=$columnAry['columnsave'];
-					$columnSave=$base->utlObj->returnFormattedData($columnSave_raw,'boolean','internal');
+					$columnSave=$base->UtlObj->returnFormattedData($columnSave_raw,'boolean','internal');
 					$columnDoFormat_raw=$columnAry['columndoformat'];
-					$columnDoFormat=$base->utlObj->returnFormattedData($columnDoFormat_raw,'boolean','internal');
+					$columnDoFormat=$base->UtlObj->returnFormattedData($columnDoFormat_raw,'boolean','internal');
 					$urlName=$columnAry['urlname'];
 					$columnClass=$columnAry['columnclass'];
 					if ($columnClass == NULL){$columnClass=$tableClass;}
@@ -464,15 +464,15 @@ class tableObject {
 						$columnTdClassInsert=NULL;
 					}
 					$columnEvents_raw=$columnAry['columnevents'];
-					$columnEvents=$base->utlObj->returnFormattedString($columnEvents_raw,&$base);
+					$columnEvents=$base->UtlObj->returnFormattedString($columnEvents_raw,&$base);
 					if ($columnEvents!=NULL){$columnEventsInsert="$columnEvents";}
 					else {$columnEventsInsert=NULL;}
 					//echo "colname: $colName, urlname: $urlName<br>";//xxx
 					$selectAble_db=$columnAry['selectmode'];
-					$selectAble=$base->utlObj->returnFormattedData($selectAble_db,'boolean','internal');
+					$selectAble=$base->UtlObj->returnFormattedData($selectAble_db,'boolean','internal');
 					$pos=strpos($colName,'_',0);
 					if ($pos>0){$colName=substr($colName,0,$pos);}
-					$parentSelectorFlag=$base->dbObj->returnBoolByType($dbTableMetaAry[$colName]['dbcolumnparentselector']);
+					$parentSelectorFlag=$base->DbObj->returnBoolByType($dbTableMetaAry[$colName]['dbcolumnparentselector']);
 					$columnTypeSt=$columnAry['columntype'];
 					$colNameAry=explode('/',$colName);
 					if ($colNameAry[1] != NULL){
@@ -536,20 +536,20 @@ class tableObject {
 											$jobLinkSt_raw.="&sessionname=$sessionValue";
 										}	
 									}	
-									$jobLinkSt=$base->utlObj->returnFormattedStringDataFed($jobLinkSt_raw,$columnDataAry[$dataCtr],&$base);
+									$jobLinkSt=$base->UtlObj->returnFormattedStringDataFed($jobLinkSt_raw,$columnDataAry[$dataCtr],&$base);
 									//echo "before: $jobLinkSt_raw, after: $jobLinkSt<br>";//xxx
 									//- url 
 									$urlNameSt_raw=$columnAry['urlname'];
-									$urlNameSt=$base->utlObj->returnFormattedStringDataFed($urlNameSt_raw,$columnDataAry[$dataCtr],&$base);
+									$urlNameSt=$base->UtlObj->returnFormattedStringDataFed($urlNameSt_raw,$columnDataAry[$dataCtr],&$base);
 									$useColData=$urlNameSt;
 									//- column events
 									$columnEvents_raw=$columnAry['columnevents'];
 									//- convert the datactr here in the table object
 									$columnEvents=str_replace('%datactr%',$dataCtr,$columnEvents_raw);
 									//echo "columnevents: $columnEvents, raw: $columnEvents_raw<br>";//xxxd
-									$columnEvents=$base->utlObj->returnFormattedStringDataFed($columnEvents,$columnDataAry[$dataCtr],&$base);
+									$columnEvents=$base->UtlObj->returnFormattedStringDataFed($columnEvents,$columnDataAry[$dataCtr],&$base);
 									//echo "new columnevents: $columnEvents<br>";//xxxd
-									//$base->debugObj->printDebug($columnDataAry[$dataCtr],1,'xxxd');
+									//$base->DebugObj->printDebug($columnDataAry[$dataCtr],1,'xxxd');
 									//- final check of joblink
 									$pos=strpos('x'.$jobLinkSt,'http',0);
 									//echo "pos: $pos, joblinkst: $jobLinkSt<br>";//xxxd
@@ -558,7 +558,7 @@ class tableObject {
 									if ($columnTarget=='newpage'){
 										$colTargetInsert="target=\"_blank\"";
 									} else {$colTargetInsert=null;}
-									//$base->debugObj->printDebug($columnAry,1,'xxxd');//xxxd
+									//$base->DebugObj->printDebug($columnAry,1,'xxxd');//xxxd
 									if ($pos>0 or $jobLinkSt=='#'){
 										$colDisplayDataSt="<a href=\"$jobLinkSt\" $columnClassInsert $tableIdInsert $colTargetInsert $columnEvents>$urlNameSt</a>";
 									}
@@ -586,7 +586,7 @@ class tableObject {
 							// types: text/pre
 							//echo "tablename: $tableName, $colDataSt<br>";//xxxd
 									$columnEvents_raw=$columnAry['columnevents'];
-									$columnEvents=$base->utlObj->returnFormattedStringDataFed($columnEvents_raw,$columnDataAry[$dataCtr],&$base);
+									$columnEvents=$base->UtlObj->returnFormattedStringDataFed($columnEvents_raw,$columnDataAry[$dataCtr],&$base);
 									if ($colMaxSize>0){
 										$useColDataSt=chunk_split($colDataSt,$colMaxSize,'<br>');
 									}
@@ -595,16 +595,16 @@ class tableObject {
 									else {
 										$colType=$dbTableMetaAry[$colName]['dbcolumntype'];
 										$colConversion=$dbTableMetaAry[$colName]['dbcolumnconversionname'];
-										//$base->debugObj->printDebug($dbTableMetaAry[$colName],1,'xxx');
+										//$base->DebugObj->printDebug($dbTableMetaAry[$colName],1,'xxx');
 										if ($colConversion != null){$colType.="_$colConversion";}
 										//echo "xxx: $colName $useColDataSt, $colType, $colConversion<br>";//xxxd
-										$useColDataSt=$base->utlObj->returnFormattedData($useColDataSt,$colType,'table',&$base);
+										$useColDataSt=$base->UtlObj->returnFormattedData($useColDataSt,$colType,'table',&$base);
 										//xxxf
 										//echo "usecoldatast: $useColDataSt<br>";//xxxd
 									}
 									//xxxf below converts %cr% which screws up ajax so put in plug
 									$useColDataSt=str_replace('%cr%','%br%',$useColDataSt);
-									$useColDataSt=$base->utlObj->returnFormattedString($useColDataSt,&$base);
+									$useColDataSt=$base->UtlObj->returnFormattedString($useColDataSt,&$base);
 									if ($columnTypeSt == 'pre'){
 										$colDisplayDataSt="<pre $columnClassInsert $columnEvents>$useColDataSt</pre>";
 									} else {
@@ -654,13 +654,13 @@ class tableObject {
 		$base->tableProfileAry['etc'][$tableName]['keyname']=$keyName;
 		$base->tableProfileAry['etc'][$tableName]['dbtablename']=$dbTableName;
 		$base->tableProfileAry['thefilters'][$tableName]=$theFiltersAry;
-		//$base->debugObj->printDebug($dbTableMetaAry,1,'xxx');
+		//$base->DebugObj->printDebug($dbTableMetaAry,1,'xxx');
 		$base->tableProfileAry['jsalldataary'][$tableName]=$columnDataAry;
-		//$base->debugObj->printDebug($jsTableAry,1,'xxx: in inserttable looking at jstableary');//xxx
-		//$base->debugObj->displayStack();//xxx
+		//$base->DebugObj->printDebug($jsTableAry,1,'xxx: in inserttable looking at jstableary');//xxx
+		//$base->DebugObj->displayStack();//xxx
 		//break;
 		$tableDontPrint_raw=$base->tableProfileAry[$tableName]['tabledontprint'];
-		$tableDontPrint=$base->utlObj->returnFormattedData($tableDontPrint_raw,'boolean','internal',&$base);
+		$tableDontPrint=$base->UtlObj->returnFormattedData($tableDontPrint_raw,'boolean','internal',&$base);
 		if ($tableDontPrint){$doReturnAry = array();}
 		else {$doReturnAry=$returnAry;}
 		return $doReturnAry;

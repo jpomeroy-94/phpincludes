@@ -1,21 +1,21 @@
 <?php
 //--- below is p saves
-		//$base->debugObj->printDebug($x,1); //xxx (v)
-		//$base->debugObj->printDebug("query: $query",1); //xxx (q)
-		//$base->debugObj->printDebug($base->tableProfileAry,1); //xxx (p)
-		//$base->debugObj->printDebug("xxx",0); //xxx (h)
-		//$base->debugObj->printDebug("-",0); //xxx (f)
-		//$base->debugObj->setPrio(-1,-1); //xxx (s)
-		//$base->debugObj->resetPrio(); //xxx (u)
-		//$base->debugObj->placeCheck("x"); //xxx (c)
-class debugObject {
+		//$base->DebugObj->printDebug($x,1); //xxx (v)
+		//$base->DebugObj->printDebug("query: $query",1); //xxx (q)
+		//$base->DebugObj->printDebug($base->tableProfileAry,1); //xxx (p)
+		//$base->DebugObj->printDebug("xxx",0); //xxx (h)
+		//$base->DebugObj->printDebug("-",0); //xxx (f)
+		//$base->DebugObj->setPrio(-1,-1); //xxx (s)
+		//$base->DebugObj->resetPrio(); //xxx (u)
+		//$base->DebugObj->placeCheck("x"); //xxx (c)
+class DebugObject {
 	var $statusMsg;
 	var $callNo = 0;
 	var $prioLmt = 0;
 	var $queryLmt = 0;
 	var $returnStk = NULL;
 	var $returnStkCtr = 0;
-	function debugObject() {
+	function DebugObject() {
 		$this->incCalls();
 		$this->statusMsg='debug Object is fired up and ready for work!';
 // xxxx: comment out/in to turn debugging on/off

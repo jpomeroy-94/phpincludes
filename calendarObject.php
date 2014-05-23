@@ -1,5 +1,5 @@
 <?php
-class calendarObject {
+class CalendarObject {
 	var $statusMsg;
 	var $callNo = 0;
 	var $calendarProfileAry = array();
@@ -7,7 +7,7 @@ class calendarObject {
 	var $calendarAry_ajax = array(0=>"!!calendar!!\n");
 	var $dataAry = array();
 //====================================
-	function calendarObject() {
+	function CalendarObject() {
 		$this->incCalls();
 		$this->statusMsg='calendar Object is fired up and ready for work!';
 	}
@@ -25,24 +25,24 @@ class calendarObject {
 		$calendarName=$paramFeed['param_1'];
 		$workAry = $this->calendarAry_ajax;
 		$workDataAry=$this->dataAry;
-		$jsonXml=$base->xmlObj->array2Json($workDataAry,&$base);
+		$jsonXml=$base->XmlObj->array2Json($workDataAry,&$base);
 		$workAry[]="loadeventsjson|$calendarName|dataary|$jsonXml\n";
-		//$base->debugObj->printDebug($workAry,1,'workaryxxxf');
+		//$base->DebugObj->printDebug($workAry,1,'workaryxxxf');
 		return $workAry;
 	}
 //====================================
 	function setupCalendarJs($base){
 		$this->calendarAry_js[]="//----------------------- setup for calendars;\n";
 		$this->calendarAry_js[]="var calendarAry = new Array();\n";	
-		$this->calendarAry_js[]="var calendarObj = new calendarObject();\n";
+		$this->calendarAry_js[]="var CalendarObj = new CalendarObject();\n";
 		foreach ($this->calendarProfileAry as $calendarName=>$calendarAry){
 			$this->calendarAry_js[]="calendarAry['$calendarName'] = new Array();\n";
 			$this->calendarAry_js[]="calendarAry['$calendarName']['etc'] = new Array();\n";
 			$this->calendarAry_js[]="calendarAry['$calendarName']['desc'] = new Array();\n";
 			$this->calendarAry_js[]="calendarAry['$calendarName']['data'] = new Array();\n";
 		}
-		//$base->debugObj->printDebug($this->calendarAry_js,1,'xxx: 5');
-		//$this->calendarAry_js[]="calendarObj.doAlert('yo man');\n";
+		//$base->DebugObj->printDebug($this->calendarAry_js,1,'xxx: 5');
+		//$this->calendarAry_js[]="CalendarObj.doAlert('yo man');\n";
 	}
 //====================================
 	function getCalendarJs($base){
@@ -50,13 +50,13 @@ class calendarObject {
 	}
 //====================================
 	function getCalendarProfileAry($base){
-		//$base->debugObj->printDebug($base->paramsAry,1,'xxx');
+		//$base->DebugObj->printDebug($base->paramsAry,1,'xxx');
 		$job=$base->paramsAry['job'];
 		$jobProfileId=$base->jobProfileAry['jobprofileid'];
 		$query="select * from calendarprofileview where jobprofileid=$jobProfileId";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array('delimit1'=>'calendarname');
-		$this->calendarProfileAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$this->calendarProfileAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 	}
 //====================================
 	function getCalendar($name,$base){
@@ -110,7 +110,7 @@ class calendarObject {
 			$startDate='startmonth';
 		}
 		$passAry['thedate']=$startDate;
-		$startDateAry=$base->utlObj->getDateInfo($passAry,&$base);
+		$startDateAry=$base->UtlObj->getDateInfo($passAry,&$base);
 		$startDate=$startDateAry['date_v1'];
 		$monthChange=$base->paramsAry['monthchange'];
 //echo "monthchange: $monthChange<br>";//xxxd
@@ -136,25 +136,25 @@ class calendarObject {
 					$startDate=$startMonth.'/'.$startDay.'/'.$startYear;
 //echo "startdate: $startDate<br>";//xxxd
 					$passAry['thedate']=$startDate;
-					$startDateAry=$base->utlObj->getDateInfo($passAry,&$base);
+					$startDateAry=$base->UtlObj->getDateInfo($passAry,&$base);
 					$base->paramsAry['startdate']=$startDate;
 //echo "write startdate: $startDate to paramsAry";//xxxd
 		} // end if monthchange != null
 //- calendarevents
 		$calendarEvents_raw=$calendarAry['calendarevents'];
-		$calendarEvents=$base->utlObj->returnFormattedString($calendarEvents_raw,&$base);
+		$calendarEvents=$base->UtlObj->returnFormattedString($calendarEvents_raw,&$base);
 //- date stuff
 		$endDate=$base->paramsAry['enddate'];
 		if ($endDate==NULL){$endDate='endmonth';}
 		$passAry['thedate']=$endDate;
 		$passAry['startdate']=$startDate;
-		$endDateAry=$base->utlObj->getDateInfo($passAry,&$base);
+		$endDateAry=$base->UtlObj->getDateInfo($passAry,&$base);
 		$displayMonthNo=$startDateAry['mon'];
 		$displayYearNo=$startDateAry['year'];
 		$displayMonth=$startDateAry['month'];
 		$dayOfWeek=$startDateAry['wday'];
 		$calendarCaption="$displayMonth $displayYearNo";
-		//$base->debugObj->printDebug($startDateAry,1,'xxxstartdate');
+		//$base->DebugObj->printDebug($startDateAry,1,'xxxstartdate');
 		//- get data
 		$startDate=$startDateAry['date_v1'];
 		$endDate=$endDateAry['date_v1'];
@@ -165,7 +165,7 @@ class calendarObject {
 			'calendarname'=>$name
 		);
 		$this->dataAry=$this->getCalendarData($passAry,&$base);
-//$base->debugObj->printDebug($this->dataAry,1,'dtaxxxd');
+//$base->DebugObj->printDebug($this->dataAry,1,'dtaxxxd');
 		$displayCalendarAry=array();
 		$weekDay=$startDateAry['wday'];
 		$colNo=$weekDay;
@@ -253,7 +253,7 @@ class calendarObject {
 					$titleString.="$theBR<div $selectedClassInsert $calendarEvents>$title</div>";
 				} // end foreach
 				$calendarAry_html[]="<td $selectedClassInsert>$preToday$dayLp$postToday$titleString</td>";
-				//$base->debugObj->printDebug($dayDetailAry,1,'xxxday');//xxx
+				//$base->DebugObj->printDebug($dayDetailAry,1,'xxxday');//xxx
 			} // end gotit
 			else {
 				$calendarAry_html[]="<td $classInsert>$preToday$dayLp$postToday</td>";
@@ -262,7 +262,7 @@ class calendarObject {
 			if ($dayOfWeek>6){$dayOfWeek=0;$weekOfMonth++;}
 		} // end for loop
 		$calendarAry_html[]="</td></tr>\n</table>";
-		//$base->debugObj->printDebug($calendarAry_html,1,'xxxf');//xxxf
+		//$base->DebugObj->printDebug($calendarAry_html,1,'xxxf');//xxxf
 		//exit();//xxxf
 		return $calendarAry_html;
 	}
@@ -274,10 +274,10 @@ class calendarObject {
 		$calendarName=$passAry['calendarname'];
 		$query="select * from $dbTableName where startdate >= '$startDate' and startdate <= '$endDate'";
 //echo "query: $query<br.";//xxxd
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array();
-		$tempDataAry=$base->utlObj->tableToHashAryV3($result,$passAry);
-//$base->debugObj->printDebug($tempDataAry,1,'dta');//xxxd
+		$tempDataAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+//$base->DebugObj->printDebug($tempDataAry,1,'dta');//xxxd
 		$calendarAry=array();
 		$jsString="var $calendarName = new array();\n";
 		$jsValueString=NULL;
@@ -288,10 +288,10 @@ class calendarObject {
 			$endDate=$dayAry['enddate'];
 			if ($endDate == NULL){$endDate=$startDate;}
 			$passAry['thedate']=$startDate;
-			$startDateAry=$base->utlObj->getDateInfo($passAry,&$base);
-			//$startDateAry=$base->utlObj->getDateInfo($startDate,&$base);
+			$startDateAry=$base->UtlObj->getDateInfo($passAry,&$base);
+			//$startDateAry=$base->UtlObj->getDateInfo($startDate,&$base);
 			$passAry['thedate']=$endDate;
-			$endDateAry=$base->utlObj->getDateInfo($passAry,&$base);
+			$endDateAry=$base->UtlObj->getDateInfo($passAry,&$base);
 			$startDateYearNo=$startDateAry['year'];
 			$startDateMonthNo=$startDateAry['mon'];
 			$startDateDayNo=$startDateAry['mday'];
@@ -322,7 +322,7 @@ class calendarObject {
 					}
 				}
 			}
-			//$base->debugObj->printDebug($calendarAry,1,'xxxstartdateary');
+			//$base->DebugObj->printDebug($calendarAry,1,'xxxstartdateary');
 		}
 		return $calendarAry;
 	}
@@ -345,7 +345,7 @@ class calendarObject {
 		$todayDate=$base->paramsAry['today'];
 		if ($todayDate != NULL){
 			$passAry=array('thedate'=>$todayDate);
-			$todayAry=$base->utlObj->getDateInfo($passAry,&$base);
+			$todayAry=$base->UtlObj->getDateInfo($passAry,&$base);
 		}
 		else {
 			$todayAry=getdate();
@@ -397,7 +397,7 @@ class calendarObject {
     	foreach ($calendarAry as $theName=>$theValue_raw){
     		//xxxf - the below should be flagged not literal check
     		if ($theName!='calendarevents'){
-	    		$theValue=$base->utlObj->returnFormattedString($theValue_raw,&$base);
+	    		$theValue=$base->UtlObj->returnFormattedString($theValue_raw,&$base);
     		}
     		else {
     			$theValue=$theValue_raw;
@@ -406,7 +406,7 @@ class calendarObject {
     	}
  //- this date
 		$passAry['thedate']=$thisDate;
-		$thisDateAry=$base->utlObj->getDateInfo($passAry,&$base);
+		$thisDateAry=$base->UtlObj->getDateInfo($passAry,&$base);
 		$thisDate=$thisDateAry['date_v1'];
     	//echo "thisdate: $thisDate<br>";//xxx
 //- start date for getting data
@@ -415,7 +415,7 @@ class calendarObject {
 			$startDate='startyear';
 		}
 		$passAry['thedate']=$startDate;
-		$startDateAry=$base->utlObj->getDateInfo($passAry,&$base);
+		$startDateAry=$base->UtlObj->getDateInfo($passAry,&$base);
 		$startDate=$startDateAry['date_v1'];
 		$startYear=$startDateAry['year'];
 		//echo "startdate: $startDate<br>";//xxx
@@ -423,7 +423,7 @@ class calendarObject {
 		$endDate=$base->paramsAry['enddate'];
 		if ($endDate==NULL){$endDate='endyear';}
 		$passAry['thedate']=$endDate;
-		$endDateAry=$base->utlObj->getDateInfo($passAry,&$base);
+		$endDateAry=$base->UtlObj->getDateInfo($passAry,&$base);
 		$endDate=$endDateAry['date_v1'];
 		$endYear=$endDateAry['year'];
 		//echo "enddate: $endDate<br>";//xxx
@@ -434,7 +434,7 @@ class calendarObject {
 		$displayMonth=$thisDateAry['month'];
 		$firstDayDate=$displayMonthNo.'/1/'.$displayYearNo;
 		$passAry['thedate']=$firstDayDate;
-		$firstDayAry=$base->utlObj->getDateInfo($passAry,&$base);
+		$firstDayAry=$base->UtlObj->getDateInfo($passAry,&$base);
 		$firstDayWeekDayNo=$firstDayAry['wday'];
 //- last day
    		$tstScan='_'.$displayMonthNo.'_';
@@ -444,7 +444,7 @@ class calendarObject {
    		else {$lastDayNo=30;}
    		$lastDate=$displayMonthNo.'/'.$lastDayNo.'/'.$displayYearNo;
    		$passAry=array('thedate'=>$lastDate);
-   		$lastDayAry=$base->utlObj->getDateInfo($passAry,&$base); 
+   		$lastDayAry=$base->UtlObj->getDateInfo($passAry,&$base); 
    		$lastDayWeekDayNo=$lastDayAry['wday'];
 		//echo "dmno: $displayMonthNo, dyno: $displayYearNo, dm: $displayMonth, fddow: $firstDayWeekDayNo<br>";//xxx
 //- class
@@ -476,9 +476,9 @@ class calendarObject {
 		//echo "calclass: $classInsert, weclass: $weekendClassInsert, wclass: $weekClassInsert<br>";//xxx
 //- calendarevents
 		$calendarEvents_raw=$calendarAry['calendarevents'];
-		//$calendarEvents=$base->utlObj->returnFormattedString($calendarEvents_raw,&$base);
+		//$calendarEvents=$base->UtlObj->returnFormattedString($calendarEvents_raw,&$base);
 		$calendarCaption="$displayMonth $displayYearNo";
-		//$base->debugObj->printDebug($startDateAry,1,'xxxstartdate');
+		//$base->DebugObj->printDebug($startDateAry,1,'xxxstartdate');
 //- get data	
 		$startDate=$startDateAry['date_v1'];
 		$endDate=$endDateAry['date_v1'];
@@ -493,9 +493,9 @@ class calendarObject {
 			'dbtablename'=>$dbTableName,
 			'calendarname'=>$calendarName
 		);
-		//$base->debugObj->printDebug($passAry,1,'xxxf');
+		//$base->DebugObj->printDebug($passAry,1,'xxxf');
 		$this->getCalendarDataV2($passAry,&$base);
-		//$base->debugObj->printDebug($this->dataAry[2007],1,'xxxddataary');exit();//xxxf
+		//$base->DebugObj->printDebug($this->dataAry[2007],1,'xxxddataary');exit();//xxxf
 		$displayCalendarAry=array();
 		$colNo=$firstDayWeekDayNo;
 		$rowNo=1;
@@ -520,7 +520,7 @@ class calendarObject {
 			else {$useDayLp=$dayLp;}
 			$thisDay=$displayMonthNo.'/'.$useDayLp.'/'.$displayYearNo;
 			$dayLpDisplay="<span>$dayLp</span>";
-			$todayCheckAry=$base->utlObj->getDateInfo('today',&$base);
+			$todayCheckAry=$base->UtlObj->getDateInfo('today',&$base);
 			$todayCheck=$todayCheckAry['date_v1'];
 			$displayStrg=NULL;
 			$displayStrg2=NULL;
@@ -564,20 +564,20 @@ class calendarObject {
 				$titleString=NULL;
 				$titleSubString=NULL;
 				$messageAry=array();
-				//$base->debugObj->printDebug($dayDetailAry,1,'xxx');
+				//$base->DebugObj->printDebug($dayDetailAry,1,'xxx');
 				$displayIt=false;
 				foreach($dayDetailAry as $ctr=>$theAry){
 					$title=$theAry[$calendarEntryTitleName];
 					$theEventClass=$theAry[$calendarEntryClassName];
 					//xxxf - we are not getting the class here!!!
-					//$base->debugObj->printDebug($theAry,1,'xxxf');
+					//$base->DebugObj->printDebug($theAry,1,'xxxf');
 					//echo "theeventclass: $theEventClass, theeventclassname: $calendarEntryClassName<br>";//xxxf
 					//xxxf
 					$theEventDateType=$theAry[$calendarEventTypeName];
 					if ($theEventClass==NULL){$theEventClassInsert=NULL;}
 					else {$theEventClassInsert="class=\"$theEventClass\"";}
 					$passAry=array('eventno'=>$ctr,'theday'=>$dayLp,'themonth'=>$displayMonthNo,'theyear'=>$displayYearNo);
-					$calendarEvents=$base->utlObj->returnFormattedStringDataFed($calendarEvents_raw,$passAry,$base);
+					$calendarEvents=$base->UtlObj->returnFormattedStringDataFed($calendarEvents_raw,$passAry,$base);
 					//echo "$calendarEvents<br>";
 					if ($theEventDateType=='holiday'){
 						$titleString.="<span $theEventClassInsert $calendarEvents>$title</span>";
@@ -591,7 +591,7 @@ class calendarObject {
 				$titleString.=$titleSubString;
 				$tableCellDisplay="<td $tdClassInsert>$doInsert$preToday$dayLpDisplay$todayMsg$postToday$titleString</td>\n";
 				$calendarAry_html[]=$tableCellDisplay;
-				//$base->debugObj->printDebug($dayDetailAry,1,'xxxday');//xxx
+				//$base->DebugObj->printDebug($dayDetailAry,1,'xxxday');//xxx
 			} // end gotit
 			else {
 				//xxxf: new
@@ -635,13 +635,13 @@ class calendarObject {
 //- put in all rotating dates
 		$companyProfileId=$base->jobProfileAry['companyprofileid'];
 		$query="select * from calendareventprofileview where calendarname='$calendarName' and companyprofileid=$companyProfileId";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array();
-		$eventAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$eventAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		//echo "query: $query<br>";//xxxf
-		//$base->debugObj->printDebug($eventAry,1,'eventary xxxf');exit();
+		//$base->DebugObj->printDebug($eventAry,1,'eventary xxxf');exit();
 		$this->dataAry=array();
-		//$base->debugObj->printDebug($eventAry,1,'xxxd');exit();
+		//$base->DebugObj->printDebug($eventAry,1,'xxxd');exit();
 		foreach ($eventAry as $eventName=>$thisEventAry){
 			$eventName=$thisEventAry['calendareventname'];
 			$eventLabel=$thisEventAry['calendareventlabel'];
@@ -668,7 +668,7 @@ class calendarObject {
 				//xxxf22
 					$monthFirstDayDate=$monthNo.'/01/'.$yearCtr;
 					$passAry=array('thedate'=>$monthFirstDayDate);
-					$firstDayAry=$base->utlObj->getDateInfo($passAry,&$base);
+					$firstDayAry=$base->UtlObj->getDateInfo($passAry,&$base);
 					$firstDayWeekDay=$firstDayAry['wday'];
 					$dayAdj=$weekDayNo-$firstDayWeekDay+1;
 					$monthDayNo=($weekDayNo-1)*7+$dayAdj;
@@ -700,9 +700,9 @@ class calendarObject {
 		}
 //- put in all user table date fields
 		$query="select * from $dbTableName where startdate >= '$startDate' and startdate <= '$endDate'";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array();
-		$data2Ary=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$data2Ary=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$jsString="var $calendarName = new array();\n";
 		$jsValueString=NULL;
 		$jsValueString2=NULL;
@@ -712,10 +712,10 @@ class calendarObject {
 			$endDate=$dayAry['enddate'];
 			if ($endDate == NULL){$endDate=$startDate;}
 			$passAry['thedate']=$startDate;
-			$startDateAry=$base->utlObj->getDateInfo($passAry,&$base);
-			//$startDateAry=$base->utlObj->getDateInfo($startDate,&$base);
+			$startDateAry=$base->UtlObj->getDateInfo($passAry,&$base);
+			//$startDateAry=$base->UtlObj->getDateInfo($startDate,&$base);
 			$passAry['thedate']=$endDate;
-			$endDateAry=$base->utlObj->getDateInfo($passAry,&$base);
+			$endDateAry=$base->UtlObj->getDateInfo($passAry,&$base);
 			$startDateYearNo=$startDateAry['year'];
 			$startDateMonthNo=$startDateAry['mon'];
 			$startDateDayNo=$startDateAry['mday'];
@@ -743,7 +743,7 @@ class calendarObject {
 				}
 			}
 		}
-		//$base->debugObj->printDebug($this->calendarAry_ajax,1,'xxxf');
+		//$base->DebugObj->printDebug($this->calendarAry_ajax,1,'xxxf');
 		//exit();//xxxf
 	}
 //=====================================

@@ -1,16 +1,16 @@
 <?php
-class plugin001Object {
+class Plugin001Object {
 	var $statusMsg;
 	var $callNo = 0;
 	var $delim = '!!';
 //========================================
-	function plugin001Object() {
+	function Plugin001Object() {
 		$this->incCalls();
 		$this->statusMsg='plugin Object is fired up and ready for work!';
 	}
 //========================================
 	function batchImages($base){
-		//$base->debugObj->printDebug($base->paramsAry,1,'paramsary');//xxx
+		//$base->DebugObj->printDebug($base->paramsAry,1,'paramsary');//xxx
 		$imageBase="/usr/local/www/jeffreypomeroy.com/www/images";
 		set_time_limit(6000);
 //- from
@@ -25,16 +25,16 @@ class plugin001Object {
 		else {$toDirectory=$toDirectory_raw;}
 //- backup
 		$doBackup_raw=$base->paramsAry['copytoraw'];
-		$doBackup=$base->utlObj->returnFormattedData($doBackup_raw,'boolean','internal',&$base);
+		$doBackup=$base->UtlObj->returnFormattedData($doBackup_raw,'boolean','internal',&$base);
 		$msgLine="<pre>\n";
 //- copy backup over
 		if ($doBackup){
 			$bashCmd="cp $fromDirectory/* $toDirectory/raw";
 			$passAry=array('pluginargs'=>$bashCmd);
-			$bashResultsAry=$base->plugin002Obj->runBashCommand($passAry,&$base);
+			$bashResultsAry=$base->Plugin002Obj->runBashCommand($passAry,&$base);
 			$bashCmd="chmod 777 $toDirectory/raw/*";
 			$passAry=array('pluginargs'=>$bashCmd);
-			$bashResultsAry=$base->plugin002Obj->runBashCommand($passAry,&$base);
+			$bashResultsAry=$base->Plugin002Obj->runBashCommand($passAry,&$base);
 			$msgLine.="I. Copied $fromDirectory_raw to $toDirectory_raw/raw\n\n";
 		}
 //- image params
@@ -42,7 +42,7 @@ class plugin001Object {
     	$imageHeight=$base->paramsAry['imageheight'];
 //- thumbnail info
 		$createThumbnail_raw=$base->paramsAry['createthumbnail'];
-		$createThumbnail=$base->utlObj->returnFormattedData($createThumbnail_raw,'boolean','internal',&$base);
+		$createThumbnail=$base->UtlObj->returnFormattedData($createThumbnail_raw,'boolean','internal',&$base);
 		$imageThumbnailWidth=$base->paramsAry['thumbnailwidth'];
 		$imageThumbnailHeight=$base->paramsAry['thumbnailheight'];
 //- process image/thumbnail
@@ -128,21 +128,21 @@ class plugin001Object {
 //- permissions
 			$bashCmd="chmod 777 $toDirectory/*";
 			$passAry=array('pluginargs'=>$bashCmd);
-			$bashResultsAry=$base->plugin002Obj->runBashCommand($passAry,&$base);
+			$bashResultsAry=$base->Plugin002Obj->runBashCommand($passAry,&$base);
 			if ($createThumbnail){
 				$bashCmd="chmod 777 $toDirectory/*";
 				$passAry=array('pluginargs'=>$bashCmd);
-				$bashResultsAry=$base->plugin002Obj->runBashCommand($passAry,&$base);
+				$bashResultsAry=$base->Plugin002Obj->runBashCommand($passAry,&$base);
 			}
-			$base->plugin001Obj->buildImagePathList(&$base);
+			$base->Plugin001Obj->buildImagePathList(&$base);
 			$msgLine.="</pre>";
        		$base->errorProfileAry['standardmsg1']=$msgLine;
     	} // end if isdir	
 	}
 //==================================================================
 function batchImagesAjax($base){
-		//$base->debugObj->printDebug($base->paramsAry,1,'paramsary');//xxx
-		$base->fileObj->initLog('batchimages.log',&$base);
+		//$base->DebugObj->printDebug($base->paramsAry,1,'paramsary');//xxx
+		$base->FileObj->initLog('batchimages.log',&$base);
 		$startTime=time();
 		$msgLine="name.................... rwidth rheight  ->   width height\n\n";
 		//$msgLine=sprintf("%-25s%6s%6s%6s\n", 'name', 'rwidth', 'width', 'height');
@@ -158,13 +158,13 @@ function batchImagesAjax($base){
 			$theValue=$valueAry[1];
 			$workAry[$theName]=$theValue;
 		}
-		//$base->fileObj->writeLog('jeff.txt','xxxf0',&$base);
+		//$base->FileObj->writeLog('jeff.txt','xxxf0',&$base);
 		set_time_limit(6000);
     	$imageWidth=$workAry['resizeimageswidthid'];
     	$imageHeight=$workAry['resizeimagesheightid'];
-    	$theBase=$base->clientObj->getBase(&$base);
-    	$imageBase=$base->clientObj->getImageBase(&$base);
-    	$rawImageBase=$base->clientObj->getRawImagebase(&$base);
+    	$theBase=$base->ClientObj->getBase(&$base);
+    	$imageBase=$base->ClientObj->getImageBase(&$base);
+    	$rawImageBase=$base->ClientObj->getRawImagebase(&$base);
     	$fromDirectory=$workAry['frompathid'];
     	$toDirectory=$workAry['topathid'];
     	$pos=strpos($theBase,$fromFullDirectory,-1);
@@ -175,7 +175,7 @@ function batchImagesAjax($base){
     	else {$toFullDirectory=$toDirectory;}
 		$thisTime=time();
 		$diffTime=$thisTime-$startTime;
-		$base->fileObj->writeLog('batchimages.log',"$diffTime: from: $fromFullDirectory, to: $toFullDirectory",&$base);
+		$base->FileObj->writeLog('batchimages.log',"$diffTime: from: $fromFullDirectory, to: $toFullDirectory",&$base);
     	//echo "tofulldirectory: $toFullDirectory, fromfulldirectory: ($fromFullDirectory)___";//xxxf
 		//exit();
     	if (!is_dir($toFullDirectory)){
@@ -186,18 +186,18 @@ function batchImagesAjax($base){
     	//$toPathId=$workAry['topathid'];
     	//echo "xxxf_1 fromdirectory: $fromDirectory, todirectory: $toDirectory, imagebase: $imageBase, topathid: $toPathId";
      	//echo "xxxf0, todirectory: $toDirectory";exit();
-     	//$base->fileObj->writeLog('jeff.txt','xxxf10',&$base);//good
+     	//$base->FileObj->writeLog('jeff.txt','xxxf10',&$base);//good
      	if(is_dir($toFullDirectory) && is_dir($fromFullDirectory)){
-    		//$base->fileObj->writeLog('jeff.txt','xxxf10.5',&$base);//bad
+    		//$base->FileObj->writeLog('jeff.txt','xxxf10.5',&$base);//bad
        		$dir = opendir($fromFullDirectory);
-       		$base->utlObj->openImageBuffer(0,&$base);
+       		$base->UtlObj->openImageBuffer(0,&$base);
 			$totTime=0;
 			$tstStrgConvert=",jpg,png,bmp,";
 			$tstStrgCopy=",mov,wav,";
-			//$base->fileObj->writeLog('jeff.txt','xxxf11',&$base);//bad
+			//$base->FileObj->writeLog('jeff.txt','xxxf11',&$base);//bad
       		while (($imageName = readdir($dir)) !== false){
         		if ($imageName != '.' && $imageName != '..'){
-        			//$base->fileObj->writeLog('jeff.txt',"xxxf12: $imageName",&$base);
+        			//$base->FileObj->writeLog('jeff.txt',"xxxf12: $imageName",&$base);
         			$imageNameAry=explode('.',$imageName);
         			$imageNameAryCnt=count($imageNameAry);
         			$imageNameAryLastPos=$imageNameAryCnt-1;
@@ -211,16 +211,16 @@ function batchImagesAjax($base){
 	           		//$imageWork = new Imagick($imagePath);
 					$thisTime=time();
 					$diffTime=$thisTime-$startTime;
-					$base->fileObj->writeLog('batchimages.log',"$diffTime: $imageName",&$base);
+					$base->FileObj->writeLog('batchimages.log',"$diffTime: $imageName",&$base);
         			if ($convPos>0){
         				$imageCnt++;
         				$thisTime=time();
 						$diffTime=$thisTime-$startTime;
-        				$base->fileObj->writeLog('batchimages.log',"$diffTime: --- read $imagePath",&$base);
+        				$base->FileObj->writeLog('batchimages.log',"$diffTime: --- read $imagePath",&$base);
  //- read old width, height
-		           		$success=$base->utlObj->readImage(0,$imagePath,&$base);
-		           		$base->fileObj->writeLog('batchimages.log',"$diffTime: --- success: $success for $imagePath",&$base);
-						$imageStatsAry=$base->utlObj->getImageStats(0,&$base);
+		           		$success=$base->UtlObj->readImage(0,$imagePath,&$base);
+		           		$base->FileObj->writeLog('batchimages.log',"$diffTime: --- success: $success for $imagePath",&$base);
+						$imageStatsAry=$base->UtlObj->getImageStats(0,&$base);
 						$oldImageWidth=$imageStatsAry['imagewidth'];
 						$oldImageHeight=$imageStatsAry['imageheight'];
 		           		//$oldImageWidth=$imageWork->getImageWidth();
@@ -228,11 +228,11 @@ function batchImagesAjax($base){
  //- convert image
        					$thisTime=time();
 						$diffTime=$thisTime-$startTime;
-        				$base->fileObj->writeLog('batchimages.log',"$diffTime: --- resize it",&$base);
-		           		$success=$base->utlObj->resizeImage(0,$imageWidth, $imageHeight, &$base);
+        				$base->FileObj->writeLog('batchimages.log',"$diffTime: --- resize it",&$base);
+		           		$success=$base->UtlObj->resizeImage(0,$imageWidth, $imageHeight, &$base);
 	      				//$imageWork->thumbnailImage($imageWidth, $imageHeight);
 //- read new width, height
-						$imageStatsAry=$base->utlObj->getImageStats(0,&$base);
+						$imageStatsAry=$base->UtlObj->getImageStats(0,&$base);
 						$newImageWidth=$imageStatsAry['imagewidth'];
 						$newImageHeight=$imageStatsAry['imageheight'];  		
 	            		//$newImageWidth=$imageWork->getImageWidth();
@@ -241,17 +241,17 @@ function batchImagesAjax($base){
         	    		$msgLine.=sprintf("%-25s%5s%5s => %5s%5s\n",$imageName,$oldImageWidth, $oldImageHeight, $newImageWidth, $newImageHeight);
         	    		$thisTime=time();
 						$diffTime=$thisTime-$startTime;
-           				$base->fileObj->writeLog('batchimages.log',"$diffTime: --- write $toPath",&$base);
- 		           		$base->utlObj->writeImage(0,$toPath,&$base);
+           				$base->FileObj->writeLog('batchimages.log',"$diffTime: --- write $toPath",&$base);
+ 		           		$base->UtlObj->writeImage(0,$toPath,&$base);
        					$thisTime=time();
 						$diffTime=$thisTime-$startTime;
-		           		$base->fileObj->writeLog('batchimages.log',"$diffTime: --- done writing",&$base);
+		           		$base->FileObj->writeLog('batchimages.log',"$diffTime: --- done writing",&$base);
 		           		//echo "xxxf2";
 	           		} else if ($copyPos>0){
 	           			if ($imagePath != $toPath){
 		           			$bashCommand="cp $imagePath $toPath";
    							$passAry=array('pluginargs'=>$bashCmd);
-	    	       			$bashResultsAry=$base->plugin002Obj->runBashCommand($passAry,&$base);
+	    	       			$bashResultsAry=$base->Plugin002Obj->runBashCommand($passAry,&$base);
 	           			}
 	           			$nonImageFileCnt++;
 	           		}
@@ -260,13 +260,13 @@ function batchImagesAjax($base){
 	      	} // end while readdir
 	  		$thisTime=time();
 			$diffTime=$thisTime-$startTime;
-			$base->fileObj->writeLog('batchimages.log',"$diffTime: done",&$base);
+			$base->FileObj->writeLog('batchimages.log',"$diffTime: done",&$base);
       		closedir($dir);
       		//echo 'xxxf5';
  //- permissions
 			$bashCmd="chmod 777 $toDirectory/*";
 			$passAry=array('pluginargs'=>$bashCmd);
-			$bashResultsAry=$base->plugin002Obj->runBashCommand($passAry,&$base);
+			$bashResultsAry=$base->Plugin002Obj->runBashCommand($passAry,&$base);
 			echo "okmsg|images resized: $imageCnt, nonimages found: $nonImageFileCnt\n\n$msgLine";
     	} // end if isdir	
     	else {
@@ -275,7 +275,7 @@ function batchImagesAjax($base){
 	}
 //========================================
 	function batchMetaDbTable($base){
-		$base->debugObj->printDebug("plugin001Obj:batchMetaDbTable('base')",0);
+		$base->DebugObj->printDebug("Plugin001Obj:batchMetaDbTable('base')",0);
 		$tableName=$base->paramsAry['tabletobatch'];
 		$selectorNameAry=array('dbtablemetaname','dbtablemetacolumnname');
 		$dbControlsAry=array();
@@ -283,8 +283,8 @@ function batchImagesAjax($base){
 		$currentRowAry=array();
 		$dbControlsAry['selectornameary']=$selectorNameAry;
 		$dbControlsAry['dbtablename']='dbtablemetaprofile';
-		$dbTableMetaStuff=$base->dbObj->getTableMetaStuff($tableName,&$base);
-		//$base->debugObj->printDebug($dbTableMetaStuff,1);
+		$dbTableMetaStuff=$base->DbObj->getTableMetaStuff($tableName,&$base);
+		//$base->DebugObj->printDebug($dbTableMetaStuff,1);
 		$noRows=count($dbTableMetaStuff);
 		for ($ctr=0;$ctr<$noRows;$ctr++){
 			$workAry=$dbTableMetaStuff[$ctr];
@@ -294,11 +294,11 @@ function batchImagesAjax($base){
 		}
 		$dbControlsAry['writerowsary']=$writeRowsAry;
 		$dbControlsAry['selectornameary']=$selectorNameAry;
-		$base->dbObj->writeToDb($dbControlsAry,&$base);
+		$base->DbObj->writeToDb($dbControlsAry,&$base);
 	}
 //=======================================new 
 	function updateDb($updatePass,$base){
-		$base->debugObj->printDebug("pl001Obj:updateDb($rowValuesAry,$oldRowValuesAry,'base')",0);
+		$base->DebugObj->printDebug("pl001Obj:updateDb($rowValuesAry,$oldRowValuesAry,'base')",0);
 		$rowValuesAry=$updatePass['rowvaluesary'];
 		$oldRowValuesAry=$updatePass['oldrowvaluesary'];
 		$rowControlsAry=$updatePass['rowcontrolsary'];
@@ -314,7 +314,7 @@ function batchImagesAjax($base){
 	}
 //=======================================
 	function writeYourData($base){
-		$base->debugObj->printDebug("plugin001Obj:writeYourData('base')",0);
+		$base->DebugObj->printDebug("Plugin001Obj:writeYourData('base')",0);
 		$dbControlsAry=array();
 		$writeRowsAry=array();
 		$currentRowAry=array();
@@ -327,14 +327,14 @@ function batchImagesAjax($base){
 		$currentRowAry['colname3']='colval11';
 		$writeRowsAry[]=$currentRowAry;
 		$dbControlsAry['writerowsary']=$writeRowsAry;
-		$base->dbObj->writeToDb($dbControlsAry,&$base);
+		$base->DbObj->writeToDb($dbControlsAry,&$base);
 	}
 //=======================================
 	function updateDbFromForm($base){
-		$base->debugObj->printDebug("plugin001Obj:updateDbFromForm('base')",0);
+		$base->DebugObj->printDebug("Plugin001Obj:updateDbFromForm('base')",0);
 		$params=$base->paramsAry;
-		//$base->debugObj->setPrio(-1,-1);//xxx
-		//$base->debugObj->printDebug($params,1,'params');//xxxd
+		//$base->DebugObj->setPrio(-1,-1);//xxx
+		//$base->DebugObj->printDebug($params,1,'params');//xxxd
 		$formName=$params['form'];
    		$dbTableName=$base->formProfileAry[$formName]['tablename'];
 		$redir=$base->formProfileAry[$formName]['redirect'];
@@ -346,7 +346,7 @@ function batchImagesAjax($base){
 		if (substr($redir,0,3) == 'http'){ $urlReDir=$redir;}
 		else {$urlReDir="$jobLocal$redir";}
 		$allWriteRowsAry=array();
-		//$base->debugObj->printDebug($params,1,'xxx');//xxx
+		//$base->DebugObj->printDebug($params,1,'xxx');//xxx
 		foreach ($params as $name=>$value){
 			$nameAry=explode('_',$name);
 		 	$dbTableRow=$nameAry[1];
@@ -384,23 +384,23 @@ function batchImagesAjax($base){
 		 	}
 		} 
 //--- call write
-//$base->debugObj->setPrio(-1,-1);//xxx
+//$base->DebugObj->setPrio(-1,-1);//xxx
 		$allSuccessfulUpdate=true;
-		//$base->debugObj->printDebug($allWriteRowsAry,1,'wra');//xxxd
+		//$base->DebugObj->printDebug($allWriteRowsAry,1,'wra');//xxxd
 		//exit();
 		foreach ($allWriteRowsAry as $dbTableNameUse=>$writeRowsAryUse){
 			$dbControlsAry = array();
 			$dbControlsAry['writerowsary']=$writeRowsAryUse;
 			$dbControlsAry['dbtablename']=$dbTableNameUse;
-			//$base->debugObj->printDebug($dbControlsAry,1,'xxxd');
-			//$base->debugObj->setPrio(-2,-2);//xxx
-			$successfulUpdate=$base->dbObj->writeToDb($dbControlsAry,&$base);
-			//$errStrg=$base->errorObj->retrieveAllErrors(&$base);//xxxd
+			//$base->DebugObj->printDebug($dbControlsAry,1,'xxxd');
+			//$base->DebugObj->setPrio(-2,-2);//xxx
+			$successfulUpdate=$base->DbObj->writeToDb($dbControlsAry,&$base);
+			//$errStrg=$base->ErrorObj->retrieveAllErrors(&$base);//xxxd
 			//echo "$errStrg<br>";//xxxd
 			if (!$successfulUpdate){$allSuccessfulUpdate=false;}
 			//echo "successfulupdate: $successfulUpdate<br>";//xxx
-			//$base->debugObj->setPrio(0,0);//xxx
-			//$base->debugObj->printDebug($base->errorProfileAry,1,'xxx');
+			//$base->DebugObj->setPrio(0,0);//xxx
+			//$base->DebugObj->printDebug($base->errorProfileAry,1,'xxx');
 		}
 //--- redirect
 		//echo "successupd: $successfulUpdate, dontredirect: $dontReDirect<br>";//xxx
@@ -410,19 +410,19 @@ function batchImagesAjax($base){
 				$sessionName=$base->paramsAry['sessionname'];
 				if ($sessionName != NULL){$urlReDir.="&sessionname=$sessionName&donterase=1";}
 			}
-			$urlReDir_formatted=$base->utlObj->returnFormattedString($urlReDir,&$base);
-			//$base->debugObj->printDebug($base->paramsAry,1,'xxxd: params');
+			$urlReDir_formatted=$base->UtlObj->returnFormattedString($urlReDir,&$base);
+			//$base->DebugObj->printDebug($base->paramsAry,1,'xxxd: params');
 			//echo "urlredir: $urlReDir, urlredir_fm: $urlReDir_formatted<br>";//
 			//exit();
-			$base->utlObj->appendValue('debug',"header to $urlReDir_formatted<br>",&$base);
+			$base->UtlObj->appendValue('debug',"header to $urlReDir_formatted<br>",&$base);
 			header("Location: $urlReDir_formatted");
 		}
 	}
 //======================================= 
 	function insertDbFromForm($base){
-		$base->debugObj->printDebug("plugin001Obj:insertDbFromForm('base')",0);
+		$base->DebugObj->printDebug("Plugin001Obj:insertDbFromForm('base')",0);
 		$params=$base->paramsAry;
-		//$base->debugObj->printDebug($params,1,'params');//xxx
+		//$base->DebugObj->printDebug($params,1,'params');//xxx
 		$formName=$params['form'];
 	    $dbTableName=$base->formProfileAry[$formName]['tablename'];
 		$redir=$base->formProfileAry[$formName]['redirect'];
@@ -468,18 +468,18 @@ function batchImagesAjax($base){
 		 		}	
 		 	}
 		} 
-	 	//$base->debugObj->printDebug($allWriteRowsAry,1,'awra');//xxxf
+	 	//$base->DebugObj->printDebug($allWriteRowsAry,1,'awra');//xxxf
 		$allSuccessfulInsert=true;
 		foreach ($allWriteRowsAry as $dbTableNameUse=>$writeRowsAryUse){
 			$dbControlsAry = array();
 			$dbControlsAry['writerowsary']=$writeRowsAryUse;
 			$dbControlsAry['dbtablename']=$dbTableNameUse;
-			//$base->debugObj->printDebug($dbControlsAry,1,'dbc');//xxx
-			//$base->debugObj->setPrio(-1,-1);//xxx
-			$successfulInsert=$base->dbObj->insertToDb($dbControlsAry,&$base);
+			//$base->DebugObj->printDebug($dbControlsAry,1,'dbc');//xxx
+			//$base->DebugObj->setPrio(-1,-1);//xxx
+			$successfulInsert=$base->DbObj->insertToDb($dbControlsAry,&$base);
 			//echo "successfulinsert: $successfulInsert<br>";//xxx
-			//$base->debugObj->setPrio(0,0);//xxx
-			//$base->debugObj->printDebug($base->errorProfileAry,1,'xxxd');
+			//$base->DebugObj->setPrio(0,0);//xxx
+			//$base->DebugObj->printDebug($base->errorProfileAry,1,'xxxd');
 			if (!$successfulInsert){
 				$allSuccessfulInsert=false;
 			}
@@ -496,26 +496,26 @@ function batchImagesAjax($base){
 					$sessionName=$base->paramsAry['sessionname'];
 					if ($sessionName != NULL){$urlReDir.="&sessionname=$sessionName&donterase=1";}
 				}
-				$urlReDir_formatted=$base->utlObj->returnFormattedString($urlReDir,&$base);
-				$base->utlObj->appendValue('debug',"header to $urlReDir_formatted<br>",&$base);
+				$urlReDir_formatted=$base->UtlObj->returnFormattedString($urlReDir,&$base);
+				$base->UtlObj->appendValue('debug',"header to $urlReDir_formatted<br>",&$base);
 				header("Location: $urlReDir_formatted");
 			}
 		}
 	}
 //======================================= 
 	function deleteDbFromForm($base){
-		$base->debugObj->printDebug("deleteDbFromForm('base')",0);
+		$base->DebugObj->printDebug("deleteDbFromForm('base')",0);
 		$formName=$base->paramsAry['form'];
 		$dbTableName=$base->formProfileAry[$formName]['tablename'];
 		$redirectJob=$base->formProfileAry[$formName]['redirect'];
 		$jobLocal=$base->systemAry['joblocal'];
 		$redirectPath="$jobLocal$redirectJob";
 		$dbControlsAry=array('dbtablename'=>$dbTableName);
-		$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+		$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
 		$keyName=$dbControlsAry['keyname'];
 		$keyValue=$base->paramsAry[$keyName];
 		$query="delete from $dbTableName where $keyName=$keyValue";
-		$result=$base->dbObj->queryTable($query,'update',&$base);
+		$result=$base->DbObj->queryTable($query,'update',&$base);
 //--- redirect
 		$urlReDir=$redirectPath;
 		$pos=strpos('x'.$urlReDir,'sessionname',0);
@@ -523,20 +523,20 @@ function batchImagesAjax($base){
 			$sessionName=$base->paramsAry['sessionname'];
 			if ($sessionName != NULL){$urlReDir.="&sessionname=$sessionName&donterase=1";}
 		}
-		$urlReDir_formatted=$base->utlObj->returnFormattedString($urlReDir,&$base);
-		$base->debugObj->printDebug("-rtn:dbObj:deleteDbFromForm",0); //xx (f)
-		$base->utlObj->appendValue('debug',"header to $urlReDir_formatted<br>",&$base);
+		$urlReDir_formatted=$base->UtlObj->returnFormattedString($urlReDir,&$base);
+		$base->DebugObj->printDebug("-rtn:DbObj:deleteDbFromForm",0); //xx (f)
+		$base->UtlObj->appendValue('debug',"header to $urlReDir_formatted<br>",&$base);
 		header("Location: $urlReDir_formatted");
 	}
 //======================================= 
 	function deleteDbFromUrl($base){
-		$base->debugObj->printDebug("deleteDbFromUrl('base')",0);
+		$base->DebugObj->printDebug("deleteDbFromUrl('base')",0);
 		$dbTableName=$base->paramsAry['dbtablename'];
 		$dbControlsAry=array('dbtablename'=>$dbTableName);
-		$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+		$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
 		$keyName=$dbControlsAry['keyname'];
 		$keyValue=$base->paramsAry[$keyName];
-		//$base->debugObj->printDebug($base->paramsAry,1,'xxx');
+		//$base->DebugObj->printDebug($base->paramsAry,1,'xxx');
 		if (array_key_exists('deletename',$base->paramsAry)){
 			$useKeyName=$base->paramsAry['deletename'];
 			$useKeyValue=$base->paramsAry[$useKeyName];
@@ -549,13 +549,13 @@ function batchImagesAjax($base){
 		if ($dbTableName != NULL && $useKeyName != NULL && $useKeyValue != NULL){
 			$query="delete from $dbTableName where $useKeyName=$useKeyValue";
 			//echo "query: $query<br>";//xxx
-			$result=$base->dbObj->queryTable($query,'update',&$base);
+			$result=$base->DbObj->queryTable($query,'update',&$base);
 			unset($base->paramsAry[$keyName]);
 		}
 	}
 //======================================= 
 	function deleteDbFromAjax($base){
-		$base->debugObj->printDebug("deleteDbFromUrl('base')",0);
+		$base->DebugObj->printDebug("deleteDbFromUrl('base')",0);
 		$sendData=$base->paramsAry['senddata'];
 		$sendDataAry=explode('`',$sendData);
 		$workAry=array();
@@ -567,14 +567,14 @@ function batchImagesAjax($base){
 		}
 		$dbTableName=$workAry['dbtablename'];
 		$dbControlsAry=array('dbtablename'=>$dbTableName);
-		$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+		$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
 		$keyName=$dbControlsAry['keyname'];
 		$keyValue=$workAry[$keyName];
 		$childTable=$workAry['childtable'];
 		if ($childTable != null){
 			$query="select * from $childTable where $keyName=$keyValue";
 			$passAry=array();
-			$checkAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
+			$checkAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
 			$foreignCnt=count($checkAry);
 		}
 		if ($foreignCnt>0){
@@ -582,7 +582,7 @@ function batchImagesAjax($base){
 		}
 		else if ($dbTableName != NULL && $keyName != NULL && $keyValue != NULL){
 			$query="delete from $dbTableName where $keyName=$keyValue";
-			$result=$base->dbObj->queryTable($query,'update',&$base);
+			$result=$base->DbObj->queryTable($query,'update',&$base);
 			echo "ok";
 		}
 		else {
@@ -591,12 +591,12 @@ function batchImagesAjax($base){
 	}
 //=======================================
 	function fixHtmlProfile($base){
-		$base->debugObj->printDebug("plugin001Obj:fixHtmlProfile('base')",0); //xx (h)
+		$base->DebugObj->printDebug("Plugin001Obj:fixHtmlProfile('base')",0); //xx (h)
 		$this->fixTableProfile($base);
 		$htmlAry=array();
 		$query='select * from htmlelementprofile';
-		$result=$base->dbObj->queryTable($query,'read',&$base);
-		$htmlElementProfileAry=$base->utlObj->tableToHashAryV3($result);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
+		$htmlElementProfileAry=$base->UtlObj->tableToHashAryV3($result);
 		$htmlsWithElements=array();
 //get htmlprofiles with elements
 		foreach ($htmlElementProfileAry as $rowNo=>$valueAry){
@@ -606,8 +606,8 @@ function batchImagesAjax($base){
 //get htmlprofiles/jobprofiles
 		$jobProfilesWithHtmls=array();
 		$query='select * from htmlprofile';
-		$result=$base->dbObj->queryTable($query,'read',&$base);
-		$htmlProfileAry=$base->utlObj->tableToHashAryV3($result);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
+		$htmlProfileAry=$base->UtlObj->tableToHashAryV3($result);
 		foreach ($htmlProfileAry as $rowNo=>$valueAry){
 			$htmlProfileId=$valueAry['htmlprofileid'];
 			$jobProfileId=$valueAry['jobprofileid'];
@@ -618,7 +618,7 @@ function batchImagesAjax($base){
 			}	
 			else {
 				if ($hasElement){
-					$base->debugObj->placeCheck("htmlprofileid w/ele dup: $htmlProfileId"); //xx (c)
+					$base->DebugObj->placeCheck("htmlprofileid w/ele dup: $htmlProfileId"); //xx (c)
 				} // end if
 			} // end else
 		} // end foreach 
@@ -633,9 +633,9 @@ function batchImagesAjax($base){
 			if ($chkHtmlProfileId != $htmlProfileId){
 				if ($hasElement){$insLine=" and has element";}
 				else {$insLine=" ";}
-				$base->debugObj->placeCheck("dup $insLine: jobprofileid: $jobProfileId htmlprofileid: $htmlProfileId"); //xx (c)
+				$base->DebugObj->placeCheck("dup $insLine: jobprofileid: $jobProfileId htmlprofileid: $htmlProfileId"); //xx (c)
 				$query="delete from htmlprofile where htmlprofileid=$htmlProfileId";
-				$result=$base->dbObj->queryTable($query,'read',&$base);
+				$result=$base->DbObj->queryTable($query,'read',&$base);
 			} // end if
 		} // end if
 		else {
@@ -645,11 +645,11 @@ function batchImagesAjax($base){
 	}
 //=======================================
 	function fixTableProfile($base){
-		$base->debugObj->printDebug("plugin001Obj:fixTableProfile('base')",0); //xx (h)
+		$base->DebugObj->printDebug("Plugin001Obj:fixTableProfile('base')",0); //xx (h)
 		$tableAry=array();
 		$query='select * from columnprofile';
-		$result=$base->dbObj->queryTable($query,'read',&$base);
-		$columnProfileAry=$base->utlObj->tableToHashAryV3($result);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
+		$columnProfileAry=$base->UtlObj->tableToHashAryV3($result);
 		$tablesWithElements=array();
 //get tableprofiles with elements
 		foreach ($columnProfileAry as $rowNo=>$valueAry){
@@ -659,8 +659,8 @@ function batchImagesAjax($base){
 //get tableprofiles/jobprofiles
 		$jobProfilesWithTables=array();
 		$query='select * from tableprofile';
-		$result=$base->dbObj->queryTable($query,'read',&$base);
-		$tableProfileAry=$base->utlObj->tableToHashAryV3($result);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
+		$tableProfileAry=$base->UtlObj->tableToHashAryV3($result);
 		foreach ($tableProfileAry as $rowNo=>$valueAry){
 			$tableProfileId=$valueAry['tableprofileid'];
 			$jobProfileId=$valueAry['jobprofileid'];
@@ -671,7 +671,7 @@ function batchImagesAjax($base){
 			}	
 			else {
 				if ($hasElement){
-					$base->debugObj->placeCheck("tableprofileid w/ele dup: $tableProfileId"); //xx (c)
+					$base->DebugObj->placeCheck("tableprofileid w/ele dup: $tableProfileId"); //xx (c)
 				} // end if
 			} // end else
 		} // end foreach 
@@ -686,9 +686,9 @@ function batchImagesAjax($base){
 			if ($chkTableProfileId != $tableProfileId){
 				if ($hasElement){$insLine=" and has element";}
 				else {$insLine=" ";}
-				$base->debugObj->placeCheck("dup table profile $insLine: jobprofileid: $jobProfileId tableprofileid: $tableProfileId"); //xx (c)
+				$base->DebugObj->placeCheck("dup table profile $insLine: jobprofileid: $jobProfileId tableprofileid: $tableProfileId"); //xx (c)
 				$query="delete from tableprofile where tableprofileid=$tableProfileId";
-				$result=$base->dbObj->queryTable($query,'read',&$base);
+				$result=$base->DbObj->queryTable($query,'read',&$base);
 			} // end if
 		} // end if
 		else {
@@ -698,16 +698,16 @@ function batchImagesAjax($base){
 	}
 //=======================================
 	function fixDbTableMetaProfile(){
-		$base->debugObj->printDebug("pl001Obj:fixDbTableMetaProfile()",0); //xx (h)
+		$base->DebugObj->printDebug("pl001Obj:fixDbTableMetaProfile()",0); //xx (h)
 	}
 //=======================================
 	function limitSelection($base){
-		$base->debugObj->printDebug("pluginObj1:limitSelection('base')",0); //xx (h)
+		$base->DebugObj->printDebug("PluginObj1:limitSelection('base')",0); //xx (h)
 		$updateSessionName=$base->paramsAry['savetosession'];
 		if ($updateSessionName != NULL){
 			$updateSessionValue=$base->paramsAry[$updateSessionName];
 			$updateSessionAry=array($updateSessionName=>$updateSessionValue);
-			//$base->debugObj->printDebug("$updateSessionName, $updateSessionValue",1,'usa');//xxx
+			//$base->DebugObj->printDebug("$updateSessionName, $updateSessionValue",1,'usa');//xxx
 			$sessionName=$base->paramsAry['sessionname'];
 			if ($sessionName == NULL){
 				$sessionName=$_SESSION['sessionobj']->saveNewSessionAry($updateSessionAry);
@@ -715,11 +715,11 @@ function batchImagesAjax($base){
 			}
 			else {$_SESSION['sessionobj']->saveSessionAry($sessionName,$updateSessionAry);}
 		}
-		$base->debugObj->printDebug("-rtn: limitSelection",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn: limitSelection",0); //xx (f)
 	}
 //=======================================
 	function updateSession($base){
-		$base->debugObj->printDebug("pluginObj1:updateSession('base')",0); //xx (h)
+		$base->DebugObj->printDebug("PluginObj1:updateSession('base')",0); //xx (h)
 		$updateSessionName=$base->paramsAry['savetosession'];
 		if ($updateSessionName != NULL){
 			$updateSessionValue=$base->paramsAry[$updateSessionName];
@@ -731,25 +731,25 @@ function batchImagesAjax($base){
 			}
 			else {$_SESSION['sessionobj']->saveSessionAry($sessionName,$updateSessionAry);}
 		}
-		$base->debugObj->printDebug("-rtn: limitSelection",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn: limitSelection",0); //xx (f)
 	}
 //=================================
 	function overlayRows($base){
-		$base->debugObj->printDebug("pl1:overlayFormElements()",0); //xx (h)
+		$base->DebugObj->printDebug("pl1:overlayFormElements()",0); //xx (h)
 //- get dbtablestuff about table
 		$dbTableMetaName='formelementprofile';
 		$dbControlsAry=array('dbtablename'=>$dbTableMetaName);
-		$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+		$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
 //- get from elements
 		$query="select * from formelementprofileview where jobname='updatedbtablemetaprofile' and formname='basicform'";
 		$passAry=array('delimit1'=>'formelementname');
-		$result=$base->dbObj->queryTable($query,'read',&$base);
-		$updateTable=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
+		$updateTable=$base->UtlObj->tableToHashAryV3($result,$passAry);
 //- get to elements
 		$query="select * from formelementprofileview where jobname='insertdbtablemetaprofile' and formname='basicform'";
 		$passAry=array();
-		$result=$base->dbObj->queryTable($query,'read',&$base);
-		$insertTableAry=$base->utlObj->tableToHashAryV3($result,$passAry);	
+		$result=$base->DbObj->queryTable($query,'read',&$base);
+		$insertTableAry=$base->UtlObj->tableToHashAryV3($result,$passAry);	
 		$foreignKeyAry=$dbControlsAry['foreignkeyary'];
 		$keyName=$dbControlsAry['keyname'];
 		$selectorNameAry=$dbControlsAry['selectornameary'];
@@ -777,12 +777,12 @@ function batchImagesAjax($base){
 //--- write data
 		$dbTableName=$dbTableMetaName;
     $dbControlsAry=array('dbtablename'=>$dbTableName);
-    $base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+    $base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
     $writeRowsAry=$insertTableAry;
     $dbControlsAry['writerowsary']=$writeRowsAry;
-    $base->dbObj->writeToDb($dbControlsAry,&$base);
+    $base->DbObj->writeToDb($dbControlsAry,&$base);
 //---
-		$base->debugObj->printDebug("-rtn:overlayRows",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:overlayRows",0); //xx (f)
 	}
 //=====================================
 	function genericDmp($base){
@@ -797,43 +797,43 @@ function batchImagesAjax($base){
 		//exit();
 		echo 'do NewMagickWand, <br>';
 		//$imageWork = NewMagickWand();
-		$base->utlObj->openImageBuffer(0,&$base);
+		$base->UtlObj->openImageBuffer(0,&$base);
 		echo 'do MagickReadImage, <br>';
 		//$tst=MagickReadImage($imageWork, $fromFile);
-		$tst=$base->utlObj->readImage(0,$fromFile,&$base);
+		$tst=$base->UtlObj->readImage(0,$fromFile,&$base);
 		echo "return MagickReadImage(tst): $tst<br>";
 		echo "do MagickResizeImage <br>";
 		//$tst=MagickResizeImage($imageWork, 50, 50, MW_QuadraticFilter, .1);
 		$width=0;
 		$height=400;
 		echo "width: $width, height: $height<br>";
-		$tst=$base->utlObj->resizeImage(0,$width,$height,&$base);
+		$tst=$base->UtlObj->resizeImage(0,$width,$height,&$base);
 		echo "return MagickResizeImage(tst): $tst<br>";
 		echo "do MagickWriteImage<br>";
 		//chdir($toPath);
 		//$tst=MagickWriteImage($imageWork, $toFile);		
-		$tst=$base->utlObj->writeImage(0,$toFile2,&$base);
+		$tst=$base->UtlObj->writeImage(0,$toFile2,&$base);
 		echo "return MagickWriteImage(tst): $tst<br>";
 		exit();
 	}
 //=================================
 	function overlayHtmlElements($base){
-		$base->debugObj->printDebug("pl1:overlayFormElements()",0); //xx (h)
+		$base->DebugObj->printDebug("pl1:overlayFormElements()",0); //xx (h)
 //- get dbtablestuff about table
 		$dbTableMetaName='htmlelementprofile';
 		$dbControlsAry=array('dbtablename'=>$dbTableMetaName);
-		$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+		$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
 //- get html elements to copy
 		$query="select * from htmlelementprofileview where jobname='listpeople'";
 		//$passAry=array('delimit1'=>'htmlelementname');
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array();
-		$updateTableAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$updateTableAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 //- delete old html elements
 		$query="delete from htmlelementprofile where htmlprofileid=(select htmlprofileid from htmlprofile where jobprofileid =
 (select jobprofileid from jobprofile where jobname='listhtml'))";
 		//$passAry=array();
-		//$result=$base->dbObj->queryTable($query,'read',&$base);
+		//$result=$base->DbObj->queryTable($query,'read',&$base);
 //- loop through to elements and update them
 		foreach ($updateTableAry as $ctr=>$eleAry){
 			unset($eleAry['htmlelementprofileid']);
@@ -845,34 +845,34 @@ function batchImagesAjax($base){
 //--- write data
 	$dbTableName=$dbTableMetaName;
     $dbControlsAry=array('dbtablename'=>$dbTableName);
-    $base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+    $base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
     $writeRowsAry=$updateTableAry;
     $dbControlsAry['writerowsary']=$writeRowsAry;
-    $base->dbObj->writeToDb($dbControlsAry,&$base);
+    $base->DbObj->writeToDb($dbControlsAry,&$base);
 //---
-		$base->debugObj->printDebug("-rtn:overlayRows",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:overlayRows",0); //xx (f)
 	}
 //=======================================
 	function rebuildAllViewsdeprecated($base){
-		$base->debugObj->printDebug("debug001Obj:rebuildAllViews",0); //xx (h)
+		$base->DebugObj->printDebug("debug001Obj:rebuildAllViews",0); //xx (h)
 		$query="select * from sqlprofile where sqltype='rebuildviews' order by sqlorder";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
-		$workAry=$base->utlObj->tableToHashAryV3($result);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
+		$workAry=$base->UtlObj->tableToHashAryV3($result);
 		foreach ($workAry as $key=>$value){
 			$query=$value['sqlcommand'];
-		$result=$base->dbObj->queryTable($query,'run',&$base);
+		$result=$base->DbObj->queryTable($query,'run',&$base);
 		}
-		$base->debugObj->printDebug("-rtn:rebuildAllViews",0);
+		$base->DebugObj->printDebug("-rtn:rebuildAllViews",0);
 	}
 //=======================================
 	function rebuildView($base){
-		$base->debugObj->printDebug("debug001Obj:rebuildView",0); //xx (h)
+		$base->DebugObj->printDebug("debug001Obj:rebuildView",0); //xx (h)
 		$dbTableProfileId=$base->paramsAry['dbtableprofileid'];
 		$query="select * from dbcolumnprofileview where dbtableprofileid=$dbTableProfileId";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array('delimit1'=>'dbcolumnname');
-		$dataAry=$base->utlObj->tableToHashAryV3($result,$passAry);
-		//$base->debugObj->printDebug($dataAry,1,'dtaary');//xxx
+		$dataAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+		//$base->DebugObj->printDebug($dataAry,1,'dtaary');//xxx
 		$foreignFieldsAry=array();
 		$foreignFiltersAry=array();
 		$foreignNonFiltersAry=array();
@@ -882,14 +882,14 @@ function batchImagesAjax($base){
 			$columnName=$columnNameAry[0];
 			$dbTableName=$columnAry['dbtablename'];
 			$foreignField_table=$columnAry['dbcolumnforeignfield'];
-			$foreignField=$base->utlObj->returnFormattedData($foreignField_table,'boolean','internal',&$base);
+			$foreignField=$base->UtlObj->returnFormattedData($foreignField_table,'boolean','internal',&$base);
 			$noViewLink_raw=$columnAry['dbcolumnnoviewlink'];
-			$noViewLink=$base->utlObj->returnFormattedData($noViewLink_raw,'boolean','internal',&$base);
+			$noViewLink=$base->UtlObj->returnFormattedData($noViewLink_raw,'boolean','internal',&$base);
 			if ($foreignField){
 				$foreignKeyName=$columnAry['dbcolumnforeignkeyname'];
 				$foreignTable=$dataAry[$foreignKeyName]['dbcolumnforeigntable'];
 				$foreignKeyNoViewLink_raw=$dataAry[$foreignKeyName]['dbcolumnnoviewlink'];
-				$foreignKeyNoViewLink=$base->utlObj->returnFormattedData($foreignKeyNoViewLink_raw,'boolean','internal',&$base);
+				$foreignKeyNoViewLink=$base->UtlObj->returnFormattedData($foreignKeyNoViewLink_raw,'boolean','internal',&$base);
 				if (!$foreignKeyNoViewLink){
 					$mainTable=$dataAry[$foreignKeyName]['dbcolumnmaintable'];
 					if ($mainTable == NULL){$mainTable=$dbTableName;}
@@ -901,11 +901,11 @@ function batchImagesAjax($base){
 				}
 			}
 			$foreignKey_table=$columnAry['dbcolumnforeignkey'];
-			$foreignKey=$base->utlObj->returnFormattedData($foreignKey_table,'boolean','internal');
+			$foreignKey=$base->UtlObj->returnFormattedData($foreignKey_table,'boolean','internal');
 			if ($foreignKey && !$noViewLink){
 				$dbColumnName=$columnAry['dbcolumnname'];
 				$dbColumnParentSelector_table=$columnAry['dbcolumnparentselector'];
-				$dbColumnParentSelector=$base->utlObj->returnFormattedData($dbColumnParentSelector_table,'boolean','internal');	
+				$dbColumnParentSelector=$base->UtlObj->returnFormattedData($dbColumnParentSelector_table,'boolean','internal');	
 				if (!$dbColumnParentSelector){
 					$dbColumnMainTable=$columnAry['dbcolumnmaintable'];
 					//- if not null, then in other table so assume parent selector of that table
@@ -918,7 +918,7 @@ function batchImagesAjax($base){
 		}
 		$viewStmt="create view $dbTableName".'view'." as ";
 		$viewStmt.=" select ";
-//$base->debugObj->printDebug($foreignFieldsAry,1,'xxx');
+//$base->DebugObj->printDebug($foreignFieldsAry,1,'xxx');
 		$selectList="$dbTableName.*";
 		$tableList="$dbTableName";
 //- foreignfieldsary put in display
@@ -939,7 +939,7 @@ function batchImagesAjax($base){
 		}
 //- foreignfiltersary put in where clause
 		$firstTime=true;		
-		//$base->debugObj->printDebug($foreignNonFiltersAry,1,'fnfa');//xxx
+		//$base->DebugObj->printDebug($foreignNonFiltersAry,1,'fnfa');//xxx
 		foreach ($foreignFiltersAry as $foreignTable=>$foreignKeyAry){
 			//echo "foreigntable: $foreignTable<br>";//xxx
 			foreach ($foreignKeyAry as $foreignKeyName=>$mainTable){
@@ -970,39 +970,39 @@ function batchImagesAjax($base){
 			$dbTableNameView=$dbTableName.'view';
 			$query="select * from pg_views where viewname='$dbTableNameView'";
 			//echo "query: $query";//xxx
-			$result=$base->dbObj->queryTable($query,'read',&$base);
+			$result=$base->DbObj->queryTable($query,'read',&$base);
 			$passAry=array();
-			$checkAry=$base->utlObj->tableToHashAryV3($result,$passAry);
-			//$base->debugObj->printDebug($checkAry,1,'chk');//xxx
+			$checkAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+			//$base->DebugObj->printDebug($checkAry,1,'chk');//xxx
 			$noFileColumns=count($checkAry);
 			//echo "nofilecolumns: $noFileColumns";//xxx
 			if ($noFileColumns>0){
 				//echo "drop it";//xxx
 				//echo "drop stmt: $dropViewStmt<br>";//xxx
-				$base->dbObj->queryTable($dropViewStmt,'maint',&$base);
+				$base->DbObj->queryTable($dropViewStmt,'maint',&$base);
 			}
-			$base->dbObj->queryTable($viewStmt,'maint',&$base);
+			$base->DbObj->queryTable($viewStmt,'maint',&$base);
 			//echo "view stmt: $viewStmt<br>";//xxx
 		}		
-		$base->debugObj->printDebug("-rtn:rebuildView",0);
+		$base->DebugObj->printDebug("-rtn:rebuildView",0);
 	}
 //=======================================
 	function copyInColumns($base){
-		$base->debugObj->printDebug("debug001Obj:copyInColumns",0); //xx (h)
-		//$base->debugObj->printDebug($base->formProfileAry,1,'fpa');//xxx
+		$base->DebugObj->printDebug("debug001Obj:copyInColumns",0); //xx (h)
+		//$base->DebugObj->printDebug($base->formProfileAry,1,'fpa');//xxx
 		$formProfileId=$base->paramsAry['formprofileid'];
 		if ($formProfileId != NULL){
 			$query="select * from formprofile where formprofileid=$formProfileId";	
-			$result=$base->dbObj->queryTable($query,'read',&$base);
+			$result=$base->DbObj->queryTable($query,'read',&$base);
 			$passAry=array('delimit1'=>'formprofileid');
-			$thisFormAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+			$thisFormAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 			$query="select * from formelementprofile where formprofileid=$formProfileId";	
-			$result=$base->dbObj->queryTable($query,'read',&$base);
+			$result=$base->DbObj->queryTable($query,'read',&$base);
 			$passAry=array('delimit1'=>'formelementname');
-			$thisFormElementAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+			$thisFormElementAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 			$dbTableName=$thisFormAry[$formProfileId]['tablename'];
 			$dbControlsAry=array('dbtablename'=>$dbTableName);
-			$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+			$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
 			$dbTableMetaAry=$dbControlsAry['dbtablemetaary'];
 			$operationName=$thisFormAry[$formProfileId]['formoperation'];
 			$dbControlsAry=array();
@@ -1012,14 +1012,14 @@ function batchImagesAjax($base){
 			foreach ($dbTableMetaAry as $columnName=>$columnAry){
 				//- foreign field
 				$foreignField_file=$columnAry['dbcolumnforeignfield'];
-				$foreignField=$base->utlObj->returnFormattedData($foreignField_file,'boolean','internal');
+				$foreignField=$base->UtlObj->returnFormattedData($foreignField_file,'boolean','internal');
 				//- foreign key
 				$foreignKey_file=$columnAry['dbcolumnforeignkey'];
-				$foreignKey=$base->utlObj->returnFormattedData($foreignKey_file,'boolean','internal');
+				$foreignKey=$base->UtlObj->returnFormattedData($foreignKey_file,'boolean','internal');
 				$mainTable=$columnAry['dbcolumnmaintable'];
 				//- key
 				$key_file=$columnAry['dbcolumnkey'];
-				$key=$base->utlObj->returnFormattedData($key_file,'boolean','internal');
+				$key=$base->UtlObj->returnFormattedData($key_file,'boolean','internal');
 				$standardPromptsName=$columnAry['standardpromptsname'];
 				if (!$foreignField && !$key && !($foreignKey && ($mainTable != NULL))){
 					if (!array_key_exists($columnName,$thisFormElementAry)){
@@ -1106,23 +1106,23 @@ function batchImagesAjax($base){
 					} // end if
 				} // end for
 			} // end foreach
-			//$base->debugObj->printDebug($dbControlsAry,1,'doit');//xxx
+			//$base->DebugObj->printDebug($dbControlsAry,1,'doit');//xxx
 			if ($formElementCtr>0){
-				$successBool=$base->dbObj->writeToDb($dbControlsAry,&$base);	
-				//$base->debugObj->printDebug($dbControlsAry['writerowsary'],1,&$base);//xxx
+				$successBool=$base->DbObj->writeToDb($dbControlsAry,&$base);	
+				//$base->DebugObj->printDebug($dbControlsAry['writerowsary'],1,&$base);//xxx
 			}
 		} // end if
-		$base->debugObj->printDebug("-rtn:copyInColumns",0);
+		$base->DebugObj->printDebug("-rtn:copyInColumns",0);
 	}
 //=======================================
 	function copyFromParent($base){
-		$base->debugObj->printDebug("debug001Obj:copyFromParent('base')",0); //xx (h)
-		//$base->debugObj->printDebug($base->jobProfileAry,1,'job');//xxx
+		$base->DebugObj->printDebug("debug001Obj:copyFromParent('base')",0); //xx (h)
+		//$base->DebugObj->printDebug($base->jobProfileAry,1,'job');//xxx
 		$query="select * from jobxrefview where jobprofileid='%jobprofileid%'";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array('delimit1'=>'jobprofileid');
-		$workAry=$base->utlObj->tableToHashAryV3($result,$passAry);
-		//$base->debugObj->printDebug($workAry,1,'wa');//xxx
+		$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+		//$base->DebugObj->printDebug($workAry,1,'wa');//xxx
 		$jobProfileId=$base->paramsAry['jobprofileid'];
 		$jobParentId=$workAry[$jobProfileId]['jobparentid'];
 		$copyType=$base->paramsAry['copytype'];
@@ -1130,19 +1130,19 @@ function batchImagesAjax($base){
 			$htmlProfileId=$base->paramsAry['htmlprofileid'];
 			//echo "jobid: $jobProfileId, parentid: $jobParentId<br>";//xxx
 			$query="select * from htmlelementprofileview where jobprofileid='$jobParentId'";
-			$result=$base->dbObj->queryTable($query,'read',&$base);
+			$result=$base->DbObj->queryTable($query,'read',&$base);
 			$passAry=array();
-			$workAry=$base->utlObj->tableToHashAryV3($result,$passAry);
-			//$base->debugObj->printDebug($workAry,1,'workary');//xxx
+			$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+			//$base->DebugObj->printDebug($workAry,1,'workary');//xxx
 			foreach ($workAry as $rowNo=>$htmlElementAry){
 				unset($workAry[$rowNo]['htmlelementprofileid']);
 				$workAry[$rowNo]['htmlprofileid']=$htmlProfileId;
 			}
 			$dbControlsAry=array('dbtablename'=>'htmlelementprofile');
 			$dbControlsAry['writerowsary']=$workAry;
-			//$base->debugObj->printDebug($dbControlsAry,1,'dbc');//xxx
-			$base->dbObj->writeToDb($dbControlsAry,&$base);
-			//$base->debugObj->printDebug($workAry,1,'workary2');//xxx			
+			//$base->DebugObj->printDebug($dbControlsAry,1,'dbc');//xxx
+			$base->DbObj->writeToDb($dbControlsAry,&$base);
+			//$base->DebugObj->printDebug($workAry,1,'workary2');//xxx			
 		}
 		if ($copyType == 'forms'){
 			//echo "xxx";
@@ -1150,59 +1150,59 @@ function batchImagesAjax($base){
 			if ($formProfileId != NULL){
 				//echo "xxx2";
 				$query="select * from formelementprofileview where jobprofileid='$jobParentId'";	
-				$result=$base->dbObj->queryTable($query,'read',&$base);
+				$result=$base->DbObj->queryTable($query,'read',&$base);
 				$passAry=array();
-				$workAry=$base->utlObj->tableToHashAryV3($result,$passAry);
-				//$base->debugObj->printDebug($workAry,1,'workary');//xxx
+				$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+				//$base->DebugObj->printDebug($workAry,1,'workary');//xxx
 				foreach ($workAry as $rowNo=>$formElementAry){
 					unset($workAry[$rowNo]['formelementprofileid']);
 					$workAry[$rowNo]['formprofileid']=$formProfileId;
 				}
 				$dbControlsAry=array('dbtablename'=>'formelementprofile');
 				$dbControlsAry['writerowsary']=$workAry;
-				//$base->debugObj->printDebug($dbControlsAry,1,'dbc');//xxx
+				//$base->DebugObj->printDebug($dbControlsAry,1,'dbc');//xxx
 				//echo "writeit";//
-				$base->dbObj->writeToDb($dbControlsAry,&$base);
-				//$base->debugObj->printDebug($workAry,1,'workary2');//xxx	
+				$base->DbObj->writeToDb($dbControlsAry,&$base);
+				//$base->DebugObj->printDebug($workAry,1,'workary2');//xxx	
 			}
 		}
-		$base->debugObj->printDebug("-rtn:copyFromParent",0);
+		$base->DebugObj->printDebug("-rtn:copyFromParent",0);
 	}
 //=======================================
 	function updateDbTableDoQuery($query,$type,$base){
 		$result=NULL;
-		$result=$base->dbObj->queryTable($query,$type,&$base);
+		$result=$base->DbObj->queryTable($query,$type,&$base);
 		//echo "query: $query<br>";	//xxx
 		return $result;
 	}
 //=======================================
 	function updateDbTable($base){
-		$base->debugObj->printDebug("debug001Obj:updateDbTable",0); //xx (h)
-		//$base->debugObj->printDebug($base->paramsAry,1,'params');// xxx
+		$base->DebugObj->printDebug("debug001Obj:updateDbTable",0); //xx (h)
+		//$base->DebugObj->printDebug($base->paramsAry,1,'params');// xxx
 		$dbTableProfileId=$base->paramsAry['dbtableprofileid'];
 		$query="select * from dbtableprofileview where dbtableprofileid=$dbTableProfileId";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array('delimit1'=>'dbtableprofileid');
-		$workAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$dbTableName=$workAry[$dbTableProfileId]['dbtablename'];
 		$dbControlsAry=array('dbtablename'=>$dbTableName);
-		$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+		$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
 		$dbTableMetaAry=$dbControlsAry['dbtablemetaary'];
 		$query="select * from pg_tables where tablename=%sglqt%$dbTableName%sglqt%";
 		//echo "query: $query<br>";//xxx
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array();
-		$checkAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$checkAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$noFileColumns=count($checkAry);
 		//echo "nofilecnt of old: $noFileColumns<br>";//xxx
-		//$base->debugObj->printDebug($noFileColumns,1,'nofilecolxxx');
+		//$base->DebugObj->printDebug($noFileColumns,1,'nofilecolxxx');
 		if ($noFileColumns==0){
 			$query="create table $dbTableName () without oids";
 			$result=$this->updateDbTableDoQuery($query,'util',&$base);
 		}
 		//- !!! need to create method getdbtabledatafromdb
-		$currentDbStuffAry=$base->dbObj->getDbTableDataFromDb($dbTableName,&$base);
-		//$base->debugObj->printDebug($currentDbStuffAry,1,'tst');//xxx
+		$currentDbStuffAry=$base->DbObj->getDbTableDataFromDb($dbTableName,&$base);
+		//$base->DebugObj->printDebug($currentDbStuffAry,1,'tst');//xxx
 		foreach ($dbTableMetaAry as $dbTableMetaColumnName=>$dbTableMetaAry){
 			//echo "check: $dbTableMetaColumnName<br>";
 			if (!array_key_exists($dbTableMetaColumnName,$currentDbStuffAry)){
@@ -1212,15 +1212,15 @@ function batchImagesAjax($base){
 				if ($dbTableMetaDefault != null){$dbTableMetaDefaultInsert="default '$dbTableMetaDefault'";}
 				else {$dbTableMetaDefaultInsert=null;}
 				$dbTableMetaForeignField_file=$dbTableMetaAry['dbcolumnforeignfield'];
-				$dbTableMetaForeignField=$base->utlObj->returnFormattedData($dbTableMetaForeignField_file,'boolean','internal');
+				$dbTableMetaForeignField=$base->UtlObj->returnFormattedData($dbTableMetaForeignField_file,'boolean','internal');
 				$dbTableMetaForeignKey_file=$dbTableMetaAry['dbcolumnforeignkey'];
-				$dbTableMetaForeignKey=$base->utlObj->returnFormattedData($dbTableMetaForeignKey_file,'boolean','internal');
+				$dbTableMetaForeignKey=$base->UtlObj->returnFormattedData($dbTableMetaForeignKey_file,'boolean','internal');
 				$dbTableMetaKey_file=$dbTableMetaAry['dbcolumnkey'];
-				$dbTableMetaKey=$base->utlObj->returnFormattedData($dbTableMetaKey_file,'boolean','internal');
+				$dbTableMetaKey=$base->UtlObj->returnFormattedData($dbTableMetaKey_file,'boolean','internal');
 				$dbTableMetaNotNull_file=$dbTableMetaAry['dbcolumnnotnull'];
-				$dbTableMetaNotNull=$base->utlObj->returnFormattedData($dbTableMetaNotNull_file,'boolean','internal');
+				$dbTableMetaNotNull=$base->UtlObj->returnFormattedData($dbTableMetaNotNull_file,'boolean','internal');
 				$dbTableMetaUnique_file=$dbTableMetaAry['dbcolumnunique'];
-				$dbTableMetaUnique=$base->utlObj->returnFormattedData($dbTableMetaUnique_file,'boolean','internal');
+				$dbTableMetaUnique=$base->UtlObj->returnFormattedData($dbTableMetaUnique_file,'boolean','internal');
 				$dbTableMetaForeignTable=$dbTableMetaAry['dbcolumnforeigntable'];
 				$dbTableMetaMainTable=$dbTableMetaAry['dbcolumnmaintable'];
 				if ($dbTableMetaMainTable == $dbTableName){$dbTableMetaMainTable=NULL;}
@@ -1237,7 +1237,7 @@ function batchImagesAjax($base){
 						// - not null
 					if ($dbTableMetaNotNull){
 						$query="alter table $dbTableName alter column $dbTableMetaColumnName set not null";	
-						//$base->dbObj->queryTable($query,'manage',&$base);
+						//$base->DbObj->queryTable($query,'manage',&$base);
 						//echo "$query<br>";//xxx
 					}
 					// - unique
@@ -1258,13 +1258,13 @@ function batchImagesAjax($base){
 				}
 			}
 		} // end foreach
-		$base->debugObj->printDebug("-rtn:updateDbTable",0);
+		$base->DebugObj->printDebug("-rtn:updateDbTable",0);
 	}
 //=======================================
 	function fixHtmlElement($base){
 		$query="select * from htmlelementprofile order by htmlprofileid, htmlelementname";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
-		$workAry=$base->utlObj->tabletoHashAry($result);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
+		$workAry=$base->UtlObj->tabletoHashAry($result);
 		$oldHtmlProfileId='new';
 		$oldHtmlElementName='new';
 		foreach ($workAry as $key=>$valueAry){
@@ -1283,8 +1283,8 @@ function batchImagesAjax($base){
 	}
 //=======================================
 	function buildMySqlScripts($base){
-		$base->debugObj->printDebug("plugin001Obj:buildMySqlScripts('base')",0); //xx (h)
-		//$base->debugObj->printDebug($base->paramsAry,1,'par');//xxx
+		$base->DebugObj->printDebug("Plugin001Obj:buildMySqlScripts('base')",0); //xx (h)
+		//$base->DebugObj->printDebug($base->paramsAry,1,'par');//xxx
 		$buildScript=NULL;
 		for ($ctr=1;$ctr<50;$ctr++){
 			$tableReferenceName='table'.$ctr;
@@ -1296,19 +1296,19 @@ function batchImagesAjax($base){
 				$buildScript.="\n".$thisBuildScript;
 				$theData=$workAry['thedata'];
 				$path="/home/jeff/web/tomysql/$tableName".'.dta';
-				$base->fileObj->writeFile($path,$theData,&$base);
+				$base->FileObj->writeFile($path,$theData,&$base);
 			}	
 		}
 		$path="/home/jeff/web/tomysql/createtables.txt";
-		$base->fileObj->writeFile($path,$buildScript,&$base);
-		$base->debugObj->printDebug("-rtn:buildMySqlScripts",0);
+		$base->FileObj->writeFile($path,$buildScript,&$base);
+		$base->DebugObj->printDebug("-rtn:buildMySqlScripts",0);
 	}
 //=======================================
 	function buildMySqlComponents($dbTableName,&$base){
-		$base->debugObj->printDebug("plugin001Obj:buildMySqlComponents($tableName,'base')",0); //xx (h)
+		$base->DebugObj->printDebug("Plugin001Obj:buildMySqlComponents($tableName,'base')",0); //xx (h)
 		//- get table setup
 		$dbControlsAry=array('dbtablename'=>$dbTableName);
-		$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+		$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
 		//- build drop, create, load script
 		$createDbTable=$this->buildCreateTable($dbControlsAry,&$base);
 		$newLine="\n";
@@ -1322,29 +1322,29 @@ function batchImagesAjax($base){
 		$theData=$this->getTableDataForMySql($dbControlsAry,&$base);
 		$returnAry['thedata']=$theData;
 		return $returnAry;
-		$base->debugObj->printDebug("-rtn:buildMySqlComponents",0);
+		$base->DebugObj->printDebug("-rtn:buildMySqlComponents",0);
 	}
 //========================================
 	function getTableDataForMySql($dbControlsAry,&$base){
 		$dbTableName=$dbControlsAry['dbtablename'];
 		$query="select * from $dbTableName";
-		$result=$base->dbObj->queryTable($query,'read',&$base);	
-		$dataString=$base->utlObj->tableToString($result,&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);	
+		$dataString=$base->UtlObj->tableToString($result,&$base);
 		return $dataString;
 	}
 //========================================
 	function buildCreateTable($dbControlsAry,&$base){
-		$base->debugObj->printDebug("plugin001Obj:buildMySqlComponents($tableName,'base')",0); //xx (h)
+		$base->DebugObj->printDebug("Plugin001Obj:buildMySqlComponents($tableName,'base')",0); //xx (h)
 		$dbTableName=$dbControlsAry['dbtablename'];
-		//$base->debugObj->printDebug($dbControlsAry,1,'dba');//xxx
+		//$base->DebugObj->printDebug($dbControlsAry,1,'dba');//xxx
 		$sqlString="create table $dbTableName (";
 		$insComma=NULL;
 		foreach ($dbControlsAry['dbtablemetaary'] as $colName=>$colValueAry){
 			$colType=$colValueAry['dbtablemetatype'];
 			$colForeignKey_file=$colValueAry['dbtablemetaforeignkey'];
 			$colForeignField_file=$colValueAry['dbtablemetaforeignfield'];
-			$colForeignKey=$base->utlObj->returnFormattedData($colForeignKey_file,'boolean','internal');
-			$colForeignField=$base->utlObj->returnFormattedData($colForeignField_file,'boolean','internal');
+			$colForeignKey=$base->UtlObj->returnFormattedData($colForeignKey_file,'boolean','internal');
+			$colForeignField=$base->UtlObj->returnFormattedData($colForeignField_file,'boolean','internal');
 			if ($colName == $dbTableName.'id'){$colType='serial';}
 			if (!$colForeignField){
 			switch ($colType){
@@ -1374,25 +1374,25 @@ function batchImagesAjax($base){
 		$sqlString.=')';
 		//echo "sqlstring: $sqlString<br>";//xxx
 		return $sqlString;
-		$base->debugObj->printDebug("-rtn:buildMySqlComponents",0);
+		$base->DebugObj->printDebug("-rtn:buildMySqlComponents",0);
 	}
 //=======================================
 	function toTableFromDbTable($base){
-		$base->debugObj->printDebug("debug001Obj:updateDbTable",0); //xx (h)
+		$base->DebugObj->printDebug("debug001Obj:updateDbTable",0); //xx (h)
 		$tableProfileId=$base->paramsAry['tableprofileid'];
 		//echo "tableprofileid: $tableProfileId";//xxx
 		if ($tableProfileId != NULL){
 			$query="select * from tableprofile where tableprofileid=$tableProfileId";	
-			$result=$base->dbObj->queryTable($query,'read',&$base);
+			$result=$base->DbObj->queryTable($query,'read',&$base);
 			$passAry=array('delimit1'=>'tableprofileid');
-			$thisTableAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+			$thisTableAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 			$query="select * from columnprofile where tableprofileid=$tableProfileId";	
-			$result=$base->dbObj->queryTable($query,'read',&$base);
+			$result=$base->DbObj->queryTable($query,'read',&$base);
 			$passAry=array('delimit1'=>'columnname');
-			$thisColumnAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+			$thisColumnAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 			$dbTableName=$thisTableAry[$tableProfileId]['dbtablename'];
 			$dbControlsAry=array('dbtablename'=>$dbTableName);
-			$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+			$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
 			$dbTableMetaAry=$dbControlsAry['dbtablemetaary'];
 			//$operationName=$thisTableAry[$tableProfileId]['formoperation'];
 			$dbControlsAry=array();
@@ -1415,17 +1415,17 @@ function batchImagesAjax($base){
 						$columnCtr++;
 					} // end if
 			} // end foreach
-			//$base->debugObj->printDebug($dbControlsAry,1,'doit');//xxx
+			//$base->DebugObj->printDebug($dbControlsAry,1,'doit');//xxx
 			if ($columnCtr>0){
-				$successBool=$base->dbObj->writeToDb($dbControlsAry,&$base);
-				//$base->debugObj->printDebug($dbControlsAry,1,'dbc');//xxx	
+				$successBool=$base->DbObj->writeToDb($dbControlsAry,&$base);
+				//$base->DebugObj->printDebug($dbControlsAry,1,'dbc');//xxx	
 			}
 		} // end if
-		$base->debugObj->printDebug("-rtn:updateDbTable",0);
+		$base->DebugObj->printDebug("-rtn:updateDbTable",0);
 	}
 //======================================= soon to be deprecated
 	function updateUserSession($base){
-		$base->debugObj->printDebug("plugin001Obj:updateUserSession",0); //xx (h)
+		$base->DebugObj->printDebug("Plugin001Obj:updateUserSession",0); //xx (h)
 		$userName=$base->paramsAry['username'];
 		$userPassword=$base->paramsAry['userpassword'];
 		$userPassword=str_replace("\n",'',$userPassword);
@@ -1439,31 +1439,31 @@ function batchImagesAjax($base){
 		$jobLocal=$base->systemAry['joblocal'];
 		$redirectPath="$jobLocal$redirectJob";
 		$query="select * from userprofileview where username = '$userName'";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array();
-		$userProfileAry=$base->utlObj->tableRowToHashAry($result,$passAry,&$base);
+		$userProfileAry=$base->UtlObj->tableRowToHashAry($result,$passAry,&$base);
 		$checkPassword=$userProfileAry['userpassword'];
 		$logName="security.log";
 		if ($userPassword == $checkPassword){
 			$logMsg="user logged in: $userName";
-			$base->fileObj-> writeLog($logName,$logMsg,&$base);
+			$base->FileObj-> writeLog($logName,$logMsg,&$base);
 			$_SESSION['userobj']->updateCurrentUserAry($userProfileAry);
-			//$base->debugObj->printDebug($userProfileAry,1,'upa');//xxx	
+			//$base->DebugObj->printDebug($userProfileAry,1,'upa');//xxx	
 			$base->paramsAry['userflag']='doit';
-			$deptAry=$base->initObj->getDeptProfile(&$base);
+			$deptAry=$base->InitObj->getDeptProfile(&$base);
 			$_SESSION['userobj']->updateCurrentDeptAry($deptAry);
 			//--- redirect
 			$urlReDir=$redirectPath;
-			$urlReDir_formatted=$base->utlObj->returnFormattedString($urlReDir,&$base);
-			$base->debugObj->printDebug("-rtn:dbObj:deleteDbFromForm",0); //xx (f)
+			$urlReDir_formatted=$base->UtlObj->returnFormattedString($urlReDir,&$base);
+			$base->DebugObj->printDebug("-rtn:DbObj:deleteDbFromForm",0); //xx (f)
 			header("Location: $urlReDir_formatted");
 		}
 		else {
 			$logMsg="$domainName incorrect password entered for $userName: $userPassword";
-			$base->fileObj-> writeLog($logName,$logMsg,&$base);
+			$base->FileObj-> writeLog($logName,$logMsg,&$base);
 		}
 */
-		$base->debugObj->printDebug("-rtn:updateUserSession",0);
+		$base->DebugObj->printDebug("-rtn:updateUserSession",0);
 	}
 //=======================================
 	function testImageResize($base){
@@ -1511,9 +1511,9 @@ function batchImagesAjax($base){
 		$calendarAry=array();	
 		$dbTableName=$base->calendarAry[$calendarName]['dbtablename'];
 		$query="select * from $dbTableName where visibility=true";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array();
-		$workAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		foreach ($workAry as $ctr=>$dateAry){
 			$startDate=$dateAry['startdate'];
 			$endDate=$dateAry['enddate'];
@@ -1526,25 +1526,25 @@ function batchImagesAjax($base){
 //- get dbtableprofile defs
 		$dbTableName='dbtableprofile';
 		$dbControlsAry=array('dbtablename'=>$dbTableName);
-		$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+		$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
 		$dbTableDefs=$dbControlsAry['dbtablemetaary'];
 //- get dbcolumnprofile defs
 		$dbTableName='dbcolumnprofile';
 		$dbControlsAry=array('dbtablename'=>$dbTableName);
-		$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+		$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
 		$dbColumnDefs=$dbControlsAry['dbtablemetaary'];
 //- get dbtableprofile
 		$dbTableName=$base->paramsAry['dbtablename'];
 		$query="select * from dbtableprofile where dbtablename='$dbTableName'";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array();
-		$dbTablesAry=$base->utlObj->tableToHashAryV3($result,$passAry);
-		//$base->debugObj->printDebug($dbTablesAry,1,'xxxe');
+		$dbTablesAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+		//$base->DebugObj->printDebug($dbTablesAry,1,'xxxe');
 //- get dbcolumnprofile
 		$query="select * from dbcolumnprofileview where dbtablename='$dbTableName'";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array();
-		$dbColumnsAry=$base->utlObj->tableToHashAryV3($result,$passAry);	
+		$dbColumnsAry=$base->UtlObj->tableToHashAryV3($result,$passAry);	
 //- build ascii string
 		$buildStrg=NULL;
 		$buildSql="insert into dbtableprofile (";
@@ -1558,7 +1558,7 @@ function batchImagesAjax($base){
         		$isForeignField=$dbTableDefs[$fieldName]['dbcolumnforeignfield'];
         		if ($isForeignKey != 't' && $isKey != 't' && $isForeignField != 't'){
           			echo "$fieldName: $fieldValue, type: $fieldType, key: $isKey, fkey: $isForeignKey, ffield: $isForeignField<br>";//xxxe
-		        	$fieldValue_sql=$base->utlObj->returnFormattedData($fieldValue,$fieldType,'sql');
+		        	$fieldValue_sql=$base->UtlObj->returnFormattedData($fieldValue,$fieldType,'sql');
           			if ($buildColumns==NULL){
             			$buildColumns=$fieldName;
             			$buildValues=$fieldValue_sql;
@@ -1579,9 +1579,9 @@ function batchImagesAjax($base){
 		if ($jobParentName != NULL){$parentNameInsert=" or jobname='$jobParentName'";}
 		else {$parentNameInsert=NULL;}
 		$query="select * from metaprofileview where jobname='$jobName' $parentNameInsert";	
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array();
-		$metasAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$metasAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$returnAry=array();
 		foreach ($metasAry as $ctr=>$metaAry){
 			$metaName=$metaAry['metaname'];
@@ -1612,9 +1612,9 @@ function batchImagesAjax($base){
 			$newParentName=$base->paramsAry[$newParentName_key];
 			if ($parentId == NULL || $newParentName == NULL){exit();}
 			$query="select * from $parentTableName where $parentId_key=$parentId";
-			$result=$base->dbObj->queryTable($query,'read',&$base);
+			$result=$base->DbObj->queryTable($query,'read',&$base);
 			$passAry=array();
-			$writeRowsAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+			$writeRowsAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 //- modify for new insert
 			foreach ($writeRowsAry as $ctr=>$theAry){
 				unset($writeRowsAry[$ctr][$parentId_key]);
@@ -1623,18 +1623,18 @@ function batchImagesAjax($base){
 //- write new tableprofile
 			$dbControlsAry=array('dbtablename'=>$parentTableName);
     	$dbControlsAry['writerowsary']=$writeRowsAry;
-    	$successBool=$base->dbObj->writeToDb($dbControlsAry,&$base);
+    	$successBool=$base->DbObj->writeToDb($dbControlsAry,&$base);
 //- get new tableprofileid just written
 			$query="select * from $parentTableName where $parentName_key='$newParentName'";
-			$result=$base->dbObj->queryTable($query,'read',&$base);
+			$result=$base->DbObj->queryTable($query,'read',&$base);
 			$passAry=array('delimit1'=>$parentName_key);
-			$workAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+			$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 			$newParentId=$workAry[$newParentName][$parentId_key];
 //- get old columnprofile
 			$query="select * from  $childTableName where $parentId_key=$parentId";
-			$result=$base->dbObj->queryTable($query,'read',&$base);
+			$result=$base->DbObj->queryTable($query,'read',&$base);
 			$passAry=array();
-			$writeRowsAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+			$writeRowsAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 //- modify for new insert
 			foreach ($writeRowsAry as $ctr=>$rowAry){
 				unset($writeRowsAry[$ctr][$childId_key]);
@@ -1643,7 +1643,7 @@ function batchImagesAjax($base){
 //- write new columnprofile
 			$dbControlsAry=array('dbtablename'=>$childTableName);
     	$dbControlsAry['writerowsary']=$writeRowsAry;
-    	$successBool=$base->dbObj->writeToDb($dbControlsAry,&$base);
+    	$successBool=$base->DbObj->writeToDb($dbControlsAry,&$base);
 	}
 //=======================================
   function buildImagePathList($base){
@@ -1651,12 +1651,12 @@ function batchImagesAjax($base){
     // - base has to be either:
     // - lindy: /home/jeff/web/images
     // - hub: /usr/local/www/jeffreypomeroy.com/www/images
-	$systemAry=$base->clientObj->getSystemData(&$base);
+	$systemAry=$base->ClientObj->getSystemData(&$base);
 	$domainName=$systemAry['domainname'];
 	$pos=strpos('x'.$domainName,'lindy',0);
 	if ($pos>0){$imageBase='/home/jeff/web/images';}
 	else {$imageBase='/usr/local/www/jeffreypomeroy.com/www/images';}
-    //$base->debugObj->printDebug($usrAry,1,'xxx');
+    //$base->DebugObj->printDebug($usrAry,1,'xxx');
     $domainNameAry=explode('.',$domainName);
     //- can have many companies on a db, but only one is the parent company as found in the domain name
     $useCompanyName=$domainNameAry[0];
@@ -1666,9 +1666,9 @@ function batchImagesAjax($base){
     $bashCmd="cd $imageBase; find $useCompanyName -type d -print| grep -v \"raw\"|grep -v \"thumbnails\"| sort ";
     //echo "bashcmd: $bashCmd<br>";//xxxf
     $passAry=array('pluginargs'=>$bashCmd);
-    $bashResultsAry=$base->plugin002Obj->runBashCommand($passAry,&$base);
+    $bashResultsAry=$base->Plugin002Obj->runBashCommand($passAry,&$base);
     $writeRowsAry=array();
-	//$base->debugObj->printDebug($bashResultsAry,1,'xxxd');
+	//$base->DebugObj->printDebug($bashResultsAry,1,'xxxd');
     foreach ($bashResultsAry['outputformatted'] as $ctr=>$thePathAry){
       $updateAry=array('variablepromptsname'=>$useCompanyName);
       $thePath=$thePathAry[0];
@@ -1681,16 +1681,16 @@ function batchImagesAjax($base){
     $dbControlsAry['writerowsary']=$writeRowsAry;
     $dbControlsAry['dbtablename']='variablepromptsprofile';
     $query="delete from variablepromptsprofile where variablepromptsname='$useCompanyName'";
-    $result=$base->dbObj->queryTable($query,'delete',&$base);
+    $result=$base->DbObj->queryTable($query,'delete',&$base);
     //echo "query: $query<br>";
-    //$base->debugObj->printDebug($dbControlsAry,1,'xxxd');
-    $howItWent=$base->dbObj->writeToDb($dbControlsAry,&$base);
+    //$base->DebugObj->printDebug($dbControlsAry,1,'xxxd');
+    $howItWent=$base->DbObj->writeToDb($dbControlsAry,&$base);
   }
 //=======================================
   function createDirectory($base){
     $basePath=$base->paramsAry['basepath'];
     $newDir=$base->paramsAry['dirname'];
- 	$systemAry=$base->clientObj->getSystemData(&$base);
+ 	$systemAry=$base->ClientObj->getSystemData(&$base);
 	$domainName=$systemAry['domainname'];
 	if ($domainName == 'lindy'){$imageBase='/home/jeff/web/images';}
 	else {$imageBase='/usr/local/www/jeffreypomeroy.com/www/images';}
@@ -1698,31 +1698,31 @@ function batchImagesAjax($base){
       $newDirPath="$imageBase/$basePath/$newDir";
       $bashCmd="mkdir $newDirPath";
       $passAry=array('pluginargs'=>$bashCmd);
-      $bashResultsAry=$base->plugin002Obj->runBashCommand($passAry,&$base);
+      $bashResultsAry=$base->Plugin002Obj->runBashCommand($passAry,&$base);
       $bashCmd="chmod 777 $newDirPath";
       $passAry=array('pluginargs'=>$bashCmd);
-      $bashResultsAry=$base->plugin002Obj->runBashCommand($passAry,&$base);
+      $bashResultsAry=$base->Plugin002Obj->runBashCommand($passAry,&$base);
       $bashCmd="mkdir $newDirPath/raw";
       $passAry=array('pluginargs'=>$bashCmd);
-      $bashResultsAry=$base->plugin002Obj->runBashCommand($passAry,&$base);
+      $bashResultsAry=$base->Plugin002Obj->runBashCommand($passAry,&$base);
       $bashCmd="mkdir $newDirPath/thumbnails";
       $passAry=array('pluginargs'=>$bashCmd);
-      $bashResultsAry=$base->plugin002Obj->runBashCommand($passAry,&$base);
+      $bashResultsAry=$base->Plugin002Obj->runBashCommand($passAry,&$base);
       $bashCmd="chmod 777 $newDirPath/*";
       $passAry=array('pluginargs'=>$bashCmd);
-      $bashResultsAry=$base->plugin002Obj->runBashCommand($passAry,&$base);
-      $base->plugin001Obj->buildImagePathList(&$base);
+      $bashResultsAry=$base->Plugin002Obj->runBashCommand($passAry,&$base);
+      $base->Plugin001Obj->buildImagePathList(&$base);
     }
   }
 //=======================================
 	function sendEmailFromForm($base){
 		$theSubject=$base->paramsAry['thesubject'];
  		$theMessage=$base->paramsAry['themessage'];
- 		$base->utlObj->sendMail('jay@urbanecosystems.net',$theSubject,$theMessage,&$base);     	
+ 		$base->UtlObj->sendMail('jay@urbanecosystems.net',$theSubject,$theMessage,&$base);     	
 	}
 //========================================
 	function updateDbFromBlog($base){
-		$base->debugObj->printDebug("plugin001Obj:updateDbFromBlog('base')",0);
+		$base->DebugObj->printDebug("Plugin001Obj:updateDbFromBlog('base')",0);
 		$dateColumnName=$base->paramsAry['datecolumnname'];
 		$dateColumnValue=$base->paramsAry[$dateColumnName];
 		$messageColumnName=$base->paramsAry['messagecolumnname'];
@@ -1732,20 +1732,20 @@ function batchImagesAjax($base){
     	$dbTableName=$base->formProfileAry[$formName]['tablename'];
  		if ($dateColumnValue != null){
 			$theSql="select $keyColumnName,$messageColumnName from $dbTableName where $dateColumnName='$dateColumnValue'"; 
-			$result=$base->dbObj->queryTable($theSql,'read',&$base);
+			$result=$base->DbObj->queryTable($theSql,'read',&$base);
 			$passAry=array();
-			$workAry=$base->utlObj->tableToHashAryV3($result,$passAry,&$base);	
+			$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry,&$base);	
 		}
 		else {$workAry=array();}
 		$theTimeAry=localtime(time(),true);
-		$systemAry=$base->clientObj->getSystemData($base);
+		$systemAry=$base->ClientObj->getSystemData($base);
 		$hourAdj=$systemAry['houradj'];
 		$theHour=$theTimeAry['tm_hour'];
 		$theHour=$theHour+$hourAdj;
 		$theMin=$theTimeAry['tm_min'];
 		$theMin=substr('0'.$theMin,-2,2);
 		$theTime=$theHour.':'.$theMin;
-		//$base->debugObj->printDebug($theTimeAry,1,'xxx');
+		//$base->DebugObj->printDebug($theTimeAry,1,'xxx');
 		$theMessage=$workAry[0][$messageColumnName];
 		$theMessage.="%br%$theTime - ";
 		$theMessage.="$messageColumnValue";
@@ -1760,11 +1760,11 @@ function batchImagesAjax($base){
 		if ($theKey != null){$writeRowsAry[0][$keyColumnName]=$theKey;}
 	 	$writeRowsAry[0][$dateColumnName]=$dateColumnValue;
 	 	$writeRowsAry[0][$messageColumnName]=$theMessage;
-	 	//$base->debugObj->printDebug($writeRowsAry,1,'xxx');
+	 	//$base->DebugObj->printDebug($writeRowsAry,1,'xxx');
 //--- call write
 		$dbControlsAry['writerowsary']=$writeRowsAry;
 		$dbControlsAry['dbtablename']=$dbTableName;
-		$successfulUpdate=$base->dbObj->writeToDb($dbControlsAry,&$base);
+		$successfulUpdate=$base->DbObj->writeToDb($dbControlsAry,&$base);
 		//$successfulUpdate=true;
 		if (!$successfulUpdate){$allSuccessfulUpdate=false;}
 //--- redirect
@@ -1774,8 +1774,8 @@ function batchImagesAjax($base){
 				$sessionName=$base->paramsAry['sessionname'];
 				if ($sessionName != NULL){$urlReDir.="&sessionname=$sessionName&donterase=1";}
 			}
-			$urlReDir_formatted=$base->utlObj->returnFormattedString($urlReDir,&$base);
-			$base->utlObj->appendValue('debug',"header to $urlReDir_formatted<br>",&$base);
+			$urlReDir_formatted=$base->UtlObj->returnFormattedString($urlReDir,&$base);
+			$base->UtlObj->appendValue('debug',"header to $urlReDir_formatted<br>",&$base);
 			header("Location: $urlReDir_formatted");
 		}
 	}

@@ -1,11 +1,11 @@
 <?php
-class tagPlugin001Object {
-//04/28/13 added ajaxObj
+class TagPlugin001Object {
+//04/28/13 added AjaxObj
 	var $statusMsg;
 	var $callNo = 0;
 	var $base;
 //====================================================
-	function tagPlugin001Object($base) {
+	function TagPlugin001Object($base) {
 		$this->incCalls();
 		$this->statusMsg='tag Plugin 001 Object is fired up and ready for work!';
 		$this->base=$base;
@@ -13,7 +13,7 @@ class tagPlugin001Object {
 //====================================================
 	function insertContainer($paramFeed,$base){
 		$containerName=$paramFeed['param_1'];
-		$returnAry=$base->containerObj->insertContainerHtml($containerName,&$base);
+		$returnAry=$base->ContainerObj->insertContainerHtml($containerName,&$base);
 		return $returnAry;
 	}
 //====================================================
@@ -25,7 +25,7 @@ class tagPlugin001Object {
 //====================================================
 	function buildJsAlbums($paramFeed,$base){
 		foreach ($base->albumProfileAry['main'] as $albumProfileId=>$albumProfileAry){
-			$passAry=$base->htmlObj->buildAlbumTable($albumProfileId,$base);
+			$passAry=$base->HtmlObj->buildAlbumTable($albumProfileId,$base);
 			$albumTableDisplayAry=$passAry['returnary'];
 			$albumName=$passAry['albumname'];
 			if (!array_key_exists('jsary',$base->albumProfileAry)){$base->albumProfileAry['jsary']=array();}
@@ -60,7 +60,7 @@ class tagPlugin001Object {
 				$attributes='';$ajaxAttributes='';
 				$theComma=null;$ajaxDelim=null;
 				foreach ($valueAry as $colName=>$colValue){
-					$colValue_js=$base->utlObj->returnFormattedData($colValue,'varchar','js');
+					$colValue_js=$base->UtlObj->returnFormattedData($colValue,'varchar','js');
 					$attributes .= $theComma.$colValue_js;
 					$ajaxAttributes .= $ajaxDelim.$colValue;
 					$theComma=',';$ajaxDelim="~";
@@ -68,7 +68,7 @@ class tagPlugin001Object {
 				$ajaxLine="displayary|$ajaxAttributes\n";
 				$ajaxAry[]=$ajaxLine;
 				$jsTableSelectString=$jsTableSelectAry[$rowNo];
-				$jsTableSelectString_js=$base->utlObj->returnFormattedData($jsTableSelectString,'varchar','js');
+				$jsTableSelectString_js=$base->UtlObj->returnFormattedData($jsTableSelectString,'varchar','js');
 				$ajaxAry[]="selectary|$jsTableSelectString\n";
 			} // end foreach rowno
 		}
@@ -76,7 +76,7 @@ class tagPlugin001Object {
 		$nameString="";
 		$delim="";
 		$theDataAry=$base->tableProfileAry[$tableName]['jsalldataary'];
-		//$base->debugObj->printDebug($base->tableProfileAry,1,'xxxf');
+		//$base->DebugObj->printDebug($base->tableProfileAry,1,'xxxf');
 		if (count($theDataAry[0])>0){
 			foreach ($theDataAry[0] as $name=>$theBody){
 				$nameString.="$delim$name";
@@ -107,19 +107,19 @@ class tagPlugin001Object {
 	}	
 //==========================================
 	function loadFormFragments($base){
-		$base->formObj->loadFormFragments(&$base);
+		$base->FormObj->loadFormFragments(&$base);
 	}
 //============================================ current unused but being run
 	function buildTmpList($base){
 		/*
-		//$base->debugObj->printDebug($base->systemAry,1,'xxxf');
+		//$base->DebugObj->printDebug($base->systemAry,1,'xxxf');
 		$path=$base->systemAry['tmplocal'];
-		$tmpFiles=$base->fileObj->retrieveFileNames($path,'',&$base);	
+		$tmpFiles=$base->FileObj->retrieveFileNames($path,'',&$base);	
 		//$query="delete from variablepromptsprofile where variablepromptsname='tmpfilenames'";
-		//$base->dbObj->queryTable($query,'delete',&$base);
+		//$base->DbObj->queryTable($query,'delete',&$base);
 		foreach ($tmpFiles as $ctr=>$fileName){
 			//$query="insert into variablepromptsprofile (variablepromptsname,variablepromptslabel,variablepromptsvalue) values ('tmpfilenames','$fileName','$fileName')";
-			//$base->dbObj->queryTable($query,'update',&$base);
+			//$base->DbObj->queryTable($query,'update',&$base);
 		}
 		*/
 	}
@@ -128,7 +128,7 @@ class tagPlugin001Object {
 		$menuName=$passAry['param_1'];
 		$returnAry=array();
 		$returnAry[]="<script type=\"text/javascript\">";
-		$returnAry[]="menuObj.autoRotateImage('$menuName');";
+		$returnAry[]="MenuObj.autoRotateImage('$menuName');";
 		$returnAry[]="</script>";
 		return $returnAry;
 	}
@@ -136,17 +136,17 @@ class tagPlugin001Object {
 	function insertJavascriptInit($passAry,$base){
 		$returnAry=array();
 		$returnAry[]="<script type=\"text/javascript\">\n";
-		$returnAry[]="ajaxObj = new ajaxObject;\n";
-		$returnAry[]="userObj = new userObject;\n";
+		$returnAry[]="AjaxObj = new AjaxObject;\n";
+		$returnAry[]="UserObj = new UserObject;\n";
 		$returnAry[]="utilObj = new utilObject;\n";
 		//$returnAry[]="alert ('init container');//xxxf\n";//xxxf
-		$returnAry[]="containerObj = new containerObject();\n";
+		$returnAry[]="ContainerObj = new ContainerObject();\n";
 		//$returnAry[]="alert ('end init container');//xxxf\n";
-		$returnAry[]="tableObj = new tableObject();\n";
+		$returnAry[]="TableObj = new TableObject();\n";
 		$returnAry[]="yuiObj = new yuiObject;\n";
-		$returnAry[]="menuObj = new menuObject;\n";
-		$returnAry[]="calendarObj = new calendarObject();\n";
-		$returnAry[]="formObj = new formObject();\n";
+		$returnAry[]="MenuObj = new MenuObject;\n";
+		$returnAry[]="CalendarObj = new CalendarObject();\n";
+		$returnAry[]="FormObj = new FormObject();\n";
 		$returnAry[]="imageObj = new imageObject();\n";
 		$returnAry[]="albumObj = new albumObject();\n";
 		$returnAry[]="</script>\n";
@@ -156,7 +156,7 @@ class tagPlugin001Object {
 	function getContainerViaAjax($passAry,$base){
 		$jobName=$passAry['param_1'];
 		$eventString_raw=$passAry['event_1'];
-		if ($eventString_raw != ''){$eventString=$base->utlObj->returnFormattedString($eventString_raw,&$base);}
+		if ($eventString_raw != ''){$eventString=$base->UtlObj->returnFormattedString($eventString_raw,&$base);}
 		else {$eventString='';}
 		$jobNameAry=explode('_',$jobName);
 		$jobName=$jobNameAry[0];
@@ -164,9 +164,9 @@ class tagPlugin001Object {
 		$loadId=$jobNameAry[2];
 		$var1Name=$jobNameAry[3];
 		$var1Value_raw=$jobNameAry[4];
-		$var1Value=$base->utlObj->returnFormattedString($var1Value_raw,&$base);
-		$var2Value=$base->utlObj->returnFormattedString($var2Value_raw,1,&$base);
-		$var3Value=$base->utlObj->returnFormattedString($var3Value_raw,1,&$base);
+		$var1Value=$base->UtlObj->returnFormattedString($var1Value_raw,&$base);
+		$var2Value=$base->UtlObj->returnFormattedString($var2Value_raw,1,&$base);
+		$var3Value=$base->UtlObj->returnFormattedString($var3Value_raw,1,&$base);
 		$var2Name=$jobNameAry[5];
 		$var2Value_raw=$jobNameAry[6];
 		$var3Name=$jobNameAry[7];
@@ -185,8 +185,8 @@ class tagPlugin001Object {
 		//$containerName=$passAry['params2'];
 		$returnAry=array();
 		$returnAry[]="<script type=\"text/javascript\">\n";
-		//$returnAry[]="containerObj.getContainerFromServerSimple('$jobName','$containerName','post','$loadId','$sessionName');\n";
-		$returnAry[]="menuObj.runBatchV2('gcfssv2?:$jobName?!$containerName?!$loadId?!$sessionName?!?!$varLine');";
+		//$returnAry[]="ContainerObj.getContainerFromServerSimple('$jobName','$containerName','post','$loadId','$sessionName');\n";
+		$returnAry[]="MenuObj.runBatchV2('gcfssv2?:$jobName?!$containerName?!$loadId?!$sessionName?!?!$varLine');";
 		if ($eventString != ''){$returnAry[]=$eventString;}
 		$returnAry[]="</script>\n";
 		return $returnAry;
@@ -292,12 +292,12 @@ class tagPlugin001Object {
 		foreach ($base->paramsAry as $paramName=>$paramValue){
 			$workAry[$paramName]=$paramValue;
 		}
-		$base->utlObj->saveValue($saveName,$workAry,&$base);
+		$base->UtlObj->saveValue($saveName,$workAry,&$base);
 	}
 //==================================================== an operation runs this too
 	function getParams($passAry,$base){
 		$getName=$passAry['param_1'];
-		$workAry=$base->utlObj->retrieveValue($getName,&$base);
+		$workAry=$base->UtlObj->retrieveValue($getName,&$base);
 		if ($workAry != null){
 			foreach ($workAry as $paramName=>$paramValue){
 				$base->paramsAry[$paramName]=$paramValue;
@@ -306,40 +306,40 @@ class tagPlugin001Object {
 	}
 //====================================================
 	function updateJobStats($passAry,$base){
-		//$base->debugObj->printDebug($passAry,1,'xxxf');
+		//$base->DebugObj->printDebug($passAry,1,'xxxf');
 		$companyProfileId=$base->jobProfileAry['companyprofileid'];
 		$jobStatName=$passAry['param_1'];
 		$passAry=array('thedate'=>'today');
-		$todayDateAry=$base->utlObj->getDateInfo($passAry,&$base);
-		//$base->debugObj->printDebug($todayDateAry,1,'xxxf');
+		$todayDateAry=$base->UtlObj->getDateInfo($passAry,&$base);
+		//$base->DebugObj->printDebug($todayDateAry,1,'xxxf');
 		$todayDate=$todayDateAry['date_v1'];
 		$query="select * from jobstatsview where jobstatsdate = '$todayDate' and jobstatsname='$jobStatName' and companyprofileid=$companyProfileId";
 		//echo "query: $query<br>";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array();
-		$writeRowsAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$writeRowsAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$cnt=count($writeRowsAry);
 		//echo "xxxf0: $cnt<br>";//xxxf
 		if ($cnt>0){
 			$theCnt=$writeRowsAry[0]['jobstatscnt'];
 			$theCnt++;
 			$writeRowsAry[0]['jobstatscnt']=$theCnt;
-			$writeRowsAry[0]['jobstatsdate']=$base->utlObj->returnFormattedData($writeRowsAry[0]['jobstatsdate'],'date_dateconv1','internal',&$base);
-			//$base->debugObj->printDebug($writeRowsAry,1,'xxxf3');
+			$writeRowsAry[0]['jobstatsdate']=$base->UtlObj->returnFormattedData($writeRowsAry[0]['jobstatsdate'],'date_dateconv1','internal',&$base);
+			//$base->DebugObj->printDebug($writeRowsAry,1,'xxxf3');
 		}
 		else {
 			$theAry=array('jobstatsname'=>$jobStatName,'jobstatsdate'=>$todayDate,'jobstatscnt'=>1,'companyprofileid'=>$companyProfileId);
 			$writeRowsAry[]=$theAry;
 		}
 		$dbControlsAry=array('dbtablename'=>'jobstats','writerowsary'=>$writeRowsAry);
-		//$base->debugObj->printDebug($dbControlsAry,1,'xxxf');
-		$success=$base->dbObj->writeToDb($dbControlsAry,&$base);
-		//$errorStrg=$base->errorObj->retrieveAllErrors(&$base);
+		//$base->DebugObj->printDebug($dbControlsAry,1,'xxxf');
+		$success=$base->DbObj->writeToDb($dbControlsAry,&$base);
+		//$errorStrg=$base->ErrorObj->retrieveAllErrors(&$base);
 		//echo "errors: $errorStrg<br>";//xxxf
 	}
 //=========================================
 	function insertParagraphV2($paramFeed,$base){
-		$base->debugObj->printDebug("plugin002Obj:status()",0); //xx (h)
+		$base->DebugObj->printDebug("Plugin002Obj:status()",0); //xx (h)
 		$returnAry=array();
 		$paragraphName=$paramFeed['param_1'];
 		$paragraphAry=$base->paragraphProfileAry[$paragraphName];
@@ -347,13 +347,13 @@ class tagPlugin001Object {
 		$paragraphDbTableName=$paragraphAry['paragraphdbtablename'];
 		if ($paragraphDbTableName != null){
 			$dbControlsAry=array('dbtablename'=>$paragraphDbTableName);
-			$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+			$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
 			$keyName=$dbControlsAry['keyname'];
 			$keyValue=$base->paramsAry[$keyName];
 			$dataRowsAry=array();
 			$dataRowsAry[]=array($keyName=>$keyValue);
 			$dbControlsAry['datarowsary']=$dataRowsAry;
-			$workAry=$base->dbObj->readFromDb($dbControlsAry,&$base);
+			$workAry=$base->DbObj->readFromDb($dbControlsAry,&$base);
 			$paragraphDataAry=$workAry[0];
 		}
 		else {
@@ -402,7 +402,7 @@ class tagPlugin001Object {
 		if ($showParagraph){
 		$sentencesAry=$base->sentenceProfileAry[$paragraphName];
 		$sentenceOrderAry=$base->sentenceProfileAry['sortorderary_'.$paragraphName];
-		//$base->debugObj->printDebug($sentenceOrderAry,1,'sentenceorderary');//xxx
+		//$base->DebugObj->printDebug($sentenceOrderAry,1,'sentenceorderary');//xxx
 		$beginComment="<!-- start paragraph: $paragraphName -->";$endComment="<!-- end paragraph: $paragraphName -->";
 		if ($paragraphType=='span'){$beginDivider="<span $paragraphClassInsert $paragraphIdInsert>";$endDivider="</span>";$divider_front='<span';$divider_back='</span>';}
 		else if($paragraphType=='ul'){$beginDivider="<ul $paragraphClassInsert $paragraphIdInsert>";$endDivider='</ul>';$divider_front='<li';$divider_back='</li>';}
@@ -420,7 +420,7 @@ class tagPlugin001Object {
 			$sentenceVisibility=$sentenceAry['sentencevisibility'];
 			$sentenceValue=$sentenceAry['sentencevalue'];
 			$sentenceBreak_array=$sentenceAry['sentencebreak'];
-			$sentenceBreak=$base->utlObj->returnFormattedData( $sentenceBreak_array, 'boolean', 'internal');
+			$sentenceBreak=$base->UtlObj->returnFormattedData( $sentenceBreak_array, 'boolean', 'internal');
 			$showSentence=false;
 			switch ($sentenceVisibility){
 				case 'nocartitemsgt':
@@ -452,7 +452,7 @@ class tagPlugin001Object {
 			if ($sentenceId != NULL){$insertSentenceId=" id=\"$sentenceId\"";}
 			else {$insertSentenceId=NULL;}
 			$sentenceType=$sentenceAry['sentencetype'];
-			$sentenceText_good=$base->utlObj->returnFormattedStringDataFed($sentenceText,$paragraphDataAry,&$base);
+			$sentenceText_good=$base->UtlObj->returnFormattedStringDataFed($sentenceText,$paragraphDataAry,&$base);
 			//echo "sentencetype: $sentenceType<br>";//xxx
 			if ($showSentence){	
 				if ($sentenceType == 'text'){
@@ -460,7 +460,7 @@ class tagPlugin001Object {
 					}
 				else {
 					$jobLink=$sentenceAry['sentenceurl'];
-					$jobLink_html=$base->utlObj->returnFormattedData($jobLink,'url','html',&$base);
+					$jobLink_html=$base->UtlObj->returnFormattedData($jobLink,'url','html',&$base);
 					$sentenceLine="<a href=\"$jobLink_html\" $insertSentenceId $insertSentenceClass>$sentenceText_good</a>$insertSentenceBreak";
 				}
 				$returnAry[]="$sentenceLine\n";
@@ -469,8 +469,8 @@ class tagPlugin001Object {
 		$returnAry[]=$endDivider."\n";
 		$returnAry[]=$endComment."\n";
 		} // end if
-		//$base->debugObj->printDebug($returnAry,1,'rtn');//xxx
-		$base->debugObj->printDebug("-rtn:xx",0); //xx (f)
+		//$base->DebugObj->printDebug($returnAry,1,'rtn');//xxx
+		$base->DebugObj->printDebug("-rtn:xx",0); //xx (f)
 		return $returnAry;
 	}
 //====================================================
@@ -481,19 +481,19 @@ class tagPlugin001Object {
 		$variableValue=$variableFeedAry[1];
 		$base->paramsAry[$variableName]=$variableValue;
 		$base->paramsAry['savetosession']=$variableName;
-		$base->plugin001Obj->updateSession(&$base);
-		//$base->debugObj->printDebug($base->paramsAry,1,'xxxf');exit();
+		$base->Plugin001Obj->updateSession(&$base);
+		//$base->DebugObj->printDebug($base->paramsAry,1,'xxxf');exit();
 	}
 //======================================================
 	function insertJQuery($paramFeed,$base){
 		$preLine="<!--- start jquery -->\n";
 		$endLine="<!--- end jquery --->\n";
 		$theMainLine="$preLine<script type=\"text/javascript\">\njQuery.noConflict();\njQuery(document).ready(function(){\nINSERTJQUERYBODY});\n</script>\n$endLine";	
-		$aLine="jQuery('INSERTSELECTOR').INSERTEVENT(function(event){\n\t\tevent.preventDefault();\n\t\tmenuObj.runBatchV2('INSERTCODES');\n\t})\n";
+		$aLine="jQuery('INSERTSELECTOR').INSERTEVENT(function(event){\n\t\tevent.preventDefault();\n\t\tMenuObj.runBatchV2('INSERTCODES');\n\t})\n";
 		$bLine="\tjQuery(\"INSERTSELECTOR\").INSERTEVENT();\n";
 		$theLines="";
 		$eventsAry=$base->cssProfileAry['events'];
-		//$base->debugObj->printDebug($eventsAry,1,'xxxf');
+		//$base->DebugObj->printDebug($eventsAry,1,'xxxf');
 		$noJQuery=count($eventsAry);
 		for ($lp=0;$lp<$noJQuery;$lp++){
 			$class=$eventsAry[$lp]['cssclass'];
@@ -577,9 +577,9 @@ class tagPlugin001Object {
 		$query="select * from csselementprofileview where jobname='$theJobName' and prefix in ($thePrefixStrg) order by cssclass, cssid, htmltag";
 		//echo "query: $query";exit();//xxxf
 		$passAry=array();
-		$workAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
+		$workAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
 		//echo "query: $query<br>";
-		//$base->debugObj->printDebug($workAry,1,'xxxf');exit();
+		//$base->DebugObj->printDebug($workAry,1,'xxxf');exit();
 		$styleSheet='';$oldPrefix='';$oldCss='';$oldId='';$oldHtmlTag='';
 		$cnt=count($workAry);$lp=0;
 		foreach ($workAry as $no=>$cssAry){

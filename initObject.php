@@ -1,48 +1,48 @@
 <?php
-class initObject{
+class InitObject{
 //=======================================
-	function initObject(){
+	function InitObject(){
 	}
 //======================================= will be deprecated 
 	function getJobProfileDeprecated($base){
-		$base->debugObj->printDebug("dbObj:getJobProfile('base')",-2);
+		$base->DebugObj->printDebug("DbObj:getJobProfile('base')",-2);
 		$returnAry=array();
 		$job=$base->paramsAry['job'];
 		$query="select * from jobprofileview where jobname='$job'";
-		$result=$base->dbObj->queryTable($query,'retrieve',&$base,-2);
+		$result=$base->DbObj->queryTable($query,'retrieve',&$base,-2);
 		$passAry=array();
-		$returnAry=$base->utlObj->tableRowToHashAry($result,$passAry);
+		$returnAry=$base->UtlObj->tableRowToHashAry($result,$passAry);
 		$jobProfileId=$returnAry['jobprofileid'];
 		$query="select * from jobxrefview where jobprofileid=$jobProfileId";
-		$result=$base->dbObj->queryTable($query,'retrieve',&$base,-2);
-		$workAry=$base->utlObj->tableRowToHashAry($result,$passAry);
-		//$base->debugObj->printDebug($workAry,1,'wary');//xxxx
+		$result=$base->DbObj->queryTable($query,'retrieve',&$base,-2);
+		$workAry=$base->UtlObj->tableRowToHashAry($result,$passAry);
+		//$base->DebugObj->printDebug($workAry,1,'wary');//xxxx
 		$jobParentId=$workAry['jobparentid'];
 //--- setup for only 1 parent - has to be changed !!!
 		if ($jobParentId != NULL){
 			$returnAry['jobparentid']=$jobParentId;
 			$query="select * from jobprofileview where jobprofileid=$jobParentId";
 			//echo "query: $query<br>";
-			$result=$base->dbObj->queryTable($query,'retrieve',&$base,-2);
-			$workAry=$base->utlObj->tableRowToHashAry($result,$passAry);
-			//$base->debugObj->printDebug($workAry,1,'wary');//xxxx
+			$result=$base->DbObj->queryTable($query,'retrieve',&$base,-2);
+			$workAry=$base->UtlObj->tableRowToHashAry($result,$passAry);
+			//$base->DebugObj->printDebug($workAry,1,'wary');//xxxx
 			$returnAry['jobparentid']=$workAry['jobprofileid'];
 		}
-		$base->debugObj->printDebug("-rtn:dbObj:getDbTableProfile",-2); //xx (f)
+		$base->DebugObj->printDebug("-rtn:DbObj:getDbTableProfile",-2); //xx (f)
 		return $returnAry;
 	}
 //======================================= 
 	function getJobProfile($base){
-		$base->debugObj->printDebug("dbObj:getJobProfile('base')",-2);
+		$base->DebugObj->printDebug("DbObj:getJobProfile('base')",-2);
 		$returnAry=array();
 		$job=$base->paramsAry['job'];
 		//now if it is emply, inituser is run within userobj
 		$selectCompanyAry=$_SESSION['userobj']->getCompanySelects(&$base);
 		$query="select * from jobprofileview where jobname='$job' ";
 		//echo "query: $query<br>";//xxxf
-		$result=$base->dbObj->queryTable($query,'retrieve',&$base,-2);
+		$result=$base->DbObj->queryTable($query,'retrieve',&$base,-2);
 		$passAry=array('delimit1'=>'companyprofileid');
-		$workAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$jobProfileId=$workAry[$job];
 		//- the below is temporarily disabled
 		$retrievedJobProfile=false;
@@ -67,26 +67,26 @@ class initObject{
 				$returnAry=$workAry[$useCompanyProfileId];
 			}
 		}
-		//$base->debugObj->printDebug($workAry,1,'workary');//xxx
-		//$base->debugObj->printDebug($returnAry,1,'returnary');//xxx
+		//$base->DebugObj->printDebug($workAry,1,'workary');//xxx
+		//$base->DebugObj->printDebug($returnAry,1,'returnary');//xxx
 		$jobProfileId=$returnAry['jobprofileid'];
 		if ($jobProfileId != NULL){
 			$query="select * from jobxrefview where jobprofileid=$jobProfileId";
-			$result=$base->dbObj->queryTable($query,'retrieve',&$base,-2);
-			$workAry=$base->utlObj->tableRowToHashAry($result,$passAry);
-			//$base->debugObj->printDebug($workAry,1,'wary');//xxxx
+			$result=$base->DbObj->queryTable($query,'retrieve',&$base,-2);
+			$workAry=$base->UtlObj->tableRowToHashAry($result,$passAry);
+			//$base->DebugObj->printDebug($workAry,1,'wary');//xxxx
 			$jobParentId=$workAry['jobparentid'];
 //--- setup for only 1 parent - has to be changed !!!
 			if ($jobParentId != NULL){
 				$returnAry['jobparentid']=$jobParentId;
 				$query="select * from jobprofileview where jobprofileid=$jobParentId";
 				//echo "query: $query<br>";
-				$result=$base->dbObj->queryTable($query,'retrieve',&$base,-2);
-				$workAry=$base->utlObj->tableRowToHashAry($result,$passAry);
-				//$base->debugObj->printDebug($workAry,1,'wary');//xxxx
+				$result=$base->DbObj->queryTable($query,'retrieve',&$base,-2);
+				$workAry=$base->UtlObj->tableRowToHashAry($result,$passAry);
+				//$base->DebugObj->printDebug($workAry,1,'wary');//xxxx
 				$returnAry['jobparentid']=$workAry['jobprofileid'];
 			}
-			$base->debugObj->printDebug("-rtn:dbObj:getDbTableProfile",-2); //xx (f)
+			$base->DebugObj->printDebug("-rtn:DbObj:getDbTableProfile",-2); //xx (f)
 		}
 		else {
 			$_SESSION['userobj']->displayUserSetups(&$base);
@@ -96,45 +96,45 @@ class initObject{
 	}
 //=======================================  
 	function getDbTableProfile($base){
-		$base->debugObj->printDebug("dbObj:getDbTableProfile('base')",-2);
+		$base->DebugObj->printDebug("DbObj:getDbTableProfile('base')",-2);
 //xx needs to be rethought
 		$returnAry=array();
 		$jobProfileId=$base->jobProfileAry['jobprofileid'];
 		$query="select * from dbtableprofileview where jobprofileid=$jobProfileId";
-		$result=$base->dbObj->queryTable($query,'retrieve',&$base,-2);
+		$result=$base->DbObj->queryTable($query,'retrieve',&$base,-2);
 		$passAry=array('delimit1'=>'dbtablename');
-		$returnAry=$base->utlObj->tableToHashAryV3($result,$passAry);
-		$base->debugObj->printDebug("-rtn:dbObj:getDbTableProfile",-2); //xx (f)
+		$returnAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+		$base->DebugObj->printDebug("-rtn:DbObj:getDbTableProfile",-2); //xx (f)
 		return $returnAry;
 	}
 //=======================================
 	function getOperationProfile($base){
-		$base->debugObj->printDebug("dbObj:getOperationProfile('base')",-2); //xx (h)
+		$base->DebugObj->printDebug("DbObj:getOperationProfile('base')",-2); //xx (h)
 		$jobProfileId=$base->jobProfileAry['jobprofileid'];
 		$query="select * from joboperationxrefview where jobprofileid=$jobProfileId order by joboperationno";
 		//echo "$query<br>";//xxx
-		$result=$base->dbObj->queryTable($query,'retrieve',&$base,-2);
+		$result=$base->DbObj->queryTable($query,'retrieve',&$base,-2);
 		$passAry=array('delimit1'=>'joboperationno');
-		$returnAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$returnAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		if (count($returnAry) == 0){
 			$query="select * from joboperationxrefview where jobname='default' order by joboperationno";
-			$result=$base->dbObj->queryTable($query,'retrieve',&$base,-2);
+			$result=$base->DbObj->queryTable($query,'retrieve',&$base,-2);
 			$passAry=array('delimit1'=>'joboperationno');
-			$returnAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+			$returnAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		}
-		$base->debugObj->printDebug("-rtn:getOperationProfile",-2); //xx (f)
+		$base->DebugObj->printDebug("-rtn:getOperationProfile",-2); //xx (f)
 		return $returnAry;
 	}
 //=======================================complex 
 	function getHtmlProfile($base){
-		$base->debugObj->printDebug("dbObj:getHtmlProfile('base')",-2);
+		$base->DebugObj->printDebug("DbObj:getHtmlProfile('base')",-2);
 		$returnAry=array();
 		$jobProfileId=$base->jobProfileAry['jobprofileid'];
 		$query="select * from htmlprofileview where jobprofileid=$jobProfileId";
 		//echo "query: $query<br>";//xxx
-		$result=$base->dbObj->queryTable($query,'retrieve',$base,-2);
+		$result=$base->DbObj->queryTable($query,'retrieve',$base,-2);
 		if (!$result) {echo "Error2";}
-		else {$workAry=$base->utlObj->tableToHashAryV3($result);}
+		else {$workAry=$base->UtlObj->tableToHashAryV3($result);}
 		$begFlg=true;
 		foreach ($workAry as $ctr=>$valueAry){
 			$htmlName=$valueAry['htmlname'];
@@ -155,12 +155,12 @@ class initObject{
 				$base->operationProfileAry[$ctr]['htmlname']=$htmlName;
 			}
 		}
-		$base->debugObj->printDebug("-rtn:dbObj:getHtmlProfile",-2); //xx (f)
+		$base->DebugObj->printDebug("-rtn:DbObj:getHtmlProfile",-2); //xx (f)
 		return $returnAry;
 	}
 //=======================================complex
 	function getHtmlElementProfile($base){
-		$base->debugObj->printDebug("dbObj:getHtmlElementProfile('base')",-2);
+		$base->DebugObj->printDebug("DbObj:getHtmlElementProfile('base')",-2);
 		$returnAry=array();
 		$jobProfileId=$base->jobProfileAry['jobprofileid'];
 		$jobParentId=$base->jobProfileAry['jobparentid'];
@@ -172,9 +172,9 @@ class initObject{
 		$passAry=array('delimit1'=>'jobprofileid','delimit2'=>'htmlelementname');
 		$query="select * from htmlelementprofileview where jobprofileid=$jobProfileId $parentInsert";
 		//echo "query: $query<br>";//xxx
-		$result = $base->dbObj->queryTable($query,'select',$base,-2);
+		$result = $base->DbObj->queryTable($query,'select',$base,-2);
 		if (!$result) {$workAry=array();}
-		else {$workAry=$base->utlObj->tableToHashAryV3($result,$passAry);}
+		else {$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry);}
 // - merge them
 		$returnAry=$workAry[$jobProfileId];
 		if (!is_array($returnAry)){$returnAry=array();}
@@ -191,24 +191,24 @@ class initObject{
 		}
 		}
 		}
-		//$base->debugObj->printDebug($returnAry,1,'rtn');//xxx
-		$base->debugObj->printDebug("-rtn:dbObj:getHtmlElementProfile",-2); //xx (f)
+		//$base->DebugObj->printDebug($returnAry,1,'rtn');//xxx
+		$base->DebugObj->printDebug("-rtn:DbObj:getHtmlElementProfile",-2); //xx (f)
 		return $returnAry;
 	}
 //=======================================simple
 	function getSystemProfile($base){
-		$base->debugObj->printDebug("dbObj:getSystemProfile('base')",-2);
+		$base->DebugObj->printDebug("DbObj:getSystemProfile('base')",-2);
 		$returnAry=array();
 		$query="select * from systemprofile where domainname='home'";
-		$result=$base->dbObj->queryTable($query,'retrieve',$base,-2);
+		$result=$base->DbObj->queryTable($query,'retrieve',$base,-2);
 		if (!$result) {echo "Error2";}
-		else {$returnAry=$base->utlObj->tableRowToHashAry($result);}
-		$base->debugObj->printDebug("-rtn:dbObj:getDbTableMetaInfo",-2); //xx (f)
+		else {$returnAry=$base->UtlObj->tableRowToHashAry($result);}
+		$base->DebugObj->printDebug("-rtn:DbObj:getDbTableMetaInfo",-2); //xx (f)
 		return $returnAry;
 	}
 //=======================================other 
 	function getTableProfile($base){
-		$base->debugObj->printDebug("dbObj:getTableProfile('base')",-2);
+		$base->DebugObj->printDebug("DbObj:getTableProfile('base')",-2);
 		$returnAry=array();
 		$jobProfileId=$base->jobProfileAry['jobprofileid'];
 		$jobParentId=$base->jobProfileAry['jobparentid'];
@@ -216,9 +216,9 @@ class initObject{
 		else {$parentNameInsert=NULL;}
 		$query="select * from tableprofileview where jobprofileid=$jobProfileId $parentNameInsert order by tablename";
 		//echo "query: $query<br>";//xxx
-		$result=$base->dbObj->queryTable($query,'retrieve',$base,-2);
+		$result=$base->DbObj->queryTable($query,'retrieve',$base,-2);
 		$passAry=array('delimit1'=>'jobprofileid','delimit2'=>'tablename');
-		$getItAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$getItAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$returnAry=$getItAry[$jobProfileId];
 		if (!is_array($returnAry)){$returnAry=array();}
 		if ($jobParentId != NULL){
@@ -230,25 +230,25 @@ class initObject{
 			}
 		}
 		}
-		//$base->debugObj->printDebug($returnAry,1,'xxx');
-		$base->debugObj->printDebug("-rtn:dbObj:getTableProfile",-2); //xx (f)
+		//$base->DebugObj->printDebug($returnAry,1,'xxx');
+		$base->DebugObj->printDebug("-rtn:DbObj:getTableProfile",-2); //xx (f)
 		return $returnAry;
 	}
 //=======================================other 
 	function getRowProfile($base){
-		$base->debugObj->printDebug("dbObj:getRowProfile('base')",-2);
+		$base->DebugObj->printDebug("DbObj:getRowProfile('base')",-2);
 		$returnAry=array();
 		$jobProfileId=$base->jobProfileAry['jobprofileid'];
 		$query="select * from rowProfileview where jobprofileid=$jobProfileId";
-		$result=$base->dbObj->queryTable($query,'retrieve',$base,-2);
+		$result=$base->DbObj->queryTable($query,'retrieve',$base,-2);
 		$passAry=array('delimit1'=>'tablename');
-		$returnAry=$base->utlObj->tableToHashAryV3($result,$passAry);
-		$base->debugObj->printDebug("-rtn:dbObj:getRowProfile",-2); //xx (f)
+		$returnAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+		$base->DebugObj->printDebug("-rtn:DbObj:getRowProfile",-2); //xx (f)
 		return $returnAry;
 	}
 //=======================================other 
 	function getColumnProfile($base){
-		$base->debugObj->printDebug("dbObj:getColumnProfile('base')",-2);
+		$base->DebugObj->printDebug("DbObj:getColumnProfile('base')",-2);
 		$returnAry=array();
 		$jobProfileId=$base->jobProfileAry['jobprofileid'];
 		$jobParentId=$base->jobProfileAry['jobparentid'];
@@ -256,15 +256,15 @@ class initObject{
 		else {$parentNameInsert=NULL;}
 		$query="select * from columnprofileview where jobprofileid=$jobProfileId $parentNameInsert order by tablename, columnname";
 		//echo "query: $query<br>";//xxx
-		$result=$base->dbObj->queryTable($query,'retrieve',$base,-2);
+		$result=$base->DbObj->queryTable($query,'retrieve',$base,-2);
 		if ($jobParentId == NULL){
 			$passAry=array('delimit1'=>'tablename','delimit2'=>'columnname','order1'=>'columnno');
-			$returnAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+			$returnAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		}
 		else {
 			$passAry=array('delimit1'=>'jobprofileid','delimit2'=>'tablename','delimit3'=>'columnname','order1'=>'columnno');
-			$workAry=$base->utlObj->tableToHashAryV3($result,$passAry);
-			//$base->debugObj->printDebug($workAry,1,'work');//xxx
+			$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+			//$base->DebugObj->printDebug($workAry,1,'work');//xxx
 // job tables
 			$returnAry=$workAry[$jobProfileId];
 			if (!is_array($returnAry)){$returnAry=array();}
@@ -280,14 +280,14 @@ class initObject{
 				}	
 			}
 		}
-		//$base->debugObj->printDebug($workAry,1,'work');
-		//$base->debugObj->printDebug($returnAry,1,'rtn');//xxx
-		$base->debugObj->printDebug("-rtn:dbObj:getColumnProfile",-2); //xx (f)
+		//$base->DebugObj->printDebug($workAry,1,'work');
+		//$base->DebugObj->printDebug($returnAry,1,'rtn');//xxx
+		$base->DebugObj->printDebug("-rtn:DbObj:getColumnProfile",-2); //xx (f)
 		return $returnAry;
 	}
 //=======================================other 
 	function getFormProfile($base){
-		$base->debugObj->printDebug("dbObj:getFormProfile('base')",-2);
+		$base->DebugObj->printDebug("DbObj:getFormProfile('base')",-2);
 		$returnAry=array();
 		$jobProfileId=$base->jobProfileAry['jobprofileid'];
 		$jobParentId=$base->jobProfileAry['jobparentid'];
@@ -295,10 +295,10 @@ class initObject{
 		else {$parentInsert=NULL;}
 		$query="select * from formprofileview where jobprofileid=$jobProfileId $parentInsert order by formname";
 		//echo "xxxf1: query: $query<br>";//xxx
-		$result=$base->dbObj->queryTable($query,'retrieve',&$base,-2);
+		$result=$base->DbObj->queryTable($query,'retrieve',&$base,-2);
 		$passAry=array('delimit1'=>'jobprofileid','delimit2'=>'formname');
-		$workAry=$base->utlObj->tableToHashAryV3($result,$passAry);
-		//$base->debugObj->printDebug($workAry,1,'work');//xxx
+		$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+		//$base->DebugObj->printDebug($workAry,1,'work');//xxx
 		$cnt=count($workAry[$jobProfileId]);
 		if ($cnt>0){
 			foreach ($workAry[$jobProfileId] as $formName=>$formAry){
@@ -315,16 +315,16 @@ class initObject{
 				}
 			}	
 		}
-		//$base->debugObj->printDebug($returnAry,1,'rtn');//xxx
-		$base->debugObj->printDebug("-rtn:dbObj:getFormProfile",-2); //xx (f)
+		//$base->DebugObj->printDebug($returnAry,1,'rtn');//xxx
+		$base->DebugObj->printDebug("-rtn:DbObj:getFormProfile",-2); //xx (f)
 		return $returnAry;
 	}
 //=======================================other inheritance overlay
 	function getObjects($base){
-		$base->debugObj->printDebug("dbObj:getObjects('base')",-2);
+		$base->DebugObj->printDebug("DbObj:getObjects('base')",-2);
 		$query="select * from objectprofileview where jobname='$job' $parentInsert";
-		$result=$base->dbObj->queryTable($query,'retrieve',&$base,-2);
-		$workAry=$base->utlObj->tableToHashAryV3($result);
+		$result=$base->DbObj->queryTable($query,'retrieve',&$base,-2);
+		$workAry=$base->UtlObj->tableToHashAryV3($result);
 		$returnAry=array();
 		foreach ($workAry as $key=>$valueAry){
 			$objectName=$valueAry['objectname'];
@@ -334,12 +334,12 @@ class initObject{
 			$returnObj=new $objectName;
 			$returnAry[$objectName]=$returnObj;
 		}
-		$base->debugObj->printDebug("-rtn:initObj:getOjects",-2); //xx (f)
+		$base->DebugObj->printDebug("-rtn:InitObj:getOjects",-2); //xx (f)
 		return $returnAry;
 	}
 //=======================================other inheritance overlay
 	function getFormDataProfile($base){
-		$base->debugObj->printDebug("dbObj:getFormDataProfile('base')",-2);
+		$base->DebugObj->printDebug("DbObj:getFormDataProfile('base')",-2);
 		$returnAry=array();
 		$job=$base->paramsAry['job'];
 		$jobParentId=$base->jobProfileAry['jobparentid'];
@@ -347,8 +347,8 @@ class initObject{
 		else {$parentInsert=NULL;}
 		//xxx: need to use jobprofileid
 		$query="select * from formdataprofileview where jobname='$job' $parentInsert order by formname, formdatatype, formdatano";
-		$result=$base->dbObj->queryTable($query,'retrieve',&$base,-2);
-		$workAry=$base->utlObj->tableToHashAryV3($result);
+		$result=$base->DbObj->queryTable($query,'retrieve',&$base,-2);
+		$workAry=$base->UtlObj->tableToHashAryV3($result);
 		foreach ($workAry as $key=>$valueAry){
 			$formName=$valueAry['formname'];
 			$formDataType=$valueAry['formdatatype'];
@@ -356,12 +356,12 @@ class initObject{
 			if ($formDataType == ''){$formDataType='none';}
 			$returnAry[$formName][$formDataType][]=$valueAry;
 		}
-		$base->debugObj->printDebug("-rtn:dbObj:getFormProfile",-2); //xx (f)
+		$base->DebugObj->printDebug("-rtn:DbObj:getFormProfile",-2); //xx (f)
 		return $returnAry;
 	}
 //=======================================other  
 	function getFormElementProfile($base){
-		$base->debugObj->printDebug("dbObj:getFormElementProfile('base')",-2);
+		$base->DebugObj->printDebug("DbObj:getFormElementProfile('base')",-2);
 		$returnAry=array();
 		$jobName=$base->paramsAry['job'];
 		$jobProfileId=$base->jobProfileAry['jobprofileid'];
@@ -370,9 +370,9 @@ class initObject{
 		else {$parentInsert=NULL;}
 		$query="select * from formelementprofileview where jobprofileid=$jobProfileId $parentInsert order by formname";
 		//echo "query: $query<br>";//xxx
-		$result=$base->dbObj->queryTable($query,'retrieve',&$base,-2);
+		$result=$base->DbObj->queryTable($query,'retrieve',&$base,-2);
 		$passAry=array('delimit1'=>'jobprofileid','delimit2'=>'formname','delimit3'=>'formelementname','order1'=>'formelementno');
-		$workAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		if (array_key_exists($jobProfileId,$workAry)){
 			$returnAry=$workAry[$jobProfileId];
 		}
@@ -396,26 +396,26 @@ class initObject{
 				$formName=substr($key,13,$formNameLength);
 				//echo "formname: $formName, key: $key, keylength,$keyLength<br>";//xxx
 				$base->formProfileAry['element_order'][$formName]=$valueAry;
-				//$base->debugObj->printDebug($base->formProfileAry,1,'formpa');//xxx
+				//$base->DebugObj->printDebug($base->formProfileAry,1,'formpa');//xxx
 			}
 		}
 		}
-		//$base->debugObj->printDebug($returnAry,1,'rtn');//xxx
-		$base->debugObj->printDebug("-rtn:dbObj:getFormElementProfile",-2); //xx (f)
+		//$base->DebugObj->printDebug($returnAry,1,'rtn');//xxx
+		$base->DebugObj->printDebug("-rtn:DbObj:getFormElementProfile",-2); //xx (f)
 		return $returnAry;
 	}
 //===============================================
 function getPluginProfile($base){
-    $base->debugObj->printDebug("dbObj:getPluginProfile('base')",-2);
+    $base->DebugObj->printDebug("DbObj:getPluginProfile('base')",-2);
     $returnAry=array();
     $workAry=array();
 		$newAry=array();
     $jobSt = $base->jobSt;
  //- operation
     $query="select * from pluginprofile where plugintype='operation'";
-	$result=$base->dbObj->queryTable($query,'retrieve',$base,-2);
+	$result=$base->DbObj->queryTable($query,'retrieve',$base,-2);
     if (!$result) {echo "Error8";}
-    else {$workAry=$base->utlObj->tableToHashAryV3($result);}
+    else {$workAry=$base->UtlObj->tableToHashAryV3($result);}
 	$cnt=count($workAry);
 	for ($lp=0;$lp<$cnt;$lp++){
 		$newAry=$workAry[$lp];
@@ -423,9 +423,9 @@ function getPluginProfile($base){
 	}
 //- tag
     $query="select * from pluginprofile where plugintype='tag'";
-	$result=$base->dbObj->queryTable($query,'retrieve',$base,-2);
+	$result=$base->DbObj->queryTable($query,'retrieve',$base,-2);
     if (!$result) {echo "Error9";}
-    else {$workAry=$base->utlObj->tableToHashAryV3($result);}
+    else {$workAry=$base->UtlObj->tableToHashAryV3($result);}
 	$cnt=count($workAry);
 	for ($lp=0;$lp<$cnt;$lp++){
 		$newAry=$workAry[$lp];
@@ -433,15 +433,15 @@ function getPluginProfile($base){
 	}
 //- app
 	$query="select * from pluginprofile where plugintype='app'";
-	$result=$base->dbObj->queryTable($query,'retrieve',$base,-2);
+	$result=$base->DbObj->queryTable($query,'retrieve',$base,-2);
     if (!$result) {echo "Error13";}
-    else {$workAry=$base->utlObj->tableToHashAryV3($result);}
+    else {$workAry=$base->UtlObj->tableToHashAryV3($result);}
 	$cnt=count($workAry);
 	for ($lp=0;$lp<$cnt;$lp++){
 		$newAry=$workAry[$lp];
     $returnAry['app'][$newAry['pluginname']]=$newAry;
 	}
-	$base->debugObj->printDebug("-rtn:dbObj:getPluginProfile",-2); //xx (f)
+	$base->DebugObj->printDebug("-rtn:DbObj:getPluginProfile",-2); //xx (f)
     return $returnAry;
   }
 //==========================================  overlays record!!!
@@ -451,28 +451,28 @@ function getPluginProfile($base){
 		if ($jobParentId != NULL){$parentNameInsert=" or jobprofileid=$jobParentId";}
 		else {$parentIdInsert=NULL;}
 		$query="select * from menuprofileview where jobprofileid=$jobProfileId $parentNameInsert";
-		$result=$base->dbObj->queryTable($query,'retrieve',$base,-2);
+		$result=$base->DbObj->queryTable($query,'retrieve',$base,-2);
     	if (!$result) {echo "Error14";}
     	else {
     		$passAry=array('delimit1'=>'menuname');
-			$menuProfileAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+			$menuProfileAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		}
 		$query="select * from menuelementprofileview where jobprofileid=$jobProfileId $parentNameInsert order by menuname,menuelementparentid,menuelementno";
-		$result=$base->dbObj->queryTable($query,'retrieve',$base,-2);
+		$result=$base->DbObj->queryTable($query,'retrieve',$base,-2);
     	if (!$result) {echo "Error15";}
     	else {
     		$passAry=array('delimit1'=>'menuname','delimit2'=>'menuelementprofileid');
-			$menuElementProfileAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+			$menuElementProfileAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		}
 		$query="select * from albumprofileview where jobprofileid=$jobProfileId order by albumname";
 		//echo "query: $query<br>";//xxx
-		$result=$base->dbObj->queryTable($query,'retrieve',$base,-2);
+		$result=$base->DbObj->queryTable($query,'retrieve',$base,-2);
 		if (!result){$albumAry=array();}
 		else {
 			$passAry=array('delimit1'=>albumprofileid);
-			$albumAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+			$albumAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		}
-		//$base->debugObj->printDebug($albumAry,1,'alb');//xxx
+		//$base->DebugObj->printDebug($albumAry,1,'alb');//xxx
 		$sortOrder=array();
 		foreach ($menuElementProfileAry as $menuName=>$menuElementAry){
 			$menuType=$menuProfileAry[$menuName]['menutype'];
@@ -508,23 +508,23 @@ function getPluginProfile($base){
 		}
 		$menuProfileAry['jsmenusary']=array();
 		$menuProfileAry['sortorder']=$sortOrder;
-		//$base->debugObj->printDebug($menuProfileAry,1,'xxxf');
+		//$base->DebugObj->printDebug($menuProfileAry,1,'xxxf');
 		//exit();
 		$returnAry=array('menuprofileary'=>$menuProfileAry,'menuelementprofileary'=>$menuElementProfileAry);
 		return $returnAry;
 	}
 	//=======================================other overlays parent record on inheritance
 	function getCssProfile($base){
-		$base->debugObj->printDebug("dbObj:getCssProfile('base')",-2);
+		$base->DebugObj->printDebug("DbObj:getCssProfile('base')",-2);
 		$returnAry=array();
 		$jobProfileId=$base->jobProfileAry['jobprofileid'];
 		$jobParentId=$base->jobProfileAry['jobparentid'];
 		if ($jobParentId != NULL){$parentNameInsert=" or jobprofileid=$jobParentId";}
 		else {$parentIdInsert=NULL;}
 		$query="select * from csselementprofileview where jobprofileid=$jobProfileId $parentNameInsert order by prefix, cssclass, cssid, htmltag";
-		$result=$base->dbObj->queryTable($query,'retrieve',$base,-2);
+		$result=$base->DbObj->queryTable($query,'retrieve',$base,-2);
 		$passAry=array();
-		$workAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$returnAry['id']=array();
 		$returnAry['class']=array();
 		$returnAry['none']=array();
@@ -532,7 +532,7 @@ function getPluginProfile($base){
 		$returnAry['prefix']['class']=array();
 		$returnAry['prefix']['id']=array();
 		$returnAry['prefix']['none']=array();
-		//$base->debugObj->printDebug($workAry,1,'xxxd: workAry');
+		//$base->DebugObj->printDebug($workAry,1,'xxxd: workAry');
 		foreach ($workAry as $rowNo=>$cssAry){
 //- check if this job or parent setting overlayflag
 			$thisJobProfileId=$cssAry['jobprofileid'];
@@ -673,28 +673,28 @@ function getPluginProfile($base){
 				} // end else (id=none)
 			} // end else (class=none)
 		} // end foreach workary
-		$base->debugObj->printDebug("-rtn:dbObj:getCssProfile",-2); //xx (f)
-		//$base->debugObj->printDebug($returnAry,1,'rtn');//xxxf
+		$base->DebugObj->printDebug("-rtn:DbObj:getCssProfile",-2); //xx (f)
+		//$base->DebugObj->printDebug($returnAry,1,'rtn');//xxxf
 //- events
 		$query="select * from csseventprofileview where jobprofileid=$jobProfileId $parentNameInsert order by prefix, cssclass, cssid, htmltag";
-		$result=$base->dbObj->queryTable($query,'retrieve',$base,-2);
+		$result=$base->DbObj->queryTable($query,'retrieve',$base,-2);
 		$passAry=array();
-		$workAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$returnAry['events']=$workAry;		
 		return $returnAry;
 	}
 	//=======================================  
 	function getImageProfile($base){
-		$base->debugObj->printDebug("dbObj:getImageProfile('base')",-2);
+		$base->DebugObj->printDebug("DbObj:getImageProfile('base')",-2);
 		$returnAry=array();
 		$jobProfileId=$base->jobProfileAry['jobprofileid'];
 		$jobParentId=$base->jobProfileAry['jobparentid'];
 		if ($jobParentId!=NULL){$parentInsert="or jobprofileid=$jobParentId";}
 		else {$parentInsert=NULL;}
 		$query="select * from imageprofileview where jobprofileid=$jobProfileId $parentInsert order by imagename";
-		$result=$base->dbObj->queryTable($query,'retrieve',$base,-2);
+		$result=$base->DbObj->queryTable($query,'retrieve',$base,-2);
 		$passAry=array('delimit1'=>'jobprofileid','delimit2'=>'imagename');
-		$workAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$returnAry=$workAry[$jobProfileId];
 		if (!is_array($returnAry)){$returnAry=array();}
 		if (is_array($workAry[$jobParentId])){
@@ -705,53 +705,53 @@ function getPluginProfile($base){
 				}	
 			}	
 		}
-		$base->debugObj->printDebug("-rtn:dbObj:getImageProfile",-2); //xx (f)
+		$base->DebugObj->printDebug("-rtn:DbObj:getImageProfile",-2); //xx (f)
 		return $returnAry;
 	}
 	//==================================
 	function getAlbumProfile($base){
 		$jobProfileId=$base->jobProfileAry['jobprofileid'];
 		$query="select * from albumprofileview where jobprofileid=$jobProfileId order by albumname";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array('delimit1'=>'albumprofileid');
-		$mainAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$mainAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$query="select * from pictureprofileview where jobprofileid=$jobProfileId and picturetype='active' order by albumname, pictureno";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array('delimit1'=>'albumname','delimit2'=>'picturename');
-		$returnAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$returnAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$returnAry['main']=$mainAry;
 		$returnAry['mainv2']=array();
 		foreach ($returnAry['main'] as $albumProfileId=>$albumAry){
 			$albumName=$albumAry['albumname'];
 			$returnAry['mainv2'][$albumName]=$albumAry;
 		}
-		//$base->debugObj->printDebug($returnAry,1,'rtn');//xxxf	
+		//$base->DebugObj->printDebug($returnAry,1,'rtn');//xxxf	
 		return $returnAry;
 	}
 	//====================================== could overlay on inheritance
 	function getMapProfile($base){
-		$base->debugObj->printDebug("dbObj:getMapProfile('base')",-2);
+		$base->DebugObj->printDebug("DbObj:getMapProfile('base')",-2);
 		$job=$base->paramsAry['job'];	
 		$jobProfileId=$base->jobProfileAry['jobprofileid'];
 		$jobParentId=$base->jobProfileAry['jobparentid'];
 		if ($jobParentId!=NULL){$parentInsert="or jobprofileid=$jobParentId";}
 		else {$parentInsert=NULL;}
 		$query="select * from mapelementprofileview where jobprofileid=$jobProfileId $parentInsert order by mapname, mapelementorder";
-		$result=$base->dbObj->queryTable($query,'retrieve',$base,-2);
+		$result=$base->DbObj->queryTable($query,'retrieve',$base,-2);
 		$passAry=array('delimit1'=>'mapname','delimit2'=>'mapelementname');
-		$returnAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$returnAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$query="select * from mapprofileview where jobprofileid=$jobProfileId";
-		$result=$base->dbObj->queryTable($query,'retrieve',$base,-2);
+		$result=$base->DbObj->queryTable($query,'retrieve',$base,-2);
 		$passAry=array('delimit1'=>'mapprofileid');
-		$returnAry2=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$returnAry2=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$returnAry['main']=$returnAry2;
-		//$base->debugObj->printDebug($returnAry,1,'rtn');//xxx
-		$base->debugObj->printDebug("-rtn:dbObj:getMapProfile",-2); //xx (f)
+		//$base->DebugObj->printDebug($returnAry,1,'rtn');//xxx
+		$base->DebugObj->printDebug("-rtn:DbObj:getMapProfile",-2); //xx (f)
 		return $returnAry;
 	}
 	//======================================
 	function getDeptProfile($base){
-		$base->debugObj->printDebug("dbObj:getDeptProfile('base')",-2);
+		$base->DebugObj->printDebug("DbObj:getDeptProfile('base')",-2);
 		$job=$base->paramsAry['job'];
 		$jobProfileId=$base->jobProfileAry['jobprofileid'];	
 		$userName=$base->paramsAry['username'];
@@ -763,20 +763,20 @@ function getPluginProfile($base){
 			$selInsert="username='$userName'";
 		}
 		$query="select * from deptfunctionprofileview where $selInsert order by deptname, deptfunctionname";
-		$result=$base->dbObj->queryTable($query,'retrieve',$base,-2);
+		$result=$base->DbObj->queryTable($query,'retrieve',$base,-2);
 		$passAry=array('delimit1'=>'deptname','delimit2'=>'deptfunctionname');
-		$returnAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$returnAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$query="select * from deptprofileview where $selInsert";
-		$result=$base->dbObj->queryTable($query,'retrieve',$base,-2);
+		$result=$base->DbObj->queryTable($query,'retrieve',$base,-2);
 		$passAry=array('delimit1'=>'deptname');
-		$returnAry2=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$returnAry2=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$returnAry['main']=$returnAry2;
-		$base->debugObj->printDebug("-rtn:dbObj:getDeptProfile",-2); //xx (f)
+		$base->DebugObj->printDebug("-rtn:DbObj:getDeptProfile",-2); //xx (f)
 		return $returnAry;
 	}
 	//=======================================
 	function initCart($base){
-		$base->debugObj->printDebug("dbObj:initCart('base')",-2);
+		$base->DebugObj->printDebug("DbObj:initCart('base')",-2);
 		require_once('../includes/cartObject.php');
 		if (!isset($_SESSION['cartobj'])) {
 			$cartObj = new cartObject();
@@ -785,7 +785,7 @@ function getPluginProfile($base){
 		else {
 			$cartObj = $_SESSION['cartobj'];
 		}		
-		$base->debugObj->printDebug("-rtn:dbObj:initCart",-2); //xx (f)
+		$base->DebugObj->printDebug("-rtn:DbObj:initCart",-2); //xx (f)
 		return $cartObj;
 	}
 //======================================= need to put in begin/end here
@@ -797,8 +797,8 @@ function getPluginProfile($base){
 		else {$jobParentInsert=NULL;}
 		$query="select * from paragraphprofileview where jobprofileid=$jobProfileId $jobParentInsert";
 		//echo "query: $query<br>";//xxx
-		$result=$base->dbObj->queryTable($query,'read',&$base);
-		$workAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
+		$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$returnAry=$workAry[$jobProfileId];
 		if (!is_array($returnAry)){$returnAry=array();}
 		if ($jobParentId != NULL){
@@ -812,12 +812,12 @@ function getPluginProfile($base){
 				}
 			}
 		}
-		//$base->debugObj->printDebug($returnAry,1,'rtnary');//xxx
+		//$base->DebugObj->printDebug($returnAry,1,'rtnary');//xxx
 		return $returnAry;	
 	}
 //=======================================other could overlay on inheritance
 	function getGenericProfile($passAry,$base){
-		$base->debugObj->printDebug("dbObj:getGenericProfile('base')",-2);
+		$base->DebugObj->printDebug("DbObj:getGenericProfile('base')",-2);
 		$viewName=$passAry['viewname'];
 		$sortName=$passAry['sortname'];
 		$delimit1=$passAry['delimit1'];
@@ -838,11 +838,11 @@ function getPluginProfile($base){
 		else {$parentInsert=NULL;}
 		$query="select * from $viewName where jobprofileid=$jobProfileId $parentInsert $sortInsert";
 		//echo "query: $query<br>";//xxxf
-		$result=$base->dbObj->queryTable($query,'retrieve',&$base,-2);
+		$result=$base->DbObj->queryTable($query,'retrieve',&$base,-2);
 		$passAry=array();
 		if ($delimit1 != NULL){$passAry['delimit1']=$delimit1;}
 		if ($delimit2 != NULL){$passAry['delimit2']=$delimit2;}
-		$dataAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$dataAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		if ($buildSort){
 			$dataOrder=array();
 			foreach ($dataAry as $key=>$valueAry){
@@ -855,7 +855,7 @@ function getPluginProfile($base){
 		}
 		$returnAry['dataorder']=$dataOrder;
 		$returnAry['dataary']=$dataAry;
-		$base->debugObj->printDebug("-rtn:dbObj:getGenericProfile",-2); //xx (f)
+		$base->DebugObj->printDebug("-rtn:DbObj:getGenericProfile",-2); //xx (f)
 		return $returnAry;
 	}
 //======================================= what if two sentences have the same name!!!!!!!!!
@@ -866,8 +866,8 @@ function getPluginProfile($base){
 		if ($jobParentId != NULL){$jobParentInsert=" or jobprofileid = $jobParentId";}
 		else {$jobParentInsert=NULL;}
 		$query="select * from sentenceprofileview where jobprofileid=$jobProfileId $jobParentInsert order by sentenceno";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
-		$workAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
+		$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$returnAry=$workAry[$jobProfileId];
 		if (!is_array($returnAry)){$returnAry=array();}
 		if ($jobParentId != NULL){
@@ -880,7 +880,7 @@ function getPluginProfile($base){
 				}
 			}
 		}
-		//$base->debugObj->printDebug($returnAry,1,'rtnary');//xxx
+		//$base->DebugObj->printDebug($returnAry,1,'rtnary');//xxx
 		//exit();//xxx
 		return $returnAry;	
 	}

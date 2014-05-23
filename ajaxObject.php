@@ -1,12 +1,12 @@
 <?php
-class ajaxObject {
+class AjaxObject {
 	//test insert from branch jquery
 	//dont use this
 	var $statusMsg;
 	var $callNo = 0;
 	var $ajaxLines=array();
 //====================================================
-	function ajaxObject() {
+	function AjaxObject() {
 		$this->incCalls();
 		$this->statusMsg='tag Object is fired up and ready for work!';
 	}
@@ -18,22 +18,22 @@ class ajaxObject {
 	}
 //=====================================================
 	function retrieveAjaxLinesdeprecated($paramFeed,$base){
-		$base->debugObj->printDebug("ajaxObj:retrieveAjaxLinesdeprecated",0);
+		$base->DebugObj->printDebug("AjaxObj:retrieveAjaxLinesdeprecated",0);
 		$returnAry=array();
 	//- css
 		$returnAry=$this->ajaxLines['csslines'];
 	//- calendar
-		$subReturnAry=$base->calendarObj->retrieveCalendarAjax(&$base);//xxx
+		$subReturnAry=$base->CalendarObj->retrieveCalendarAjax(&$base);//xxx
 		$returnAry=array_merge($returnAry,$subReturnAry);
 	//-
-		$base->debugObj->printDebug("-rtn:ajaxObj:retrieveAjaxLinesdeprecated",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:AjaxObj:retrieveAjaxLinesdeprecated",0); //xx (f)
 		return $returnAry;
 	}
 //====================================================
 	function incCalls(){$this->callNo++;}
 //====================================================
 	function getContainerForAjax($paramFeed,$base){
-		$base->debugObj->printDebug("ajaxObj:getContainerForAjax",0);	
+		$base->DebugObj->printDebug("AjaxObj:getContainerForAjax",0);	
 		$containerName=$paramFeed['param_1'];
 		$containerNameAry=explode('_',$containerName);
 		$containerName=$containerNameAry[0];
@@ -47,10 +47,10 @@ class ajaxObject {
 			if ($sessionName != null){
 				$returnAry[]="loadetc|sessionname|$sessionName\n";
 			}
-			$base->fileObj->writeLog('debug',"ajaxObj.getcontainerforajax: sessionname: $sessionName",&$base);
-			$workAry=$base->containerObj->getContainer($containerName,&$base);
+			$base->FileObj->writeLog('debug',"AjaxObj.getcontainerforajax: sessionname: $sessionName",&$base);
+			$workAry=$base->ContainerObj->getContainer($containerName,&$base);
 			$theInnards=$workAry['containerary'];
-			//$base->debugObj->printDebug($workAry['containerary'],1,'xxxf1');
+			//$base->DebugObj->printDebug($workAry['containerary'],1,'xxxf1');
 			$ctr=0;
 			foreach ($workAry['containerary'] as $name=>$value){
 				$returnAry[]="loadetc|$name|$value\n";
@@ -58,7 +58,7 @@ class ajaxObject {
 			//echo "$returnAry[0], $returnAry[1], $returnAry[2], $returnAry[3],";//xxxf
 			$theCnt=count($returnAry);
 			//echo "cnt: $theCnt";
-			//$base->debugObj->printDebug($returnAry,1,'xxxf2');
+			//$base->DebugObj->printDebug($returnAry,1,'xxxf2');
 			$containerElementAry=$workAry['containerelementary'];
 			$noEntries=count($containerElementAry);
 			if ($noEntries==0){
@@ -70,17 +70,17 @@ class ajaxObject {
 			foreach ($containerElementAry as $elementName=>$elementAry){
 				$elementType=$elementAry['containerelementtype'];
 				if ($elementType=='container'){
-					$subWorkAry=$base->containerObj->getContainer($elementName,&$base);
+					$subWorkAry=$base->ContainerObj->getContainer($elementName,&$base);
 					$subContainer=$subWorkAry['containerelementary'];
 					if ($subContainer == null){
-						echo "ajaxObj.getCssForAjax, containername: $containerName, element: $elementName<br>\n";
+						echo "AjaxObj.getCssForAjax, containername: $containerName, element: $elementName<br>\n";
 						echo "container type: $elementType, sub container is null!!<br>\n";
 						exit();					
 					}
 					foreach ($subContainer as $subElementName=>$subElementAry){
 						$subElementType=$subElementAry['containerelementtype'];
 						if ($subElementType=='container'){
-							$subWork2Ary=$base->containerObj->getContainer($subElementName,&$base);
+							$subWork2Ary=$base->ContainerObj->getContainer($subElementName,&$base);
 							foreach ($subWork2Ary['containerelementary'] as $subElement2Name=>$subElement2Ary){
 								$subElement2Type=$subElement2Ary['containerelementtype'];
 								$workLine=$this->saveAjaxFields($subElement2Name,$subElement2Type,&$base);
@@ -98,21 +98,21 @@ class ajaxObject {
 					if ($workLine != null){$returnAry[]=$workLine."\n";}		
 				}
 			}
-			$base->debugObj->printDebug("-rtn:ajaxObj:getContainerForAjax",0); //xx (f)
+			$base->DebugObj->printDebug("-rtn:AjaxObj:getContainerForAjax",0); //xx (f)
 		}
 		return $returnAry;
 	}
 //---------- css xxxf !!!! - now this selects by css name - many things may fail
 	function getCssForAjax($paramAry,$base){
-		$base->debugObj->printDebug("ajaxObj:getCssForAjax",0);
+		$base->DebugObj->printDebug("AjaxObj:getCssForAjax",0);
 		//- can only be run if ajax - has container in paramsary
 		$tst=$base->paramsAry['container'];
 		if ($tst != null){
 			//xxxf - cant do this anymore must do it manually: $returnAry=$this->getContainerForAjaxInternal(&$base);
 			$returnAry=array();
 			$returnAry[]='!!css!!'."\n";
-			//$base->debugObj->printDebug($base->cssProfileAry,1,'xxxf');
-			//$base->debugObj->printDebug($paramAry,1,'xxxf');
+			//$base->DebugObj->printDebug($base->cssProfileAry,1,'xxxf');
+			//$base->DebugObj->printDebug($paramAry,1,'xxxf');
 			$prefixSelect=$paramAry['param_1'];
 			foreach ($base->cssProfileAry as $type=>$cssAry){
 				if ($type != 'prefix'){
@@ -138,7 +138,7 @@ class ajaxObject {
 				}
 			}
 		}
-		$base->debugObj->printDebug("-rtn:ajaxObj:getCssForAjax",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:AjaxObj:getCssForAjax",0); //xx (f)
 		return $returnAry;
 	}
 //===============================================================
@@ -164,7 +164,7 @@ class ajaxObject {
 //- get css settings for image
 		$imageClass=$imageAry['imageclass'];
 		$imageId=$imageAry['imageid'];
-		//$base->debugObj->printDebug($base->cssProfileAry,1,'xxxf');
+		//$base->DebugObj->printDebug($base->cssProfileAry,1,'xxxf');
 		if ($imageClass != ''){
 			$leftPos=$base->cssProfileAry['class'][$imageClass]['img']['left'];
 			$returnAry[]="loadetc|left|$leftPos\n";
@@ -181,31 +181,31 @@ class ajaxObject {
 	}
 //===============================================================
 	function saveAjaxFields($elementName,$elementType,$base){
-		$base->debugObj->printDebug("ajaxObj:",0);
+		$base->DebugObj->printDebug("AjaxObj:",0);
 		//xxxf - why are we doing the below!!!!! There are overlays below
 		if ($elementType == 'table' || $elementType=='form' || $elementType=='menu' || $elementType=='calendar'){
 			$returnLine="loadetc|$elementType".'name'."|$elementName";
 		}
 		else $returnLine=null;
-		$base->debugObj->printDebug("-rtn:ajaxObj:saveAjaxFields",0); //xx (f)
+		$base->DebugObj->printDebug("-rtn:AjaxObj:saveAjaxFields",0); //xx (f)
 		return $returnLine;
 	}
 //========================================
 function writeDbFromAjaxSimple($base){
 //- this operation expects that a tag plugin ran saveparams
-	$base->fileObj->writeLog('writedbfromajaxsimple',"-----xxxf0--------",&$base);
+	$base->FileObj->writeLog('writedbfromajaxsimple',"-----xxxf0--------",&$base);
 		$passAry=array();
 		$passAry['param_1']='paramsave';
-		$base->tagPlugin001Obj->getParams($passAry,&$base);
-		//$base->debugObj->printDebug($base->paramsAry,1,'xxxf');
+		$base->TagPlugin001Obj->getParams($passAry,&$base);
+		//$base->DebugObj->printDebug($base->paramsAry,1,'xxxf');
 		//exit();//xxxf
 		$ajaxFieldDelim="~";
 		$ajaxLineDelim="`";
 		$ajaxSubLineDelim="|";
 		$sentData=$base->paramsAry['senddata'];
-		$base->fileObj->writeLog('writedbfromajaxsimple',"sentdata: $sentData",&$base);
+		$base->FileObj->writeLog('writedbfromajaxsimple',"sentdata: $sentData",&$base);
 		foreach ($base->paramsAry as $name=>$value){
-			$base->fileObj->writeLog('writedbfromajaxsimple',"paramsary: $name -> $value",&$base);
+			$base->FileObj->writeLog('writedbfromajaxsimple',"paramsary: $name -> $value",&$base);
 		}
 		//echo "sentdata: $sentData";//xxxd
 		$sentDataAry=explode($ajaxLineDelim,$sentData);
@@ -265,10 +265,10 @@ function writeDbFromAjaxSimple($base){
 			$theEmailMessage=null;
 			$noRows=count($dbTableDataAry);
 			$noCols=count($tableDefsAry);
-			//$base->fileObj->writeLog('jefftest3',"xxxf2",&$base);
+			//$base->FileObj->writeLog('jefftest3',"xxxf2",&$base);
 			for ($lp=0;$lp<$noRows;$lp++){
 				$dataRow=$dbTableDataAry[$lp];
-				$base->fileObj->writeLog('ajax',"datarow: $dataRow",&$base);//xxxd
+				$base->FileObj->writeLog('ajax',"datarow: $dataRow",&$base);//xxxd
 				$dataRowAry_raw=explode($ajaxFieldDelim,$dataRow);
 				$dataRowAry=array();
 				$theDelim=null;
@@ -280,10 +280,10 @@ function writeDbFromAjaxSimple($base){
 				$writeRowsAry[]=$dataRowAry;
 			}
 			$dbControlsAry['writerowsary']=$writeRowsAry;
-			//$base->debugObj->printDebug($dbControlsAry,1,'xxxd');
-			$base->dbObj->writeToDb($dbControlsAry,&$base);
-			$checkStrg=$base->errorObj->retrieveAllErrors(&$base);
-			$base->fileObj->writeLog('ajax','checkstrg: '+$checkStrg,&$base);//xxxd
+			//$base->DebugObj->printDebug($dbControlsAry,1,'xxxd');
+			$base->DbObj->writeToDb($dbControlsAry,&$base);
+			$checkStrg=$base->ErrorObj->retrieveAllErrors(&$base);
+			$base->FileObj->writeLog('ajax','checkstrg: '+$checkStrg,&$base);//xxxd
 			if ($checkStrg!=null){
 				$statusKey='error';
 				$statusMsg.=$checkStrg;	
@@ -320,8 +320,8 @@ function writeDbFromAjaxSimple($base){
 			if ($formEmail != null){
 				$theEmailSubject=$base->formProfileAry[$formName]['formemailsubject'];
 				$emailStuff="formemail: $formEmail, theemailsubject: $theEmailSubject, theemailmessage: $theEmailMessage";
-				$theEmailMessage=$base->utlObj->returnFormattedString($theEmailMessage,&$base);
-				$base->utlObj->sendMail($formEmail,$theEmailSubject,$theEmailMessage,&$base);
+				$theEmailMessage=$base->UtlObj->returnFormattedString($theEmailMessage,&$base);
+				$base->UtlObj->sendMail($formEmail,$theEmailSubject,$theEmailMessage,&$base);
 			}
 		}
 		echo "$statusKey|$statusMsg|upd:$updStrg|email:$emailStuff";
@@ -346,13 +346,13 @@ function writeDbFromAjaxSimple($base){
 		$formName=$workAry['formname'];
 		if ($dbTableName!=null){
 			$dbControlsAry=array('dbtablename'=>$dbTableName);
-			$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+			$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
 			$dbKeyName=$dbControlsAry['keyname'];
 			//foreach ($dbControlsAry as $one=>$two){echo "$one: $two\n";}
 			$dbKeyValue=$workAry['dbkeyid'];
 			if ($dbKeyValue != null){
 				$query="select * from $dbTableName where $dbKeyName=$dbKeyValue";
-				$work2Ary=$base->dbObj->queryTableRead($query,$passAry,&$base);
+				$work2Ary=$base->DbObj->queryTableRead($query,$passAry,&$base);
 				$dbColumnNames=null;
 				$dbColumnValues=null;
 				$delim=null;
@@ -376,7 +376,7 @@ function writeDbFromAjaxSimple($base){
 		$jobName=$base->paramsAry['job'];
 		//echo "senddata: $sendData";exit();//xxxd
 		$sendDataAry=explode('`',$sendData);
-		//$base->debugObj->printDebug($sendDataAry,1,'xxxd');exit();//xxxd
+		//$base->DebugObj->printDebug($sendDataAry,1,'xxxd');exit();//xxxd
 		$workAry=array();
 		foreach ($sendDataAry as $ctr=>$theValue){
 			$valueAry=explode('|',$theValue);
@@ -417,11 +417,11 @@ function writeDbFromAjaxSimple($base){
 			if ($sortKey2 != null){$sortKey2Insert=", $sortKey2 ";}
 			if ($sortKey3 != null){$sortKey3Insert=", $sortKey3 ";}
 			$dbControlsAry=array('dbtablename'=>$dbTableName);
-			$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+			$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
 			$query="select * from $dbTableName $selectKey1Insert$selectKey2Insert$selectKey3Insert ";
 			if ($sortKey1Insert != null){$query.=" $sortKey1Insert$sortKey2Insert$sortKey3Insert";}
 			$passAry=array();
-			$workDataAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
+			$workDataAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
 			$sendAjaxDataAry=array();
 			$firstTime=true;
 			$noRows=0;
@@ -469,7 +469,7 @@ function writeDbFromAjaxSimple($base){
 						case 'text':
 							//echo 'xxxd-10';exit();//xxxd
 							$theData=$workDataRowAry[$columnName];
-							$theData=$base->utlObj->returnFormattedString($theData,&$base);
+							$theData=$base->UtlObj->returnFormattedString($theData,&$base);
 							$theData_formatted="<p class=\"$columnClass\">$theData</p>";
 							//echo 'xxxd-2';exit();//xxxd
 							break;
@@ -486,16 +486,16 @@ function writeDbFromAjaxSimple($base){
 								if ($sessionValue != NULL){$jobLinkSt_raw.="&sessionname=$sessionValue";}	
 							}	
 							//echo 'xxxd-5';exit();//xxxd
-							$jobLinkSt=$base->utlObj->returnFormattedStringDataFed($jobLinkSt_raw,$workDataRowAry,&$base);
+							$jobLinkSt=$base->UtlObj->returnFormattedStringDataFed($jobLinkSt_raw,$workDataRowAry,&$base);
 							//echo "before: $jobLinkSt_raw, after: $jobLinkSt<br>";//xxx
 							//- url 
 							$urlNameSt_raw=$columnAry['urlname'];
-							$urlNameSt=$base->utlObj->returnFormattedStringDataFed($urlNameSt_raw,$workDataRowAry,&$base);
+							$urlNameSt=$base->UtlObj->returnFormattedStringDataFed($urlNameSt_raw,$workDataRowAry,&$base);
 							//- column events
 							$columnEvents_raw=$columnAry['columnevents'];
-							$columnEvents=$base->utlObj->returnFormattedStringDataFed($columnEvents_raw,$workDataRowAry,&$base);
+							$columnEvents=$base->UtlObj->returnFormattedStringDataFed($columnEvents_raw,$workDataRowAry,&$base);
 							//echo "columnevents: $columnEvents<br>";//xxxd
-							//$base->debugObj->printDebug($columnDataAry[$dataCtr],1,'xxxd');
+							//$base->DebugObj->printDebug($columnDataAry[$dataCtr],1,'xxxd');
 							//- final check of joblink
 							$pos=strpos('x'.$jobLinkSt,'http',0);
 							if ($pos>0 or $jobLinkSt=='#'){
@@ -517,7 +517,7 @@ function writeDbFromAjaxSimple($base){
 				$sendAjaxDataAry[]='displayary|'.$dbColumnTableValues;			
 			}
 			$sendAjaxData=implode('`',$sendAjaxDataAry);
-			//$base->debugObj->printDebug($sendAjaxDataAry,1,'xxxd');
+			//$base->DebugObj->printDebug($sendAjaxDataAry,1,'xxxd');
 			echo $sendAjaxData;
 		}
 	}
@@ -538,7 +538,7 @@ function writeDbFromAjaxSimple($base){
 			if ($theName=='paramnames'){$paramNames=$theValue;}
 			if ($theName=='paramvalues'){$paramValues=$theValue;}
 		}
-		$base->fileObj->writeLog('debug99',"senddata: $sendData, paramnames: $paramNames, paramvalues: $paramValues",&$base);
+		$base->FileObj->writeLog('debug99',"senddata: $sendData, paramnames: $paramNames, paramvalues: $paramValues",&$base);
 		$paramNamesAry=explode('~',$paramNames);
 		$paramValuesAry=explode('~',$paramValues);
 		$theCnt=count($paramNamesAry);
@@ -573,7 +573,7 @@ function writeDbFromAjaxSimple($base){
 			if ($theName=='paramnames'){$paramNames=$theValue;}
 			if ($theName=='paramvalues'){$paramValues=$theValue;}
 		}
-		$base->fileObj->writeLog('debug',"senddata: $sendData, paramnames: $paramName",&$base);
+		$base->FileObj->writeLog('debug',"senddata: $sendData, paramnames: $paramName",&$base);
 		$paramNamesAry=explode('~',$paramNames);
 		$paramValuesAry=explode('~',$paramValues);
 		$theCnt=count($paramNamesAry);
@@ -587,7 +587,7 @@ function writeDbFromAjaxSimple($base){
 			}
 		}
 		$strg.="---end copy---\n";
-		$base->fileObj->writeLog('debug',$strg,&$base);
+		$base->FileObj->writeLog('debug',$strg,&$base);
 		return $combineParamsAry;
 		//echo "n: $paramName, v: $paramValue,";//xxxd
 	}
@@ -610,13 +610,13 @@ function writeDbFromAjaxSimple($base){
 		$containerNameAry=explode('_',$containerName);
 		$containerName=$containerNameAry[0];
 		$loadId=$containerNameAry[1];
-		$workAry=$base->containerObj->getContainer($containerName,&$base);
-		$htmlAry=$base->containerObj->insertContainerHtml($containerName,&$base);
+		$workAry=$base->ContainerObj->getContainer($containerName,&$base);
+		$htmlAry=$base->ContainerObj->insertContainerHtml($containerName,&$base);
 		$htmlStrg=implode("",$htmlAry);
 		$workAry['htmlline']=$htmlStrg;
-		$workStrg=$base->xmlObj->array2Json($workAry,&$base);
+		$workStrg=$base->XmlObj->array2Json($workAry,&$base);
 		$returnAry[]="setupcontainerviaajaxjson|$containerName|$loadId|$workStrg\n";
-		//$base->debugObj->printDebug($workAry,1,'xxxfworkary ajaxObject.php setupContainerviaajaxjson');
+		//$base->DebugObj->printDebug($workAry,1,'xxxfworkary AjaxObject.php setupContainerviaajaxjson');
 //- sometimes this precedes the creation of the html
 		$returnAry[]="!!html!!\n";
 		return $returnAry;

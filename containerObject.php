@@ -1,5 +1,5 @@
 <?php
-class containerObject {
+class ContainerObject {
 	var $statusMsg;
 	var $callNo = 0;
 	var $base;
@@ -7,14 +7,14 @@ class containerObject {
 	var $containerProfileAry = array();
 	var $containerElementProfileAry = array();
 //====================================
-	function containerObject() {
+	function ContainerObject() {
 		$this->incCalls();
 		$this->statusMsg='container Object is fired up and ready for work!';
 	}
 //------------------------------------
 	function initContainer($base){
 		$this->base=&$base;
-		$this->containerJsAry[]="var containerObj = new containerObject();\n";
+		$this->containerJsAry[]="var ContainerObj = new ContainerObject();\n";
 		$this->storeContainerData(&$base);		
 	}
 //====================================
@@ -23,22 +23,22 @@ class containerObject {
 	}
 //====================================
 	function storeContainerData($base){
-		//$base->debugObj->printDebug($base->paramsAry,1,'xxx');
+		//$base->DebugObj->printDebug($base->paramsAry,1,'xxx');
 		$job=$base->paramsAry['job'];
 		if ($job == NULL){$job='main';}
 		$jobProfileId=$base->jobProfileAry['jobprofileid'];
 		$query="select * from containerprofileview where jobprofileid=$jobProfileId";
 		$passAry=array('delimit1'=>'containername');
-		$this->containerProfileAry=$base->dbObj->getSqlDbAry($query,$passAry,&$base);
+		$this->containerProfileAry=$base->DbObj->getSqlDbAry($query,$passAry,&$base);
 		$query="select * from containerelementprofileview where jobprofileid=$jobProfileId order by containerelementno";
 		$passAry=array('delimit1'=>'containername','delimit2'=>'containerelementname');
-		$this->containerElementProfileAry=$base->dbObj->getSqlDbAry($query,$passAry,&$base);
+		$this->containerElementProfileAry=$base->DbObj->getSqlDbAry($query,$passAry,&$base);
 	}
 //====================================
 	function getContainer($name,$base){
 		if ($name==''){
-			echo "containerObj.getContainer: no container name: $name !!!";
-			$base->debugObj->displayStack();
+			echo "ContainerObj.getContainer: no container name: $name !!!";
+			$base->DebugObj->displayStack();
 			exit();
 		}
 		if (array_key_exists($name,$this->containerProfileAry)){
@@ -57,15 +57,15 @@ class containerObject {
 		$headerAry=array();
 		$footerAry=array();
 		//echo "$containerName<br>";//xxx
-		//$base->debugObj->printDebug($this->containerProfileAry,1,'xxx');
+		//$base->DebugObj->printDebug($this->containerProfileAry,1,'xxx');
 //- container
 		$containerAry=$this->containerProfileAry[$containerName];
 //- old containershow only used if containerformat is null
 		$oldContainerShow_raw=$containerAry['containershow'];
-		$oldContainerShow=$base->utlObj->returnFormattedData($oldContainerShow_raw,'boolean','internal');
+		$oldContainerShow=$base->UtlObj->returnFormattedData($oldContainerShow_raw,'boolean','internal');
 //- container divider
 		$containerDividerShow_raw=$containerAry['containerdividershow'];
-		$containerDividerShow=$base->utlObj->returnFormattedData($containerDividerShow_raw,'boolean','internal');
+		$containerDividerShow=$base->UtlObj->returnFormattedData($containerDividerShow_raw,'boolean','internal');
 //- container id
 		$containerId=$containerAry['containerid'];
 		if ($containerId != NULL){$containerIdInsert="id=\"$containerId\"";}
@@ -81,7 +81,7 @@ class containerObject {
 		$containerEvent_raw=$containerAry['containerevent'];
 		if ($containerEvent_raw == null){$containerEvent=null;}
 		else {
-			$containerEvent=$base->utlObj->returnFormattedString($containerEvent_raw,&$base);
+			$containerEvent=$base->UtlObj->returnFormattedString($containerEvent_raw,&$base);
 		}
 //- container header/footer format
 		$containerHeaderFooterFormat=$containerAry['containerheaderfooterformat'];
@@ -175,7 +175,7 @@ class containerObject {
 		if ($headerId != NULL){$headerIdInsert="id=\"$headerId\"";}
 		else {$headerIdInsert=NULL;}
 		$headerEventInsert=$containerAry['containerheaderevent'];
-		$headerEventInsert=$base->utlObj->returnFormattedString($headerEventInsert,&$base);
+		$headerEventInsert=$base->UtlObj->returnFormattedString($headerEventInsert,&$base);
 		//xxxdf
 		if ($dblHeader){
 			$dividerHeaderBegin="\n<!-- begin header: $containerName -->\n";
@@ -233,7 +233,7 @@ class containerObject {
 		//xxxd - not sure if below should be put in as else
 		//$contentAry[]=$dividerContentBeginComment;	
 //======================================= container elements
-//$base->debugObj->printDebug($this->containerElementProfileAry[$containerName],1,'xxxd');//xxxd
+//$base->DebugObj->printDebug($this->containerElementProfileAry[$containerName],1,'xxxd');//xxxd
 		$theCount=count($this->containerElementProfileAry[$containerName]);
 		if ($theCount>0){
 		foreach ($this->containerElementProfileAry[$containerName] as $elementName=>$containerElementAry){
@@ -280,15 +280,15 @@ class containerObject {
 			$dividerBegin="\n<!-- begin divider: $containerName($elementName) -->\n";
 			$dividerEnd="\n<!-- end divider: $containerName($elementName) -->\n";
 		}
-		//echo "containerObj xxxd3: name: $containerName, elename: $containerElementName, containeelementtype: $containerElementType<br>";//xxxd
-		$base->fileObj->writeLog('debug1',"name: $containerName, elename: $containerElementName, containeelementtype: $containerElementType",&$base);
+		//echo "ContainerObj xxxd3: name: $containerName, elename: $containerElementName, containeelementtype: $containerElementType<br>";//xxxd
+		$base->FileObj->writeLog('debug1',"name: $containerName, elename: $containerElementName, containeelementtype: $containerElementType",&$base);
 		//echo "****************container name: $containerName, ele name: $containerElementName, type: $containerElementType************<br>";//xxxf24
 		//exit();//xxxd
 		//$theCnt=count($contentAry);echo "cnt: $theCnt<br>";
 		switch ($containerElementType){
 			case 'tag':
 				/*
-				//$base->debugObj->printDebug($columnAry,1,'tag');//xxx
+				//$base->DebugObj->printDebug($columnAry,1,'tag');//xxx
 				$jobLink=$columnAry['joblink'];
 				$jobLinkAry=explode('_',$jobLink);
 				$pluginName=$jobLinkAry[0];
@@ -299,22 +299,22 @@ class containerObject {
 				$paramFeed['param_3']=1;
 				//echo "$pluginName, $runName, $htmlLine<br>";//xxx
 				if ($pluginName != ""){
-				$subReturnAry=$base->pluginObj->runTagPlugin($pluginName,$paramFeed,&$base);
+				$subReturnAry=$base->PluginObj->runTagPlugin($pluginName,$paramFeed,&$base);
 				} else {$returnAry=array();}
 				$returnAry[]=$dividerBegin;
 				$returnAry=array_merge($returnAry,$subReturnAry);
 				$returnAry[]=$dividerEnd;
-				//$base->debugObj->printDebug($returnAry,1,'rtn');//xxx
+				//$base->DebugObj->printDebug($returnAry,1,'rtn');//xxx
 				//exit();
 				 */
 				break;
 			case 'operation':
 					$operationAry=array('operationname'=>'runoperation','pluginname'=>$containerElementName);
-					$base->pluginObj->runOperationPlugin($operationAry,&$base);
+					$base->PluginObj->runOperationPlugin($operationAry,&$base);
 				break;
 			case 'para':
 				$paramFeed=array('param_1'=>$containerElementName);
-				$subReturnAry=$base->plugin002Obj->insertParagraph($paramFeed,&$base);
+				$subReturnAry=$base->Plugin002Obj->insertParagraph($paramFeed,&$base);
 				if ($inContent){
 					if ($containerShow){$contentAry[]=$dividerBegin;}
 					$contentAry=$this->arrayMerge($contentAry,$subReturnAry);
@@ -327,7 +327,7 @@ class containerObject {
 			case 'htmlele':
 				$htmlLine="!!inserthtmlelement_$containerElementName!!";
 				$paramFeed=array('param_1'=>$containerElementName,'param_2'=>$htmlLine);
-				$subReturnAry=$base->tagObj->insertHtmlElement($paramFeed,&$base);
+				$subReturnAry=$base->TagObj->insertHtmlElement($paramFeed,&$base);
 				if ($inContent){
 					if ($containerShow){$contentAry[]=$dividerBegin;}
 					$contentAry=$this->arrayMerge($contentAry,$subReturnAry);
@@ -338,8 +338,8 @@ class containerObject {
 				break;
 			case 'form':
 				$paramFeed=array('param_1'=>$containerElementName);
-				$subReturnAry=$base->tagObj->insertForm($paramFeed,&$base);
-				//$base->debugObj->printDebug($subReturnAry,1,'xxxd');
+				$subReturnAry=$base->TagObj->insertForm($paramFeed,&$base);
+				//$base->DebugObj->printDebug($subReturnAry,1,'xxxd');
 				//exit();//xxxd
 				if ($inContent){
 					if ($containerShow){$contentAry[]=$dividerBegin;}
@@ -356,15 +356,15 @@ class containerObject {
 					$containerElementName=$containerElementNameAry[0];
 				}
 				$paramFeed=array('param_1'=>$containerElementName);
-				$subReturnAry=$base->tagObj->insertTable($paramFeed,&$base);
+				$subReturnAry=$base->TagObj->insertTable($paramFeed,&$base);
 				if ($containerShow){$contentAry[]=$dividerBegin;}
 				$contentAry=$this->arrayMerge($contentAry,$subReturnAry);
-				//$base->debugObj->printDebug($contentAry,1,'xxxd');
+				//$base->DebugObj->printDebug($contentAry,1,'xxxd');
 				if ($containerShow){$contentAry[]=$dividerEnd;}
 				break;
 			case 'noshowtable':
 				$paramFeed=array('param_1'=>$containerElementName);
-				$subReturnAry=$base->tagObj->insertTable($paramFeed,&$base);
+				$subReturnAry=$base->TagObj->insertTable($paramFeed,&$base);
 				if ($containerShow){$contentAry[]=$dividerBegin;}
 				//- do not show table: $contentAry=$this->arrayMerge($contentAry,$subReturnAry);
 				if ($containerShow){$contentAry[]=$dividerEnd;}
@@ -372,7 +372,7 @@ class containerObject {
 			case 'stylesheet':
 				$jobLink=$containerElementName;
 				$elementAry=array('joblink'=>$jobLink);
-				$subReturnAry=$base->htmlObj->buildCssLink($elementAry,&$base);
+				$subReturnAry=$base->HtmlObj->buildCssLink($elementAry,&$base);
 				if ($containerShow){$contentAry[]=$dividerBegin;}
 				$contentAry=$this->arrayMerge($contentAry,$subReturnAry);
 				if ($containerShow){$contentAry[]=$dividerEnd;}
@@ -383,8 +383,8 @@ class containerObject {
 				$paramFeed=array('param_1'=>$containerElementName);
 				$paramFeed['events']=$containerElementEvent;
 				//echo "runname: $containerElementType<br>";//xxx
-				//$base->debugObj->printDebug($paramFeed,1,'xxxd');
-				$subReturnAry=$base->plugin002Obj->insertImg($paramFeed,&$base);
+				//$base->DebugObj->printDebug($paramFeed,1,'xxxd');
+				$subReturnAry=$base->Plugin002Obj->insertImg($paramFeed,&$base);
 				if ($inContent){
 					if ($containerShow){$contentAry[]=$dividerBegin;}
 					$contentAry=$this->arrayMerge($contentAry,$subReturnAry);
@@ -396,15 +396,15 @@ class containerObject {
 					$headerAry=$this->arrayMerge($headerAry,$subReturnAry);
 				}
 				else {$footerAry=$this->arrayMerge($footerAry,$subReturnAry);}
-				//$base->debugObj->printDebug($contentAry,1,'contentinimagexxxd');
+				//$base->DebugObj->printDebug($contentAry,1,'contentinimagexxxd');
 				break;
 //- can go into header
 			case 'menu':
 				//echo "cont: $containerName, menu element name: $containerElementName<br>";//xxxd
 				$paramFeed=array('param_1'=>$containerElementName);
 				//$subReturnAry=array();
-				//$subReturnAry=$base->plugin002Obj->insertMenu($paramFeed,&$base);
-				$subReturnAry=$base->menuObj->insertMenu($paramFeed,&$base);
+				//$subReturnAry=$base->Plugin002Obj->insertMenu($paramFeed,&$base);
+				$subReturnAry=$base->MenuObj->insertMenu($paramFeed,&$base);
 				//echo "incontent: $inContent, inheader: $inHeader, infooter: $inFooter";//xxxd
 				if ($inContent){
 					if ($containerShow){$contentAry[]=$dividerBegin;}
@@ -418,7 +418,7 @@ class containerObject {
 					if ($inHeader){$headerAry=$this->arrayMerge($headerAry,$subReturnAry);}
 					else {$footerAry=$this->arrayMerge($footerAry,$subReturnAry);}
 				}
-				//$base->debugObj->printDebug($subReturnAry,1,'xxxd');
+				//$base->DebugObj->printDebug($subReturnAry,1,'xxxd');
 				//exit();//xxxd
 				//echo 'xxxd1: done with menu';
 				break;
@@ -429,7 +429,7 @@ class containerObject {
 				$containerElementNameType=$containerElementNameAry[1];				
 				$paramFeed=array('param_1'=>$containerElementName.'_'.$containerElementNameType);
 				//$subReturnAry=array();
-				$subReturnAry=$base->tagObj->insertDbTableInitJs($paramFeed,&$base);
+				$subReturnAry=$base->TagObj->insertDbTableInitJs($paramFeed,&$base);
 				if ($containerShow){$contentAry[]=$dividerBegin;}
 				$contentAry=$this->arrayMerge($contentAry,$subReturnAry);
 				if ($containerShow){$contentAry[]=$dividerEnd;}
@@ -440,7 +440,7 @@ class containerObject {
 				$containerElementNameType=$containerElementNameAry[1];				
 				$paramFeed=array();
 				//$subReturnAry=array();
-				$subReturnAry=$base->pluginObj->runTagPlugin('insertjavascriptinit',$paramFeed,&$base);
+				$subReturnAry=$base->PluginObj->runTagPlugin('insertjavascriptinit',$paramFeed,&$base);
 				if ($containerShow){$contentAry[]=$dividerBegin;}
 				$contentAry=$this->arrayMerge($contentAry,$subReturnAry);
 				if ($containerShow){$contentAry[]=$dividerEnd;}				
@@ -450,13 +450,13 @@ class containerObject {
 				$containerElementNameAry=explode('_',$containerElementName);
 				$containerElementName=$containerElementNameAry[0];
 				$paramFeed=array('param_1'=>$containerElementName);
-				$subReturnAry=$base->tableObj->getTableForAjax($paramFeed,&$base);
+				$subReturnAry=$base->TableObj->getTableForAjax($paramFeed,&$base);
 				$contentAry=$this->arrayMerge($contentAry,$subReturnAry);
 				break;
 			case 'getcssforajax':
 				$containerElementNameAry=explode('_',$containerElementName);
 				$paramFeed=array('param_1'=>$containerElementNameAry[0],'param_2'=>$containerElementNameAry[1]);
-				$subReturnAry=$base->pluginObj->runTagPlugin($containerElementType,$paramFeed,&$base);
+				$subReturnAry=$base->PluginObj->runTagPlugin($containerElementType,$paramFeed,&$base);
 				$noCnt=count($subReturnAry);
 				if ($noCnt>0){
 					$contentAry=$this->arrayMerge($contentAry,$subReturnAry);
@@ -465,7 +465,7 @@ class containerObject {
 			case 'getcalendarforajax':
 				$containerElementNameAry=explode('_',$containerElementName);
 				$paramFeed=array('param_1'=>$containerElementNameAry[0]);
-				$subReturnAry=$base->pluginObj->runTagPlugin('getcalendarforajax',$paramFeed,&$base);
+				$subReturnAry=$base->PluginObj->runTagPlugin('getcalendarforajax',$paramFeed,&$base);
 				$contentAry=$this->arrayMerge($contentAry,$subReturnAry);
 				break;
 			case 'copytabletocalendar':
@@ -476,44 +476,44 @@ class containerObject {
 				break;
 			case 'loadformsetups':
 				$paramFeed=array();
-				$base->formObj->loadFormSetups(&$base);
+				$base->FormObj->loadFormSetups(&$base);
 				//exit();
 				break;
 			case 'getformforajax':
 				//- need to run this like plugin
 				$paramFeed=array('param_1'=>$containerElementName);
-				$subReturnAry=$base->formObj->getFormForAjax($paramFeed,&$base);
+				$subReturnAry=$base->FormObj->getFormForAjax($paramFeed,&$base);
 				$contentAry=$this->arrayMerge($contentAry,$subReturnAry);
 				//exit();
 				break;
 			case 'getmenuforajax':
 				//- need to run this like plugin
 				$paramFeed=array('param_1'=>$containerElementName);
-				$subReturnAry=$base->menuObj->getMenuForAjax($paramFeed,&$base);
+				$subReturnAry=$base->MenuObj->getMenuForAjax($paramFeed,&$base);
 				$contentAry=$this->arrayMerge($contentAry,$subReturnAry);
 				break;
 			case 'buildjsalbums':
 				$paramFeed=array('param_1'=>$containerElementType);
 				//$subReturnAry=array();
-				$subReturnAry=$base->tagPlugin001Obj->buildJsAlbums($paramFeed,&$base);
+				$subReturnAry=$base->TagPlugin001Obj->buildJsAlbums($paramFeed,&$base);
 				if (count($subReturnAry)>0){
 					$contentAry=$this->arrayMerge($contentAry,$subReturnAry);
 				}
 				break;
 			case 'loadformfragments':
 				$paramFeed=array();
-				$base->tagPlugin001Obj->loadFormFragments(&$base);
+				$base->TagPlugin001Obj->loadFormFragments(&$base);
 				break;			
 			case 'title':
 				$paramFeed=array('param_2'=>'!!inserttitle!!');
-				$subReturnAry=$base->tagObj->insertTitle($paramFeed,&$base);
+				$subReturnAry=$base->TagObj->insertTitle($paramFeed,&$base);
 				if ($containerShow){$contentAry[]=$dividerBegin;}
 				$contentAry=$this->arrayMerge($contentAry,$subReturnAry);
 				if ($containerShow){$contentAry[]=$dividerEnd;}
 				break;
 			case 'style':
 				$paraFeed=array();			
-				$subReturnAry=$base->plugin002Obj->insertStyle($paramFeed,&$base);
+				$subReturnAry=$base->Plugin002Obj->insertStyle($paramFeed,&$base);
 				if ($containerShow){$contentAry[]=$dividerBegin;}
 				$contentAry=$this->arrayMerge($contentAry,$subReturnAry);
 				if ($containerShow){$contentAry[]=$dividerEnd;}
@@ -521,7 +521,7 @@ class containerObject {
 			case 'container':
 				$paramFeed=array();
 				$paramFeed['param_1']=$containerElementName;			
-				$subReturnAry=$base->tagPlugin001Obj->insertContainer($paramFeed,&$base);
+				$subReturnAry=$base->TagPlugin001Obj->insertContainer($paramFeed,&$base);
 				if ($containerShow){$contentAry[]=$dividerBegin;}
 				$contentAry=$this->arrayMerge($contentAry,$subReturnAry);
 				if ($containerShow){$contentAry[]=$dividerEnd;}
@@ -529,14 +529,14 @@ class containerObject {
 			case 'errormessage':
 				$errorMessageName=$containerElementName;
 				$errorMessage_raw=$base->errorProfileAry[$errorMessageName];
-				$errorMessage=$base->utlObj->returnFormattedString($errorMessage_raw,&$base);
+				$errorMessage=$base->UtlObj->returnFormattedString($errorMessage_raw,&$base);
 				if ($errorMessage_raw == null|| $errorMessage_raw == ''){
-					$errorMessage_raw=$base->errorObj->retrieveError($errorMessageName,&$base);	
+					$errorMessage_raw=$base->ErrorObj->retrieveError($errorMessageName,&$base);	
 					//xxxd - below seems to lose data going from raw to formatted
-					$errorMessage=$base->utlObj->returnFormattedString($errorMessage_raw,&$base);
+					$errorMessage=$base->UtlObj->returnFormattedString($errorMessage_raw,&$base);
 				}
 				//echo "errormessageName: $containerElementName, errmsgraw: $errorMessage_raw, errmsg: $errorMessage<br>";//xxxd
-				//$base->debugObj->printDebug($base->errorProfileAry,1,'xxx');
+				//$base->DebugObj->printDebug($base->errorProfileAry,1,'xxx');
 				$theJob=$base->paramsAry['job'];
 				if ($theJob=='copyjobs'){$spacer=null;}
 				else {$spacer='&nbsp;';}				
@@ -549,19 +549,19 @@ class containerObject {
 				break;
 			case 'url':
 				$htmlElementAry=$base->htmlElementProfileAry[$containerElementName];
-				$workAry=$base->htmlObj->buildUrl($htmlElementAry,&$base);
+				$workAry=$base->HtmlObj->buildUrl($htmlElementAry,&$base);
 				$contentAry=$this->arrayMerge($contentAry,$workAry);
 				if ($containerShow){$contentAry[]=$dividerEnd;}
 				break;
 			case 'calendar':
 				if ($containerShow){$contentAry[]=$dividerBegin;}
-				$subReturnAry=$base->calendarObj->insertCalendarHtml($containerElementType,&$base);
+				$subReturnAry=$base->CalendarObj->insertCalendarHtml($containerElementType,&$base);
 				$contentAry=$this->arrayMerge($contentAry,$subReturnAry);
 				if ($containerShow){$contentAry[]=$dividerEnd;}	
 				break;
 			case 'calendarv2':
 				if ($containerShow){$contentAry[]=$dividerBegin;}
-				$subReturnAry=$base->calendarObj->insertCalendarHtmlV2($containerElementName,&$base);
+				$subReturnAry=$base->CalendarObj->insertCalendarHtmlV2($containerElementName,&$base);
 				$contentAry=$this->arrayMerge($contentAry,$subReturnAry);
 				if ($containerShow){$contentAry[]=$dividerEnd;}
 				break;
@@ -572,19 +572,19 @@ class containerObject {
 			case 'map':
 				$paramFeed=array();
 				$paramFeed['param_1']=$containerElementName;			
-				$subReturnAry=$base->plugin002Obj->insertMap($paramFeed,&$base);
+				$subReturnAry=$base->Plugin002Obj->insertMap($paramFeed,&$base);
 				$contentAry=$this->arrayMerge($contentAry,$subReturnAry);
 				break;
 			case 'startautorotate':
 				$paramFeed=array();
 				$paramFeed['param_1']=$containerElementName;
-				$subReturnAry=$base->tagPlugin001Obj->startAutoRotate($paramFeed,&$base);
+				$subReturnAry=$base->TagPlugin001Obj->startAutoRotate($paramFeed,&$base);
 				$contentAry=$this->arrayMerge($contentAry,$subReturnAry);
 				break;
 			default:
 				$paramFeed=array('param_1'=>$containerElementName);
 				if ($containerElementEvent != ''){$paramFeed['event_1']=$containerElementEvent;}
-				$subReturnAry=$base->pluginObj->runTagPlugin($containerElementType,$paramFeed,&$base);
+				$subReturnAry=$base->PluginObj->runTagPlugin($containerElementType,$paramFeed,&$base);
 				if ($inContent){
 					if ($containerShow){$contentAry[]=$dividerBegin;}
 					$contentAry=$this->arrayMerge($contentAry,$subReturnAry);
@@ -597,7 +597,7 @@ class containerObject {
 				}
 				else {$footerAry=$this->arrayMerge($footerAry,$subReturnAry);}
 			} // end switch containerelementtype
-			$base->fileObj->writeLog('debug1',"containerobj: done with container element",&$base);
+			$base->FileObj->writeLog('debug1',"containerobj: done with container element",&$base);
 		} // end foreach containerele
 		} // end if count>0
 		if ($containerShow){
@@ -621,21 +621,21 @@ class containerObject {
 }
 //=====================================
 	function insertRepeatingCategoryOld($containerElementName,$base){
-		//$base->debugObj->printDebug($this->containerElementProfileAry,1,'xxxd');exit();//xxxd
+		//$base->DebugObj->printDebug($this->containerElementProfileAry,1,'xxxd');exit();//xxxd
 		$returnAry=array();
 		$formNameAry=array();
 		foreach ($this->containerElementProfileAry['cssforms'] as $formName=>$dmyAry){
 			$formNameAry[]=$formName;
 		}
 		$query_raw="select * from csselementprofileview where jobprofileid=%jobprofileid% order by prefix, cssclass, cssid, htmltag, csselementproperty";	
-		$query=$base->utlObj->returnFormattedString($query_raw,&$base);
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$query=$base->UtlObj->returnFormattedString($query_raw,&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array();
-		$dataAry=$base->utlObj->tableToHashAryV3($result,$passAry);
-		//$base->debugObj->printDebug($this->containerElementProfileAry,1,'xxxd');
+		$dataAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+		//$base->DebugObj->printDebug($this->containerElementProfileAry,1,'xxxd');
 		$oldPrefix=NULL;$oldClass=NULL;$oldId=NULL;$oldHtmlTag=NULL;
 		$paramFeed=array('param_1'=>$formNameAry[0]);
-		$subReturnAry=$base->tagObj->insertForm($paramFeed,&$base);
+		$subReturnAry=$base->TagObj->insertForm($paramFeed,&$base);
 		$returnAry=$this->arrayMerge($returnAry,$subReturnAry);
 		$ctr=0;
 		foreach ($dataAry as $ctr=>$cssElementAry){
@@ -654,17 +654,17 @@ class containerObject {
 				$returnAry[]= "<div class=\"styleitem\">$sD1 prefix: $de $prefix   $sD1 class: $de $theClass     $sD1 id: $de $theId    $sD1 tag: $de $htmlTag</div><br>";
 				$paramFeed=array('param_1'=>$formNameAry[1]);
 				$paramFeed['usethisdataary']=$cssElementAry;
-				$subReturnAry=$base->tagObj->insertForm($paramFeed,&$base);
+				$subReturnAry=$base->TagObj->insertForm($paramFeed,&$base);
 				$returnAry=$this->arrayMerge($returnAry,$subReturnAry);
 				//echo "insert csselementitem: $prefix, $theClass, $theId, $htmlTag<br>";
 				$paramFeed=array('param_1'=>$formNameAry[2]);
-				$subReturnAry=$base->tagObj->insertForm($paramFeed,&$base);
+				$subReturnAry=$base->TagObj->insertForm($paramFeed,&$base);
 				$returnAry=$this->arrayMerge($returnAry,$subReturnAry);
 			}
 			//echo "$prefix, $theClass, $theId, $htmlTag: update $theProperty, $theValue<br>";
 			$paramFeed=array('param_1'=>$formNameAry[3]);
 			$paramFeed['usethisdataary']=$cssElementAry;
-			$subReturnAry=$base->tagObj->insertForm($paramFeed,&$base);
+			$subReturnAry=$base->TagObj->insertForm($paramFeed,&$base);
 			$returnAry=$this->arrayMerge($returnAry,$subReturnAry);
 			$oldPrefix=$prefix;$oldClass=$theClass;$oldId=$theId;$oldHtmlTag=$htmlTag;
 		}
@@ -692,14 +692,14 @@ class containerObject {
 			$formNameAry[]=$formName;
 		}
 		//$query_raw="select * from csselementprofileview where jobprofileid=%jobprofileid% order by prefix, cssclass, cssid, htmltag, csselementproperty";	
-		$query=$base->utlObj->returnFormattedString($query_raw,&$base);
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$query=$base->UtlObj->returnFormattedString($query_raw,&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array();
-		$dataAry=$base->utlObj->tableToHashAryV3($result,$passAry);
-		//$base->debugObj->printDebug($this->containerElementProfileAry,1,'xxxd');
+		$dataAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+		//$base->DebugObj->printDebug($this->containerElementProfileAry,1,'xxxd');
 		$oldPrefix=NULL;$oldClass=NULL;$oldId=NULL;$oldHtmlTag=NULL;
 		$paramFeed=array('param_1'=>$formNameAry[0]);
-		$subReturnAry=$base->tagObj->insertForm($paramFeed,&$base);
+		$subReturnAry=$base->TagObj->insertForm($paramFeed,&$base);
 		$returnAry=$this->arrayMerge($returnAry,$subReturnAry);
 		$ctr=0;
 		foreach ($dataAry as $ctr=>$cssElementAry){
@@ -718,17 +718,17 @@ class containerObject {
 				$returnAry[]= "<div class=\"styleitem\">$sD1 prefix: $de $prefix   $sD1 class: $de $theClass     $sD1 id: $de $theId    $sD1 tag: $de $htmlTag</div><br>";
 				$paramFeed=array('param_1'=>$formNameAry[1]);
 				$paramFeed['usethisdataary']=$cssElementAry;
-				$subReturnAry=$base->tagObj->insertForm($paramFeed,&$base);
+				$subReturnAry=$base->TagObj->insertForm($paramFeed,&$base);
 				$returnAry=$this->arrayMerge($returnAry,$subReturnAry);
 				//echo "insert csselementitem: $prefix, $theClass, $theId, $htmlTag<br>";
 				$paramFeed=array('param_1'=>$formNameAry[2]);
-				$subReturnAry=$base->tagObj->insertForm($paramFeed,&$base);
+				$subReturnAry=$base->TagObj->insertForm($paramFeed,&$base);
 				$returnAry=$this->arrayMerge($returnAry,$subReturnAry);
 			}
 			//echo "$prefix, $theClass, $theId, $htmlTag: update $theProperty, $theValue<br>";
 			$paramFeed=array('param_1'=>$formNameAry[3]);
 			$paramFeed['usethisdataary']=$cssElementAry;
-			$subReturnAry=$base->tagObj->insertForm($paramFeed,&$base);
+			$subReturnAry=$base->TagObj->insertForm($paramFeed,&$base);
 			$returnAry=$this->arrayMerge($returnAry,$subReturnAry);
 			$oldPrefix=$prefix;$oldClass=$theClass;$oldId=$theId;$oldHtmlTag=$htmlTag;
 		}

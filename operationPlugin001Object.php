@@ -14,9 +14,9 @@ class operationPlugin001Object {
 	function buildDbTableFileOld($base){
 		$dbTableDefStrg=NULL;
 		$query="select dbtablename,dbcolumnname,dbcolumntype from dbcolumnprofileview order by dbtablename";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array('delimit1'=>'dbtablename','delimit2'=>'dbcolumnname');
-		$dataAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$dataAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$dbTableFile=NULL;
 		$lineDelim="\n";
 		foreach ($dataAry as $dbTableName=>$dbTableAry){
@@ -36,7 +36,7 @@ class operationPlugin001Object {
 		$fileName="$domainName".'_dbtabledefs';
 		$pathToUse=$tmpDirPath.'/'.$fileName;
 		if ($pathToUse != NULL){
-			$base->fileObj->writeFile($pathToUse,$dbTableFile,&$base);
+			$base->FileObj->writeFile($pathToUse,$dbTableFile,&$base);
 			$msgLine="<pre>dbtable file written to $pathToUse</pre>";
 			//echo "msgline: $msgLine<br>";//xxxd
 			$base->errorProfileAry['compareresults']=$msgLine;
@@ -56,31 +56,31 @@ class operationPlugin001Object {
 		$errorMessageName='compareresults';
 // dbtableprofile
 		$query="select * from dbtableprofileview order by dbtablename";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array('delimit1'=>'dbtablename');
-		$dbTableAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$dbTableAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 // dbcolumnprofile
 		$query="select * from dbcolumnprofileview order by dbtablename";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array('delimit1'=>'dbtablename','delimit2'=>'dbcolumnname');
-		$dbColumnAry=$base->utlObj->tableToHashAryV3($result,$passAry);		
+		$dbColumnAry=$base->UtlObj->tableToHashAryV3($result,$passAry);		
 // combine and convert
 		//$dbAry=array('dbtableprofile'=>$dbTableAry);
 		$dbAry=array();
 		$dbAry['dbtableprofile']=$dbTableAry;
 		$dbAry['dbcolumnprofile']=$dbColumnAry;
-		//$xmlFile=$base->xmlObj->array2xml($dbAry);
-		$jsonFile=$base->xmlObj->array2Json($dbAry,&$base);
-		//$base->debugObj->printDebug($xmlFile,1,'xmlfilexxxd');
+		//$xmlFile=$base->XmlObj->array2xml($dbAry);
+		$jsonFile=$base->XmlObj->array2Json($dbAry,&$base);
+		//$base->DebugObj->printDebug($xmlFile,1,'xmlfilexxxd');
 		$tmpDirPath=$base->systemAry['tmplocal'];
 		//$fileName="$dbName".'_dbtabledefs.xml';
 		$fileName="$dbName".'_dbtabledefs.json';
 		$pathToUse=$tmpDirPath.'/'.$fileName;
 		if ($pathToUse != NULL){
-			//$base->fileObj->writeFile($pathToUse,$xmlFile,&$base);
-			$base->fileObj->writeFile($pathToUse,$jsonFile,&$base);
+			//$base->FileObj->writeFile($pathToUse,$xmlFile,&$base);
+			$base->FileObj->writeFile($pathToUse,$jsonFile,&$base);
 			$msgLine="<pre>dbtable file written to $pathToUse</pre>";
-			$base->errorObj->saveError($errorMessageName,$msgLine,&$base);
+			$base->ErrorObj->saveError($errorMessageName,$msgLine,&$base);
 			//$base->errorProfileAry['compareresults']=$msgLine;
 		}
 	}
@@ -109,11 +109,11 @@ class operationPlugin001Object {
 		$query="select * from $dbTableNameOfParentView $debugFilter $sortInsert";
 		//echo "query: $query<br>";//xxxd
 //- get parent table data
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array('delimit1'=>$dbParentSelectorNameOfParent);
 		if ($dbSelectorNameOfParent != null){$passAry['delimit2']=$dbSelectorNameOfParent;}
-		//$base->debugObj->printDebug($passAry,1,'xxxd');
-		$dbParentAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		//$base->DebugObj->printDebug($passAry,1,'xxxd');
+		$dbParentAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$dbAry[$dbTableNameOfParent]=$dbParentAry;
 
 //- child
@@ -124,23 +124,23 @@ class operationPlugin001Object {
 			$sortInsert=null;
 // get data for child
 			$query="select * from $dbTableNameOfChild $sortInsert";
-			$result=$base->dbObj->queryTable($query,'read',&$base);
+			$result=$base->DbObj->queryTable($query,'read',&$base);
 			$passAry=array('delimit1'=>$parentSelectName,'delimit2'=>$chileSelectName);
-			$dbChildAry=$base->utlObj->tableToHashAryV3($result,$passAry);	
+			$dbChildAry=$base->UtlObj->tableToHashAryV3($result,$passAry);	
 			$dbAry[$dbTableNameOfChile]=$dbChildAry;
 		}
-		//$base->debugObj->printDebug($dbAry,1,'xxxd');exit();//xxxd
+		//$base->DebugObj->printDebug($dbAry,1,'xxxd');exit();//xxxd
 // combine and convert
 //- plug which makes it work
-		$xmlFile=$base->xmlObj->array2xml($dbAry);
-		//$base->debugObj->printDebug($xmlFile,1,'xmlfilexxxd');
+		$xmlFile=$base->XmlObj->array2xml($dbAry);
+		//$base->DebugObj->printDebug($xmlFile,1,'xmlfilexxxd');
 		$tmpDirPath=$base->systemAry['tmplocal'];
 		$fileName="$dbName".'_'.$dbTableNameOfParent.'.xml';
 		$pathToUse=$tmpDirPath.'/'.$fileName;
 		if ($pathToUse != NULL){
-			$base->fileObj->writeFile($pathToUse,$xmlFile,&$base);
+			$base->FileObj->writeFile($pathToUse,$xmlFile,&$base);
 			$msgLine="<pre>dbtable file written to $pathToUse</pre>";
-			$base->errorObj->saveError($errorMessageName,$msgLine,&$base);
+			$base->ErrorObj->saveError($errorMessageName,$msgLine,&$base);
 			//$base->errorProfileAry['compareresults']=$msgLine;
 		}
 	}
@@ -169,11 +169,11 @@ class operationPlugin001Object {
 		$query="select * from $dbTableNameOfParentView $debugFilter $sortInsert";
 		//echo "query: $query<br>";//xxxd
 //- get parent table data
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array('delimit1'=>$dbParentSelectorNameOfParent);
 		if ($dbSelectorNameOfParent != null){$passAry['delimit2']=$dbSelectorNameOfParent;}
-		//$base->debugObj->printDebug($passAry,1,'xxxd');
-		$dbParentAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		//$base->DebugObj->printDebug($passAry,1,'xxxd');
+		$dbParentAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$dbAry[$dbTableNameOfParent]=$dbParentAry;
 
 //- child
@@ -184,23 +184,23 @@ class operationPlugin001Object {
 			$sortInsert=null;
 // get data for child
 			$query="select * from $dbTableNameOfChild $sortInsert";
-			$result=$base->dbObj->queryTable($query,'read',&$base);
+			$result=$base->DbObj->queryTable($query,'read',&$base);
 			$passAry=array('delimit1'=>$parentSelectName,'delimit2'=>$chileSelectName);
-			$dbChildAry=$base->utlObj->tableToHashAryV3($result,$passAry);	
+			$dbChildAry=$base->UtlObj->tableToHashAryV3($result,$passAry);	
 			$dbAry[$dbTableNameOfChile]=$dbChildAry;
 		}
-		//$base->debugObj->printDebug($dbAry,1,'xxxd');exit();//xxxd
+		//$base->DebugObj->printDebug($dbAry,1,'xxxd');exit();//xxxd
 // combine and convert
 //- plug which makes it work
-		$jsonFile=$base->xmlObj->array2Json($dbAry,&$base);
-		//$base->debugObj->printDebug($xmlFile,1,'xmlfilexxxd');
+		$jsonFile=$base->XmlObj->array2Json($dbAry,&$base);
+		//$base->DebugObj->printDebug($xmlFile,1,'xmlfilexxxd');
 		$tmpDirPath=$base->systemAry['tmplocal'];
 		$fileName="$dbName".'_'.$dbTableNameOfParent.'.json';
 		$pathToUse=$tmpDirPath.'/'.$fileName;
 		if ($pathToUse != NULL){
-			$base->fileObj->writeFile($pathToUse,$jsonFile,&$base);
+			$base->FileObj->writeFile($pathToUse,$jsonFile,&$base);
 			$msgLine="<pre>dbtable file written to $pathToUse</pre>";
-			$base->errorObj->saveError($errorMessageName,$msgLine,&$base);
+			$base->ErrorObj->saveError($errorMessageName,$msgLine,&$base);
 			//$base->errorProfileAry['compareresults']=$msgLine;
 		}
 	}
@@ -208,9 +208,9 @@ class operationPlugin001Object {
 	function buildPluginFile($base){
 		$pluginDefStrg=NULL;
 		$query="select pluginname,plugintype,pluginobject,pluginmethod from pluginprofileview order by pluginname";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array('delimit1'=>'pluginname');
-		$dataAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$dataAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$pluginFile=NULL;
 		$lineDelim="\n";
 		foreach ($dataAry as $pluginName=>$pluginAry){
@@ -229,7 +229,7 @@ class operationPlugin001Object {
 		$fileName="$domainName".'_plugindefs';
 		$pathToUse=$tmpDirPath.'/'.$fileName;
 		if ($pathToUse != NULL){
-			$base->fileObj->writeFile($pathToUse,$pluginFile,&$base);
+			$base->FileObj->writeFile($pathToUse,$pluginFile,&$base);
 			$msgLine="<pre>plugin file written to $pathToUse</pre>";
 			//echo "msgline: $msgLine<br>";//xxxd
 			$base->errorProfileAry['compareresults']=$msgLine;
@@ -239,9 +239,9 @@ class operationPlugin001Object {
 	function buildStandardPromptsFile($base){
 		$standardDefStrg=NULL;
 		$query="select standardpromptsname,standardpromptslabel,standardpromptsvalue from standardpromptsprofileview order by standardpromptsname";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array('delimit1'=>'standardpromptsname');
-		$dataAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$dataAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$standardFile=NULL;
 		$lineDelim="\n";
 		foreach ($dataAry as $standardName=>$standardAry){
@@ -260,7 +260,7 @@ class operationPlugin001Object {
 		$fileName="$domainName".'_standardpromptsdefs';
 		$pathToUse=$tmpDirPath.'/'.$fileName;
 		if ($pathToUse != NULL){
-			$base->fileObj->writeFile($pathToUse,$standardFile,&$base);
+			$base->FileObj->writeFile($pathToUse,$standardFile,&$base);
 			$msgLine="<pre>standard file written to $pathToUse</pre>";
 			//echo "msgline: $msgLine<br>";//xxxd
 			$base->errorProfileAry['compareresults']=$msgLine;
@@ -276,7 +276,7 @@ class operationPlugin001Object {
 		foreach ($dbTableCompareAry as $dbTableName=>$dbTableAry){
 			$rtnMsg.="tablename: $dbTableName\n";
 			$dbControlsAry=array('dbtablename'=>$dbTableName);
-			$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+			$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
 			$ctr=0;
 			foreach ($dbTableAry as $dbColumnName=>$dbColumnType){
 				$dbColumnType=str_replace("\n",'',$dbColumnType);
@@ -303,19 +303,19 @@ class operationPlugin001Object {
 		$tmpLocal=$base->systemAry['tmplocal'];
 		//- get arrays from xml
 		$comparePath=$tmpLocal.'/'.$fileName;
-		$dbCompareXml=$base->fileObj->getFile($comparePath);
-		//$dbCompareXmlAry=$base->xmlObj->xml2Ary($dbCompareXml,&$base);
-		$dbCompareXmlAry=$base->xmlObj->json2Array($dbCompareXml,&$base);//xxxf
+		$dbCompareXml=$base->FileObj->getFile($comparePath);
+		//$dbCompareXmlAry=$base->XmlObj->xml2Ary($dbCompareXml,&$base);
+		$dbCompareXmlAry=$base->XmlObj->json2Array($dbCompareXml,&$base);//xxxf
 		$ctr=0;
 		$rtnMsg='<pre>'."\n";
 		$dbTableProfileAry_new=$dbCompareXmlAry['dbtableprofile'];
 		$dbColumnProfileAry_new=$dbCompareXmlAry['dbcolumnprofile'];
 		$query="select * from dbtableprofileview order by dbtablename";
 		$passAry=array('delimit1'=>'dbtablename');
-		$dbTableProfileAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
+		$dbTableProfileAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
 		$query="select * from dbcolumnprofileview order by dbtablename";
 		$passAry=array('delimit1'=>'dbtablename','delimit2'=>'dbcolumnname');
-		$dbColumnProfileAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
+		$dbColumnProfileAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
 		$dontCheckAry=array();
 		$dontCheckAry['companyname']='dont';
 		$dontCheckAry['companyprofileid']='dont';
@@ -355,11 +355,11 @@ class operationPlugin001Object {
 				if (!array_key_exists($dbTableName,$sessionAry['dbcolumns'])){$sessionAry['dbcolumns'][$dbTableName]=array();}
 				if (!array_key_exists('dbtables',$sessionAry)){$sessionAry['dbtables']=array();}
 				$sessionAry['dbcolumns'][$dbTableName]=$dbColumnsAry_new;
-				//$base->debugObj->printDebug($dbColumnsAry_new,1,'xxxddbtablename in columns');exit();//xxxd
+				//$base->DebugObj->printDebug($dbColumnsAry_new,1,'xxxddbtablename in columns');exit();//xxxd
 			}
 		}
 		$sessionAry['dbtables']=$dbTableProfileAry_new;
-		$sessionAry_xml=$base->xmlObj->array2Xml($sessionAry);
+		$sessionAry_xml=$base->XmlObj->array2Xml($sessionAry);
 		$_SESSION['sessionobj']->saveSessionValue('comparedbtablesxml',$sessionAry_xml);
 //- build error spot for web page
 		$sessionName=$base->paramsAry['sessionname'];
@@ -407,12 +407,12 @@ class operationPlugin001Object {
 				$rtnMsg.="table <b>'$dbTableName'</b> is missing <a href=\"?job=maintsystemtables&operation=mainttables&dbtablename=$dbTableName&maintcode=missingtable&sessionname=$sessionName\">fix</a><br>";
 			}
 		}
-		$base->errorObj->saveError('compareresults',$rtnMsg,&$base);
+		$base->ErrorObj->saveError('compareresults',$rtnMsg,&$base);
 	}
 //===================================================
 	function getDbTableAry($path,$base){
 		$fileAry_adj=array();
-		$fileAry=$base->fileObj->getFileArray($path);
+		$fileAry=$base->FileObj->getFileArray($path);
 		$fileCnt=count($fileAry);
 		$dmy=false;
 		for ($lp=0;$lp<=$fileCnt;$lp=$lp+2){
@@ -443,14 +443,14 @@ class operationPlugin001Object {
 		$fileName=$base->paramsAry['filename'];
 		$tmpLocal=$base->systemAry['tmplocal'];
 		$comparePath=$tmpLocal.'/'.$fileName;
-		$dbCompareXml=$base->fileObj->getFile($comparePath);
-		//$dbCompareAry=$base->xmlObj->xml2Ary($dbCompareXml,&$base);
-		$dbCompareAry=$base->xmlObj->json2Array($dbCompareXml,&$base);
+		$dbCompareXml=$base->FileObj->getFile($comparePath);
+		//$dbCompareAry=$base->XmlObj->xml2Ary($dbCompareXml,&$base);
+		$dbCompareAry=$base->XmlObj->json2Array($dbCompareXml,&$base);
 		$query="select * from pluginprofileview order by pluginname";
 		$passAry=array('delimit1'=>'pluginname');
-		$dbAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
-		//$base->debugObj->printDebug($dbCompareAry,1,'xxxd');
-		//$base->debugObj->printDebug($dbAry,1,'xxxd');
+		$dbAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
+		//$base->DebugObj->printDebug($dbCompareAry,1,'xxxd');
+		//$base->DebugObj->printDebug($dbAry,1,'xxxd');
 		$otherDbAry=$dbCompareAry['pluginprofile'];
 		$errorAry=array();
 		foreach ($otherDbAry as $dbName=>$dbNameAry){
@@ -480,7 +480,7 @@ class operationPlugin001Object {
 		$sessionName=$base->paramsAry['sessionname'];
 		if ($sessionName != null){$sessionInsert="&sessionname=$sessionName";}
 		else {$sessionInsert=null;}
-		//$base->debugObj->printDebug($base->paramsAry,1,'paramsaryxxxd');
+		//$base->DebugObj->printDebug($base->paramsAry,1,'paramsaryxxxd');
 		$rtnMsg="<div class=\"compareresultstitle\">Click on 'fix' to copy over changes!</div>\n";
 		$dbName=$base->paramsAry['dbname'];
 		$fileName=$base->paramsAry['filename'];
@@ -515,7 +515,7 @@ class operationPlugin001Object {
 			}
 			$rtnMsg.=$urlString."<br>";
 		}
-		$base->errorObj->saveError('compareresults',$rtnMsg,&$base);
+		$base->ErrorObj->saveError('compareresults',$rtnMsg,&$base);
 	}
 //===================================================
 	function comparePluginDefsDeprecated($base){
@@ -523,7 +523,7 @@ class operationPlugin001Object {
 		$tmpLocal=$base->systemAry['tmplocal'];
 		$comparePath=$tmpLocal.'/'.$fileName;
 		$passAry=$this->getPluginAry($comparePath,&$base);
-		//$base->debugObj->printDebug($passAry,1,'xxxd');
+		//$base->DebugObj->printDebug($passAry,1,'xxxd');
 		$pluginCompareAry=$passAry['plugincompareary'];
 		$pluginBaseAry=$passAry['pluginprofileary'];
 		$rtnMsg='<pre>'."\n";
@@ -552,13 +552,13 @@ class operationPlugin001Object {
 		if ($suffix == 'xml'){$doXml=true;}
 		else {$doXml=false;}
 		if ($doXml){
-			$dbCompareXml=$base->fileObj->getFile($path);
-			$fileAry_adj=$base->xmlObj->xml2Ary($dbCompareXml,&$base);
-			$base->debugObj->printDebug($fileAry_adj,1,'xxxf');
+			$dbCompareXml=$base->FileObj->getFile($path);
+			$fileAry_adj=$base->XmlObj->xml2Ary($dbCompareXml,&$base);
+			$base->DebugObj->printDebug($fileAry_adj,1,'xxxf');
 		}
 		else {
 		$fileAry_adj=array();
-		$fileAry=$base->fileObj->getFileArray($path);
+		$fileAry=$base->FileObj->getFileArray($path);
 		$fileCnt=count($fileAry);
 		$dmy=false;
 		for ($lp=0;$lp<=$fileCnt;$lp=$lp+2){
@@ -585,10 +585,10 @@ class operationPlugin001Object {
 		}
 //- get pluginprofile array
 		$query="select * from pluginprofileview";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array();
 		$passAry['delimit1']='pluginname';
-		$pluginProfileAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$pluginProfileAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$passAry=array();
 		$passAry['pluginprofileary']=$pluginProfileAry;
 		$passAry['plugincompareary']=$fileAry_adj;
@@ -629,20 +629,20 @@ class operationPlugin001Object {
 		$tmpLocal=$base->systemAry['tmplocal'];
 //- get arrays from xml
 		$comparePath=$tmpLocal.'/'.$fileName;
-		$dbCompareXml=$base->fileObj->getFile($comparePath);
+		$dbCompareXml=$base->FileObj->getFile($comparePath);
 		//$theLen=count($dbCompareXml);
 		//echo "cnt: $theLen<br> path: $comparePath<br> dbcomparexml: $tst<br>";//xxxd
 		//exit();//xxxd
-		//$dbCompareXmlAry=$base->xmlObj->xml2Ary($dbCompareXml,&$base);
-		$dbCompareXmlAry=$base->xmlObj->json2Array($dbCompareXml,&$base);
-		//$base->debugObj->printDebug($dbCompareXmlAry,1,'xxxd0');//xxxd
+		//$dbCompareXmlAry=$base->XmlObj->xml2Ary($dbCompareXml,&$base);
+		$dbCompareXmlAry=$base->XmlObj->json2Array($dbCompareXml,&$base);
+		//$base->DebugObj->printDebug($dbCompareXmlAry,1,'xxxd0');//xxxd
 		$ctr=0;
 		$rtnMsg='<pre>'."\n";
 //- put out file to compare
 		$standardPromptsProfileAry_new=$dbCompareXmlAry['standardpromptsprofile'];
 		$query="select * from standardpromptsprofileview order by standardpromptsname";
 		$passAry=array('delimit1'=>'standardpromptsname','delimit2'=>'standardpromptsvalue');
-		$standardPromptsProfileAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
+		$standardPromptsProfileAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
 		$dontCheckAry=array();
 		$dontCheckAry['standardpromptsprofileid']='dont';
 		$errAry=array();
@@ -651,12 +651,12 @@ class operationPlugin001Object {
 //- compare standardPromptsProfile_new to standardpromptsname
 		foreach ($standardPromptsProfileAry_new as $standardPromptsName_new => $standardPromptsValueAry_new){
 			//echo "name: $standardPromptsName_new<br>";//xxxd
-			//$base->debugObj->printDebug($standardPromptsProfileAry,1,'xxxd');exit();//xxxd
-			$standardPromptsName_new=$base->utlObj->returnFormattedData($standardPromptsName_new,'fromkey','xml',&$base);
+			//$base->DebugObj->printDebug($standardPromptsProfileAry,1,'xxxd');exit();//xxxd
+			$standardPromptsName_new=$base->UtlObj->returnFormattedData($standardPromptsName_new,'fromkey','xml',&$base);
 			if (array_key_exists($standardPromptsName_new,$standardPromptsProfileAry)){
 				$standardPromptsNameAry_old=$standardPromptsProfileAry[$standardPromptsName_new];
 				foreach ($standardPromptsValueAry_new as $standardPromptsValue_new=>$standardPromptsAry_new){
-					$standardPromptsValue_new=$base->utlObj->returnFormattedData($standardPromptsValue_new,'fromkey','xml',&$base);
+					$standardPromptsValue_new=$base->UtlObj->returnFormattedData($standardPromptsValue_new,'fromkey','xml',&$base);
 					$standardPromptsLabel_new=$standardPromptsAry_new['standardpromptslabel'];
 //- now compare to current standardpromptsprofile
 					if (array_key_exists($standardPromptsValue_new,$standardPromptsNameAry_old)){
@@ -676,17 +676,17 @@ class operationPlugin001Object {
 			else {
 				//xxxd - need to get values of stuff
 				foreach ($standardPromptsValueAry_new as $standardPromptsValue_new=>$standardPromptsAry_new){
-					$standardPromptsValue_new=$base->utlObj->returnFormattedData($standardPromptsValue_new,'fromkey','xml',&$base);
+					$standardPromptsValue_new=$base->UtlObj->returnFormattedData($standardPromptsValue_new,'fromkey','xml',&$base);
 					$standardPromptsLabel_new=$standardPromptsAry_new['standardpromptslabel'];
 					$errAry[]="namemissing:$standard$standardPromptsName_new:$standardPromptsValue_new:$standardPromptsLabel_new";
 				}
 				//echo "name: '$standardPromptsName_new' is missing, $standardPromptsLabel_new, $standardPromptsValue_new<br>";//xxxd
 			}
 		}
-		//$base->debugObj->printDebug($errAry,1,'xxxd');exit();//xxxd
+		//$base->DebugObj->printDebug($errAry,1,'xxxd');exit();//xxxd
 		//exit();//xxxd
 //- done with compare
-		//$sessionAry_xml=$base->xmlObj->array2Xml($sessionAry);
+		//$sessionAry_xml=$base->XmlObj->array2Xml($sessionAry);
 		//$_SESSION['sessionobj']->saveSessionValue('comparedbtablesxml',$sessionAry_xml);
 //- build error spot for web page
 		$sessionName=$base->paramsAry['sessionname'];
@@ -721,7 +721,7 @@ class operationPlugin001Object {
 			}
 			$rtnMsg.=$urlString."<br>";
 		}
-		$base->errorObj->saveError('compareresults',$rtnMsg,&$base);
+		$base->ErrorObj->saveError('compareresults',$rtnMsg,&$base);
 	}
 //===================================================
 	function fixStandardPrompts($base){
@@ -736,7 +736,7 @@ class operationPlugin001Object {
 			case 'label':
 				$query="select * from standardpromptsprofile where standardpromptsname='$stName' and standardpromptsvalue='$stValue'";
 				$passAry=array();
-				$writeRowsAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
+				$writeRowsAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
 				$writeRowsAry[0]['standardpromptslabel']=$stLabel;
 				break;
 			default:
@@ -746,9 +746,9 @@ class operationPlugin001Object {
 		}
 		$dbControlsAry=array('dbtablename'=>'standardpromptsprofile');
 		$dbControlsAry['writerowsary']=$writeRowsAry;
-		//$base->debugObj->printDebug($dbControlsAry,1,'xxxd');
+		//$base->DebugObj->printDebug($dbControlsAry,1,'xxxd');
 
-		$base->dbObj->writeToDb($dbControlsAry,&$base);
+		$base->DbObj->writeToDb($dbControlsAry,&$base);
 	}
 //===================================================
 	function fixPluginProfile($base){
@@ -763,7 +763,7 @@ class operationPlugin001Object {
 			case 'value':
 				$query="select * from pluginprofile where pluginname='$errName'";
 				$passAry=array();
-				$writeRowsAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
+				$writeRowsAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
 				$writeRowsAry[0][$stValueName]=$stValue;
 				break;
 			case 'name':
@@ -784,14 +784,14 @@ class operationPlugin001Object {
 		}
 		$dbControlsAry=array('dbtablename'=>'pluginprofile');
 		$dbControlsAry['writerowsary']=$writeRowsAry;
-		//$base->debugObj->printDebug($dbControlsAry,1,'xxxd');
-		$base->dbObj->writeToDb($dbControlsAry,&$base);
+		//$base->DebugObj->printDebug($dbControlsAry,1,'xxxd');
+		$base->DbObj->writeToDb($dbControlsAry,&$base);
 	}
 //===================================================
 	function getStandardPromptsAryDeprecated($path,$base){
 	//- turn file into array
 		$fileAry_adj=array();
-		$fileAry=$base->fileObj->getFileArray($path);
+		$fileAry=$base->FileObj->getFileArray($path);
 		$fileCnt=count($fileAry);
 		$dmy=false;
 		for ($lp=0;$lp<=$fileCnt;$lp=$lp+2){
@@ -817,10 +817,10 @@ class operationPlugin001Object {
 		}
 //- get standardpromptsprofile array
 		$query="select * from standardpromptsprofileview";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array();
 		$passAry['delimit1']='standardpromptsname';
-		$standardPromptsProfileAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$standardPromptsProfileAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$passAry=array();
 		$passAry['standardpromptsprofileary']=$standardPromptsProfileAry;
 		$passAry['standardpromptscompareary']=$fileAry_adj;
@@ -828,7 +828,7 @@ class operationPlugin001Object {
 	}
 //==================================================
 	function sendEmailFromForm($base){
-		$base->debugObj->printDebug("plugin001Obj:sendEmailFromForm('base')",0);
+		$base->DebugObj->printDebug("Plugin001Obj:sendEmailFromForm('base')",0);
 		$params=$base->paramsAry;
 		//echo '<br>---post---<br>';
 		//foreach ($_POST as $id=>$vlu){echo "$id: $vlu<br>";}
@@ -850,7 +850,7 @@ class operationPlugin001Object {
 //--- get email fields
 		$theSubject=$base->formProfileAry[$formName]['formemailsubject'];
 		$theTo=$base->formProfileAry[$formName]['formemail'];
-		//$base->debugObj->printDebug($base->formElementProfileAry[$formName],1,'xxxd');
+		//$base->DebugObj->printDebug($base->formElementProfileAry[$formName],1,'xxxd');
 		$theMessage=NULL;
 		foreach ($params as $name=>$value){
 			if (array_key_exists($name,$base->formElementProfileAry[$formName])){
@@ -858,7 +858,7 @@ class operationPlugin001Object {
 			}
 		} 
 //--- send mail
-		$base->utlObj->sendMail($theTo,$theSubject,$theMessage,&$base);
+		$base->UtlObj->sendMail($theTo,$theSubject,$theMessage,&$base);
 //--- redirect - if has tablename then will update table then redirect
 //--- dont redirect if coming in from ajax
 		if (!$dontReDirect){
@@ -868,8 +868,8 @@ class operationPlugin001Object {
 					$sessionName=$base->paramsAry['sessionname'];
 					if ($sessionName != NULL){$urlReDir.="&sessionname=$sessionName&donterase=1";}
 				}
-				$urlReDir_formatted=$base->utlObj->returnFormattedString($urlReDir,&$base);
-				$base->utlObj->appendValue('debug',"header to $urlReDir_formatted<br>",&$base);
+				$urlReDir_formatted=$base->UtlObj->returnFormattedString($urlReDir,&$base);
+				$base->UtlObj->appendValue('debug',"header to $urlReDir_formatted<br>",&$base);
 				header("Location: $urlReDir_formatted");
 			}
 		}
@@ -890,10 +890,10 @@ class operationPlugin001Object {
 		$jobProfileId=$base->paramsAry['jobprofileid'];
 //- get old row to clone
 		$query="select * from $cloneTableName where $cloneTableIdName=$cloneTableId";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array();
-		$cloneAry=$base->utlObj->tableToHashAryV3($result,$passAry);
-		if ($debugIt){echo 'debug<br>';$base->debugObj->printDebug($cloneAry,1,"xxx: row to clone");}
+		$cloneAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+		if ($debugIt){echo 'debug<br>';$base->DebugObj->printDebug($cloneAry,1,"xxx: row to clone");}
 //- get rid of id field so it will insert
 //!!! need to overlay jobprofileid here since it may be coming from another job
 		$cloneAry[0]['jobprofileid']=$jobProfileId;
@@ -908,8 +908,8 @@ class operationPlugin001Object {
 //- insert the row as a new one
    		$dbControlsAry=array('dbtablename'=>$cloneTableName);
     	$dbControlsAry['writerowsary']=$cloneAry;
-    	if ($debugIt){$base->debugObj->printDebug($dbControlsAry,1,"xxx: new row to insert");}
-    	$successBool=$base->dbObj->writeToDb($dbControlsAry,&$base);
+    	if ($debugIt){$base->DebugObj->printDebug($dbControlsAry,1,"xxx: new row to insert");}
+    	$successBool=$base->DbObj->writeToDb($dbControlsAry,&$base);
 //- get id for subgroups
     	$andInsert=' and ';
  		$query="select * from $cloneTableName where jobprofileid = $jobProfileId";
@@ -921,19 +921,19 @@ class operationPlugin001Object {
 		}
     	$debugIt=false;
 		if ($debugIt) {echo "query to get new id: $query<br>";}
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array();
-		$dmyAry=$base->utlObj->tableToHashAryV3($result,$passAry);
-		if ($debugIt){$base->debugObj->printDebug($dmyAry,1,"xxx: row to get new id from");}
+		$dmyAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+		if ($debugIt){$base->DebugObj->printDebug($dmyAry,1,"xxx: row to get new id from");}
 		$newCloneTableId=$dmyAry[0][$cloneTableIdName];
 		if ($debugIt){echo "new id: $newCloneTableId<br>";}
 //- get all of the sub clone rows to be copied
     	$query="select * from $cloneSubTableName where $cloneTableIdName=$cloneTableId";
     	if ($debugIt){echo "query to get subgroups: $query<br>";}
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array();
-		$cloneSubTableAry=$base->utlObj->tableToHashAryV3($result,$passAry);
-		if ($debugIt){$base->debugObj->printDebug($cloneSubTableAry,1,'xxx: sub items to change');}
+		$cloneSubTableAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+		if ($debugIt){$base->DebugObj->printDebug($cloneSubTableAry,1,'xxx: sub items to change');}
 //- remove all ids and changpointers
 		$cloneSubTableCnt=count($cloneSubTableAry);
 		for ($theLp=0;$theLp<$cloneSubTableCnt;$theLp++){
@@ -943,18 +943,18 @@ class operationPlugin001Object {
 //- write them all out
   		$dbControlsAry=array('dbtablename'=>$cloneSubTableName);
     	$dbControlsAry['writerowsary']=$cloneSubTableAry;
-    	if ($debugIt){$base->debugObj->printDebug($dbControlsAry,1,'xxx: sub rows to write');}
-      	$successBool=$base->dbObj->writeToDb($dbControlsAry,&$base);
+    	if ($debugIt){$base->DebugObj->printDebug($dbControlsAry,1,'xxx: sub rows to write');}
+      	$successBool=$base->DbObj->writeToDb($dbControlsAry,&$base);
 	}
 //==================================================
 	function mergeTableDefs($base){
-		//$base->debugObj->printDebug($base->paramsAry,1,'xxxd');
+		//$base->DebugObj->printDebug($base->paramsAry,1,'xxxd');
 		$dbTableName=$base->paramsAry['dbtablename'];
 		$sourceDomainName=$base->paramsAry['sourcedomain'];
 		$sourceFileName=$sourceDomainName.'_dbtabledefs';
 		$tmpDirPath=$base->systemAry['tmplocal'];
 		$thePath=$tmpDirPath.'/'.$sourceFileName;
-		$sourceFileAry=$base->fileObj->getFileArray($thePath);
+		$sourceFileAry=$base->FileObj->getFileArray($thePath);
 		$rowCnt=count($sourceFileAry);
 		$dbSourceColumnsAry=array();
 		$IGotIt=false;
@@ -986,27 +986,27 @@ class operationPlugin001Object {
 					$dbColumnSrcAry[$dbColumnSrcName]=$dbColumnSrcType;
 					//echo "$dbColumnSrcName, $dbColumnSrcType<br>";//xxxd
 				}
-				//$base->debugObj->printDebug($dbColumnSrcAry,1,'xxxd');
+				//$base->DebugObj->printDebug($dbColumnSrcAry,1,'xxxd');
 			} // end if dbtablename=dbsourcetablename
 		} // end of for mainLp
 		if ($IGotIt){
 			$dbControlsAry=array('dbtablename'=>$dbTableName);
-			$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);
+			$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);
 			$dbColumnDestAry=$dbControlsAry['dbtablemetaary'];
-			//$base->debugObj->printDebug($dbControlsAry,1,'xxxd');
+			//$base->DebugObj->printDebug($dbControlsAry,1,'xxxd');
 			$query="select * from dbtableprofileview where dbtablename='$dbTableName'";
-			$result=$base->dbObj->queryTable($query,'read',&$base);
+			$result=$base->DbObj->queryTable($query,'read',&$base);
 			$passAry=array();
-			$dataAry=$base->utlObj->tableToHashAryV3($result,$passAry);
-			//$base->debugObj->printDebug($dataAry,1,'xxxd');
+			$dataAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+			//$base->DebugObj->printDebug($dataAry,1,'xxxd');
 			$dbTableProfileId=$dataAry[0]['dbtableprofileid'];
 			if ($dbTableProfileId != NULL){
 				$writeRowsAry=array();
 				$query="select * from validateprofileview where validatename='All'";
-				$result=$base->dbObj->queryTable($query,'read',&$base);
+				$result=$base->DbObj->queryTable($query,'read',&$base);
 				$passAry=array();
-				$dataAry=$base->utlObj->tableToHashAryV3($result,$passAry);
-				//$base->debugObj->printDebug($dataAry,1,'xxxd');
+				$dataAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
+				//$base->DebugObj->printDebug($dataAry,1,'xxxd');
 				$validateProfileId=$dataAry[0]['validateprofileid'];
 				if ($validateProfileId == NULL){
 					echo 'invalid validateprofileid when validatename is All, using 1 as default<br>';
@@ -1023,24 +1023,24 @@ class operationPlugin001Object {
 				$dbControlsAry['writerowsary']=$writeRowsAry;
 				$noWritten=count($writeRowsAry);
 				$base->errorProfileAry['compareresults']=$noWritten." added to table $dbTableName";
-				$successBool=$base->dbObj->writeToDb($dbControlsAry,&$base);
-				//$base->debugObj->printDebug($dbControlsAry,1,'xxxd: to write');
+				$successBool=$base->DbObj->writeToDb($dbControlsAry,&$base);
+				//$base->DebugObj->printDebug($dbControlsAry,1,'xxxd: to write');
 			} //end if dbtableprofild ne null
 			else { echo "table '$dbTableName' must exist to add columns!!!<br>";}
 		}
-		//$base->debugObj->printDebug($sourceFileAry,1,'xxxd');
+		//$base->DebugObj->printDebug($sourceFileAry,1,'xxxd');
 		//echo "source: $sourceDomainName, dbtablename: $dbTableName, srcpath: $thePath<br>";
 	}
 //=======================================
 	function changeUser($base){
-		$base->debugObj->printDebug("plugin001Obj:changeUser",0); //xx (h)
+		$base->DebugObj->printDebug("Plugin001Obj:changeUser",0); //xx (h)
 		$userName=$base->paramsAry['username'];
 		$userPassword=$base->paramsAry['userpassword'];
 		$userPassword=str_replace("\n",'',$userPassword);
 		$userPassword=str_replace("\r",'',$userPassword);
 		$userPassword=str_replace("\0",'',$userPassword);
 		$_SESSION['userobj']->setUserFields($userName,$userPassword,&$base);
-		$base->debugObj->printDebug("-rtn:changeUser",0);
+		$base->DebugObj->printDebug("-rtn:changeUser",0);
 	}
 //========================================
 	function writeDbFromAjax($base){
@@ -1104,7 +1104,7 @@ class operationPlugin001Object {
 			$noCols=count($tableDefsAry);
 			for ($lp=0;$lp<$noRows;$lp++){
 				$dataRow=$dbTableDataAry[$lp];
-				$base->fileObj->writeLog('ajax',"datarow: $dataRow",&$base);//xxxd
+				$base->FileObj->writeLog('ajax',"datarow: $dataRow",&$base);//xxxd
 				$dataRowAry_raw=explode($ajaxFieldDelim,$dataRow);
 				$dataRowAry=array();
 				for ($lp2=0;$lp2<$noCols;$lp2++){
@@ -1112,7 +1112,7 @@ class operationPlugin001Object {
 				}
 				//- need to check tempprofileid and null out key if it is set
 				$itIsTemp=$dataRowAry['tempprofileid'];
-				$itIsTemp=$base->utlObj->returnFormattedData($itIsTemp,'boolean','internal',&$base);
+				$itIsTemp=$base->UtlObj->returnFormattedData($itIsTemp,'boolean','internal',&$base);
 				if ($itIsTemp){
 					$tempKeyId=$dataRowAry[$keyName];
 					$dataRowAry['tempkeyid']=$tempKeyId;
@@ -1122,17 +1122,17 @@ class operationPlugin001Object {
 				$writeRowsAry[]=$dataRowAry;
 			}
 			$dbControlsAry['writerowsary']=$writeRowsAry;
-			//$base->debugObj->printDebug($dbControlsAry,1,'xxxd');
-			$base->dbObj->writeToDb($dbControlsAry,&$base);
-			$tempKeyIdAry=$base->errorObj->getKeyConv(&$base);
+			//$base->DebugObj->printDebug($dbControlsAry,1,'xxxd');
+			$base->DbObj->writeToDb($dbControlsAry,&$base);
+			$tempKeyIdAry=$base->ErrorObj->getKeyConv(&$base);
 			$tempKeyConv=null;
 			$delim=null;
 			foreach ($tempKeyIdAry as $tempKeyId=>$realKeyId){
 				$tempKeyConv.=$delim.$tempKeyId.'%'.$realKeyId;
 				$delim='~';
 			}
-			$checkStrg=$base->errorObj->retrieveAllErrors(&$base);
-			$base->fileObj->writeLog('ajax','checkstrg: '+$checkStrg,&$base);//xxxd
+			$checkStrg=$base->ErrorObj->retrieveAllErrors(&$base);
+			$base->FileObj->writeLog('ajax','checkstrg: '+$checkStrg,&$base);//xxxd
 			if ($checkStrg!=null){
 				$statusKey='status:error';
 				$statusMsg.='statusmsg:'.$checkStrg;	
@@ -1171,8 +1171,8 @@ class operationPlugin001Object {
 					if ($keyId != NULL){
 						$query="delete from $dbTableName where $keyName=$keyId";
 						//echo "query: $query<br>";//xxx
-						$result=$base->dbObj->queryTable($query,'updatequietly',&$base);
-						$checkStrg=$base->errorObj->retrieveAllErrors(&$base);
+						$result=$base->DbObj->queryTable($query,'updatequietly',&$base);
+						$checkStrg=$base->ErrorObj->retrieveAllErrors(&$base);
 						if ($checkStrg!=null){
 							$statusKey='status:error';
 							$statusMsg.='statusmsg'.$checkStrg."\n";	
@@ -1254,7 +1254,7 @@ class operationPlugin001Object {
 			$noCols=count($tableDefsAry);
 			for ($lp=0;$lp<$noRows;$lp++){
 				$dataRow=$dbTableDataAry[$lp];
-				$base->fileObj->writeLog('ajax',"datarow: $dataRow",&$base);//xxxd
+				$base->FileObj->writeLog('ajax',"datarow: $dataRow",&$base);//xxxd
 				$dataRowAry_raw=explode($ajaxFieldDelim,$dataRow);
 				$dataRowAry=array();
 				$theDelim=null;
@@ -1266,10 +1266,10 @@ class operationPlugin001Object {
 				$writeRowsAry[]=$dataRowAry;
 			}
 			$dbControlsAry['writerowsary']=$writeRowsAry;
-			//$base->debugObj->printDebug($dbControlsAry,1,'xxxd');
-			$base->dbObj->writeToDb($dbControlsAry,&$base);
-			$checkStrg=$base->errorObj->retrieveAllErrors(&$base);
-			$base->fileObj->writeLog('ajax','checkstrg: '+$checkStrg,&$base);//xxxd
+			//$base->DebugObj->printDebug($dbControlsAry,1,'xxxd');
+			$base->DbObj->writeToDb($dbControlsAry,&$base);
+			$checkStrg=$base->ErrorObj->retrieveAllErrors(&$base);
+			$base->FileObj->writeLog('ajax','checkstrg: '+$checkStrg,&$base);//xxxd
 			if ($checkStrg!=null){
 				$statusKey='error';
 				$statusMsg.=$checkStrg;	
@@ -1299,8 +1299,8 @@ class operationPlugin001Object {
 			if ($formEmail != null){
 				$theEmailSubject=$base->formProfileAry[$formName]['formemailsubject'];
 				$emailStuff="formemail: $formEmail, theemailsubject: $theEmailSubject, theemailmessage: $theEmailMessage";
-				$theEmailMessage=$base->utlObj->returnFormattedString($theEmailMessage,&$base);
-				$base->utlObj->sendMail($formEmail,$theEmailSubject,$theEmailMessage,&$base);
+				$theEmailMessage=$base->UtlObj->returnFormattedString($theEmailMessage,&$base);
+				$base->UtlObj->sendMail($formEmail,$theEmailSubject,$theEmailMessage,&$base);
 			}
 		}
 		echo "$statusKey|$statusMsg|upd:$updStrg|email:$emailStuff";
@@ -1319,7 +1319,7 @@ class operationPlugin001Object {
 		$alertLog='desktopalert.log';
 		$companyName=$applPassedAry['companyname'];
 		$passAry=array('thedate'=>'today');
-		$dateAry=$base->utlObj->getDateInfo($passAry,$base);
+		$dateAry=$base->UtlObj->getDateInfo($passAry,$base);
 		$todayDate=$dateAry['date_v1'];
 		$todayTime=$dateAry['time_v1'];
 		$todayHours=$dateAry['hours'];
@@ -1327,21 +1327,21 @@ class operationPlugin001Object {
 		//$todayHours=17;$todayMinutes=45;//xxx
 		$todayTime="$todayHours:$todayMinutes:00";//xxxd
 		$todayTotalMinutes=$todayHours*60+$todayMinutes;
-		//$base->debugObj->printDebug($dateAry,1,'xxx');
+		//$base->DebugObj->printDebug($dateAry,1,'xxx');
 		$logEntry="-log on and check for alerts to send-";
-		$base->fileObj->writeLog($alertLog,$logEntry,&$base);
+		$base->FileObj->writeLog($alertLog,$logEntry,&$base);
 		$query="select * from clientjobprofileview where clientjobdate='$todayDate' and clientjobemailsent is not true order by clientjobtime ";
 		//echo "query: $query\n";//xxx
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array();
-		$workAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$cnt=count($workAry);
 		//echo "cnt selected: $cnt\n";//xxx
 		$writeRowsAry=array();
 		$doUpdate=false;
 		foreach ($workAry as $ctr=>$entryAry){
 			$theDate_raw=$entryAry['clientjobdate'];
-			$theDate=$base->utlObj->convertDate($theDate_raw,'date1',&$base);
+			$theDate=$base->UtlObj->convertDate($theDate_raw,'date1',&$base);
 			$entryAry['clientjobdate']=$theDate;
 			$theTime=$entryAry['clientjobtime'];
 			$firstName=$entryAry['clientfirstname'];
@@ -1354,7 +1354,7 @@ class operationPlugin001Object {
 			$emailGroup=$entryAry['emailgroup'];
 			$employeeFirstName=$entryAry['employeefirstname'];
 			$employeeLastName=$entryAry['employeelastname'];
-			$theTotalMinutes=$base->utlObj->convertTime($theTime,&$base);
+			$theTotalMinutes=$base->UtlObj->convertTime($theTime,&$base);
 			$cutoffTotalMinutes=$theTotalMinutes-$clientJobNotify;
 			if ($cutoffTotalMinutes<=$todayTotalMinutes){$doEmail=true;}
 			else {$doEmail=false;}
@@ -1369,9 +1369,9 @@ class operationPlugin001Object {
 				$theMessage.="associate... $employeeFirstName $employeeLastName\n";
 				$entryAry['clientjobemailsent']=true;
 				$writeRowsAry[]=$entryAry;
-				$base->utlObj->sendMail($emailGroup,$theSubject,$theMessage,&$base);
+				$base->UtlObj->sendMail($emailGroup,$theSubject,$theMessage,&$base);
 				$logEntry="send email to $emailGroup, $theSubject";
-				$base->fileObj->writeLog($alertLog,$logEntry,&$base);
+				$base->FileObj->writeLog($alertLog,$logEntry,&$base);
 				$doUpdate=true;
 			} else {
 				//echo "dont: $employeeFirstName $employeeLastName start time: $theTime, start mins: $theTotalMinutes - notify mins: $clientJobNotify, = cutoff mins: $cutoffTotalMinutes, < now mins: $todayTotalMinutes\n";//xxxd	
@@ -1380,7 +1380,7 @@ class operationPlugin001Object {
 		if ($doUpdate){
 			$dbControlsAry=array('dbtablename'=>'clientjobprofile');
 			$dbControlsAry['writerowsary']=$writeRowsAry;
-			$base->dbObj->writeToDb($dbControlsAry,&$base);
+			$base->DbObj->writeToDb($dbControlsAry,&$base);
 		}
 	}
 //==================================================
@@ -1395,9 +1395,9 @@ class operationPlugin001Object {
 		if ($formProfileId != null){
 			$query="select * from formprofileview where formprofileid=$formProfileId";
 			$passAry=array();
-			$dataAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
+			$dataAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
 			$query="select * from formelementprofileview where formprofileid=$formProfileId";
-			$dataElementAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
+			$dataElementAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
 			//echo 'validate fields<br>';
 			$formPrefix=$dataAry[0]['formprefix'];
 			//-xxxd test
@@ -1405,7 +1405,7 @@ class operationPlugin001Object {
 			//-
 			if ($formPrefix != null){
 				//$query="select * from cssPrefixProfileView where prefixname='$formPrefix'";
-				//$prefixAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
+				//$prefixAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
 				$formRowPixels=$prefixAry[0]['formrowpixels'];
 				$formTopPixels=$prefixAry[0]['formtoppixels'];
 				$formLeftPixels=$prefixAry[0]['formleftpixels'];
@@ -1442,10 +1442,10 @@ class operationPlugin001Object {
 						$updateCssAry[$tableRow][$tableCol]=$tmpAry;
 					}
 				}
-				//$base->debugObj->printDebug($updateCssAry,1,'xxxd');//xxxd
+				//$base->DebugObj->printDebug($updateCssAry,1,'xxxd');//xxxd
 				//exit();//xxxd
 				if (!$errorOccured){
-					//$base->debugObj->printDebug($updateCssAry,1,'xxxd: updatecssary');
+					//$base->DebugObj->printDebug($updateCssAry,1,'xxxd: updatecssary');
 //------------------- use updateCssAry to update cssprofileary
 					$noRows=count($updateCssAry);
 					$topPixels=$formTopPixels;
@@ -1457,8 +1457,8 @@ class operationPlugin001Object {
 							$formElementAry=$updateCssAry[$rowLp][$elementColLp];
 							$theClass=$formElementAry['class'];
 							//echo "class: $theClass, row: $rowLp, col: $elementColLp<br>";//xxxd
-							//$base->debugObj->printDebug($updateCssAry[$rowLp][$elementColLp],1,'xxxd');
-							//$base->debugObj->printDebug($formElementAry,1,'xxxd');//xxxd
+							//$base->DebugObj->printDebug($updateCssAry[$rowLp][$elementColLp],1,'xxxd');
+							//$base->DebugObj->printDebug($formElementAry,1,'xxxd');//xxxd
 							//echo "col lp: $elementColLp, nocols: $elementNoCols, class: $theClass<br>";//xxxd
 							//- main css
 							$useTheClass=$theClass.'_main';
@@ -1469,7 +1469,7 @@ class operationPlugin001Object {
 //- main div:hover only if it exists!
 							$readQuery="select * from cssprofileview where jobprofileid=$jobProfileId and prefix='$formPrefix' and cssclass='$useTheClass' and cssid='none' and htmltag='div:hover'";	
 							$passAry=array();
-							$dataElementAry=$base->dbObj->queryTableRead($readQuery,$passAry,&$base);
+							$dataElementAry=$base->DbObj->queryTableRead($readQuery,$passAry,&$base);
 							$cssProfileId=$dataElementAry[0]['cssprofileid'];
 							if ($cssProfileId != null){
 								$this->buildCssElementProfileRow($cssProfileId,'position','absolute',&$base);
@@ -1506,14 +1506,14 @@ class operationPlugin001Object {
 		$passAry=array();
 		//echo "formprefix: $formPrefix<br>";//xxxd
 		//echo "get cssprofile query: $readQuery<br>";//xxxd
-		$dataElementAry=$base->dbObj->queryTableRead($readQuery,$passAry,&$base);
+		$dataElementAry=$base->DbObj->queryTableRead($readQuery,$passAry,&$base);
 		$cssProfileId=$dataElementAry[0]['cssprofileid'];
 		if ($cssProfileId == null){
 			$updateQuery="insert into cssprofile (jobprofileid, prefix,cssclass,cssid,htmltag) values ($jobProfileId, '$formPrefix', '$useTheClass', '$theId', '$htmlTag')";
 			//echo "didnt find it: $updateQuery<br>";//xxxd
-			$base->dbObj->queryTable($updateQuery,'update',&$base);	
+			$base->DbObj->queryTable($updateQuery,'update',&$base);	
 			//echo "now try to get cssprofileid again: readQuery: $readQuery";		
-			$dataElementAry=$base->dbObj->queryTableRead($readQuery,$passAry,&$base);
+			$dataElementAry=$base->DbObj->queryTableRead($readQuery,$passAry,&$base);
 			$cssProfileId=$dataElementAry[0]['cssprofileid'];
 			if ($cssProfileId == null){
 				echo "cssprofileid is null, it shouldnt be!!!";
@@ -1527,20 +1527,20 @@ class operationPlugin001Object {
 		$query="select * from csselementprofileview where cssprofileid=$cssProfileId and csselementproperty='$propertyName'";	
 		$passAry=array();
 		//echo "get csselementprofile query: $query<br>";
-		$dataElementAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
+		$dataElementAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
 		$cssElementProfileId=$dataElementAry[0]['csselementprofileid'];
 		//echo "csselementprofileid: $cssElementProfileId<br>";//xxxd
 		if ($cssElementProfileId == null){
 			$updateQuery="insert into csselementprofile (cssprofileid,csselementproperty,csselementvalue) values ($cssProfileId, '$propertyName', '$propertyValue')";
 			//echo "didnt find it query: $updateQuery<br>";//xxxd
-			$okFlag=$base->dbObj->queryTable($updateQuery,'update',&$base);			
-			$dataElementAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
+			$okFlag=$base->DbObj->queryTable($updateQuery,'update',&$base);			
+			$dataElementAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
 			$cssElementProfileId=$dataElementAry[0]['csselementprofileid'];
 		}
 		else {
 			$updateQuery="update csselementprofile set csselementvalue='$propertyValue' where csselementprofileid=$cssElementProfileId";
 			//echo "on file query: $updateQuery<br>";//xxxd
-			$okFlag=$base->dbObj->queryTable($updateQuery,'update',&$base);
+			$okFlag=$base->DbObj->queryTable($updateQuery,'update',&$base);
 		}
 		return $cssProfileId;
 	}
@@ -1550,33 +1550,33 @@ class operationPlugin001Object {
 		$jobProfileId=$base->paramsAry['jobprofileid'];
 		$query="select companyprofileid, companyname from jobprofileview where jobprofileid='$jobProfileId'";
 		$passAry=array();
-		$workAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
+		$workAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
 		$companyProfileId=$workAry[0]['companyprofileid'];
 		$companyName=$workAry[0]['companyname'];
 //- all containers info
 		$query="select * from containerprofileview where jobprofileid=$jobProfileId";
 		$passAry=array('delimit1'=>'containername');
-		$this->workAreaAry['containersinfoary']=$base->dbObj->queryTableRead($query,$passAry,&$base);
+		$this->workAreaAry['containersinfoary']=$base->DbObj->queryTableRead($query,$passAry,&$base);
 //- all containers elements
 		$query="select * from containerelementprofileview where jobprofileid=$jobProfileId";
 		$passAry=array('delimit1'=>'containername','delimit2'=>'containerelementno');
-		$this->workAreaAry['containersary']=$base->dbObj->queryTableRead($query,$passAry,&$base);
+		$this->workAreaAry['containersary']=$base->DbObj->queryTableRead($query,$passAry,&$base);
 //- all menus info
 		$query="select * from menuprofileview where jobprofileid=$jobProfileId";
 		$passAry=array('delimit1'=>'menuname');
-		$this->workAreaAry['menusinfoary']=$base->dbObj->queryTableRead($query,$passAry,&$base);
+		$this->workAreaAry['menusinfoary']=$base->DbObj->queryTableRead($query,$passAry,&$base);
 //- menus elements
 		$query="select * from menuelementprofileview where jobprofileid=$jobProfileId";
 		$passAry=array('delimit1'=>'menuname','delimit2'=>'menuelementno');
-		$this->workAreaAry['menusary']=$base->dbObj->queryTableRead($query,$passAry,&$base);
+		$this->workAreaAry['menusary']=$base->DbObj->queryTableRead($query,$passAry,&$base);
 //- tables
 		$query="select * from tableprofileview where jobprofileid=$jobProfileId";
 		$passAry=array('delimit1'=>'tablename');
-		$this->workAreaAry['tableinfoary']=$base->dbObj->queryTableRead($query,$passAry,&$base);
+		$this->workAreaAry['tableinfoary']=$base->DbObj->queryTableRead($query,$passAry,&$base);
 //- table columns
 		$query="select * from columnprofileview where jobprofileid=$jobProfileId";
 		$passAry=array('delimit1'=>'tablename','delimit2'=>'columnno');
-		$this->workAreaAry['tableary']=$base->dbObj->queryTableRead($query,$passAry,&$base);
+		$this->workAreaAry['tableary']=$base->DbObj->queryTableRead($query,$passAry,&$base);
 //- the rest
 		$this->workAreaAry['containersdisplayedary']=array();
 		$elementName='bodycontainer';
@@ -1593,7 +1593,7 @@ class operationPlugin001Object {
 				$jobDetailString.=$this->getContainerString($containerName,1,&$base);
 			}
 		}
-		$base->errorObj->saveError('jobdetails',$jobDetailString,&$base);
+		$base->ErrorObj->saveError('jobdetails',$jobDetailString,&$base);
 	}
 //==================================================
 	function getContainerString($containerName,$theLevel,&$base){
@@ -1604,9 +1604,9 @@ class operationPlugin001Object {
 		$containerAry=$this->workAreaAry['containersary'][$containerName];
 		$containerInfoAry=$this->workAreaAry['containersinfoary'][$containerName];
 		$containerShow_raw=$containerInfoAry['containershow'];
-		$containerShow=$base->utlObj->returnFormattedData($containerShow_raw,'boolean','sql',&$base);
+		$containerShow=$base->UtlObj->returnFormattedData($containerShow_raw,'boolean','sql',&$base);
 		$containerDividerShow_raw=$containerInfoAry['containerdividershow'];
-		$containerDividerShow=$base->utlObj->returnFormattedData($containerDividerShow_raw,'boolean','sql',&$base);
+		$containerDividerShow=$base->UtlObj->returnFormattedData($containerDividerShow_raw,'boolean','sql',&$base);
 		$containerFormat=$containerInfoAry['containerformat'];
 		//- all classes and ids
 		$containerClass=$containerInfoAry['containerclass'];
@@ -1719,7 +1719,7 @@ class operationPlugin001Object {
 					break;
 				case 'url':
 					$jobDetailString.=" url: $eleUrl, event: $eleEvents";
-					//$base->debugObj->printDebug($tableAry[$lp],1,'xxxf');
+					//$base->DebugObj->printDebug($tableAry[$lp],1,'xxxf');
 					break;
 				default:
 			}
@@ -1737,7 +1737,7 @@ class operationPlugin001Object {
 		$writeRowsAry=array();
 		$query="select * from containerprofileview where jobprofileid=$jobProfileId";
 		$passAry=array('delimit1'=>'containername');
-		$workAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
+		$workAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
 		$doUpdate=false;
 		$addHeadingStuff=false;
 		$statusStrg='';
@@ -1770,14 +1770,14 @@ class operationPlugin001Object {
 		if ($doUpdate){
 			$dbControlsAry=array('dbtablename'=>'containerprofile');
 			$dbControlsAry['writerowsary']=$writeRowsAry;
-			//$base->debugObj->printDebug($dbControlsAry,1,'xxxd');
-			$base->dbObj->writeToDb($dbControlsAry,&$base);
+			//$base->DebugObj->printDebug($dbControlsAry,1,'xxxd');
+			$base->DbObj->writeToDb($dbControlsAry,&$base);
 		}
 //- containerelementprofile
 		if ($addHeadingStuff){
 			$query="select * from containerprofileview where containername='headingcontainer' and jobprofileid=$jobProfileId";
 			$passAry=array('delimit1'=>'containername');
-			$workAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
+			$workAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
 			$containerProfileId=$workAry['headingcontainer']['containerprofileid'];
 			if ($containerProfileId == null){
 				echo "operationPlugin001Obj.initContainers containerprofileid: $containerProfileId -should have been there!";
@@ -1801,11 +1801,11 @@ class operationPlugin001Object {
 				$dbControlsAry=array('dbtablename'=>'containerelementprofile');
 				$dbControlsAry['writerowsary']=$writeRowsAry;
 				$statusStrg.="<br>thestyle(style) heading element written";
-				//$base->debugObj->printDebug($dbControlsAry,1,'xxxd');
-				$base->dbObj->writeToDb($dbControlsAry,&$base);
+				//$base->DebugObj->printDebug($dbControlsAry,1,'xxxd');
+				$base->DbObj->writeToDb($dbControlsAry,&$base);
 			}
 		}
-		$base->errorObj->saveError('containerinit',$statusStrg,&$base);
+		$base->ErrorObj->saveError('containerinit',$statusStrg,&$base);
 	}
 //==================================================
 	function maintTables($base){
@@ -1814,7 +1814,7 @@ class operationPlugin001Object {
 		$dbColumnName=$base->paramsAry['dbcolumnname'];
 		session_start();
 		$theAry_xml=$_SESSION['sessionobj']->getSessionValue('comparedbtablesxml');
-		$theAry=$base->xmlObj->xml2Ary($theAry_xml,&$base);
+		$theAry=$base->XmlObj->xml2Ary($theAry_xml,&$base);
 		//$_SESSION['sessionobj']->saveSessionValue('comparedbtablesxml','');
 		switch ($maintCode){
 //- whole table is missing
@@ -1822,14 +1822,14 @@ class operationPlugin001Object {
 //- see if table record missing or not - maybe just all of its column defs
 				$query="select dbtableprofileid from dbtableprofileview where dbtablename='$dbTableName'";
 				$passAry=array();
-				$wrkAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
+				$wrkAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
 				$cnt=count($wrkAry);
 				//echo "query: $query, cnt: $cnt<br>";//xxxd
 				if ($cnt<1){
 //- get dbtable record
 				$dbControlsAry=array('dbtablename'=>'dbtableprofile');
 				$dbTableAry=$theAry['dbtables'][$dbTableName];
-				//$base->debugObj->printDebug($theAry,1,'xxxdf');//xxxd
+				//$base->DebugObj->printDebug($theAry,1,'xxxdf');//xxxd
 				$tableRowAry=array();
 				//xxxf22 - is it really an array below this for columnAry?????
 				foreach ($dbTableAry as $columnName=>$columnAry){
@@ -1841,21 +1841,21 @@ class operationPlugin001Object {
 				if ($companyName != null){
 					$query="select companyprofileid from companyprofileview where companyname='$companyName'";
 					$passAry=array();
-					$wrkAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
+					$wrkAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
 					$companyProfileId=$wrkAry[0]['companyprofileid'];
 				}
 				if ($companyProfileId == null){
 					$query="select companyprofileid from companyprofileview";
 					$passAry=array();
-					$wrkAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
+					$wrkAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
 					$companyProfileId=$wrkAry[0]['companyprofileid'];
 				}
 				$tableRowAry['companyprofileid']=$companyProfileId;
 				$writeRowsAry=array();
 				$writeRowsAry[]=$tableRowAry;
 				$dbControlsAry['writerowsary']=$writeRowsAry;
-				//$base->debugObj->printDebug($dbControlsAry,1,'xxxd');
-				$base->dbObj->writeToDb($dbControlsAry,&$base);
+				//$base->DebugObj->printDebug($dbControlsAry,1,'xxxd');
+				$base->DbObj->writeToDb($dbControlsAry,&$base);
 				}
 				else {
 					echo "$dbTableName has dbtableprofile record so missing all columns, I guess!<br>";
@@ -1866,11 +1866,11 @@ class operationPlugin001Object {
 				//echo "tablemaint: will fix missing columns for table: $dbTableName, $dbColumnName<br>";//xxxd
 //- get meta info about dbcolumnsary
 				$dbControlsAry=array('dbtablename'=>'dbcolumnprofile');
-				//$base->dbObj->getDbTableInfo(&$dbControlsAry,&$base);				
+				//$base->DbObj->getDbTableInfo(&$dbControlsAry,&$base);				
 //- get tableprofileid
 				$query="select dbtableprofileid from dbtableprofile where dbtablename='$dbTableName'";
 				$passAry=array();
-				$wrkAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
+				$wrkAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
 				$dbTableProfileId=$wrkAry[0]['dbtableprofileid'];
 //- create records to write across
 				if ($dbTableProfileId != null){
@@ -1883,7 +1883,7 @@ class operationPlugin001Object {
 						if ($validateName != null){
 							$query="select validateprofileid from validateprofile where validatename='$validateName'";
 							$passAry=array();
-							$wrkAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
+							$wrkAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
 							$validateProfileId=$wrkAry[0]['validateprofileid'];
 							if ($validateProfileId != null){
 //- build the array xxxd -dont have to do it now just the dbtable has it screwed up
@@ -1903,20 +1903,20 @@ class operationPlugin001Object {
 					}
 //- setup and write column to new table
 					$dbControlsAry['writerowsary']=$writeRowsAry;
-					//$base->debugObj->printDebug($dbControlsAry,1,'xxxd');
+					//$base->DebugObj->printDebug($dbControlsAry,1,'xxxd');
 					//exit();//xxxd
-					$base->dbObj->writeToDb($dbControlsAry,&$base);
+					$base->DbObj->writeToDb($dbControlsAry,&$base);
 //- update the table in the actual database
 					$base->paramsAry['dbtableprofileid']=$dbTableProfileId;
 					$operationAry=array();
 					$operationAry['operationname']='runoperation';
 					$operationAry['pluginname']='updatedbtable';
-					$base->pluginObj->runOperationPlugin($operationAry,&$base);
+					$base->PluginObj->runOperationPlugin($operationAry,&$base);
 //- rebuild the view of the table in the actual database
 					$operationAry['pluginname']='rebuildview';
-					$base->pluginObj->runOperationPlugin($operationAry,&$base);
+					$base->PluginObj->runOperationPlugin($operationAry,&$base);
 				}
-				//$base->debugObj->printDebug($dbColumnAry,1,'dbcolumnary: '.$dbColumnName);//xxxd
+				//$base->DebugObj->printDebug($dbColumnAry,1,'dbcolumnary: '.$dbColumnName);//xxxd
 				break;
 			case 'mismatchedcolumn':
 //- table columns have fields that differ
@@ -1929,7 +1929,7 @@ class operationPlugin001Object {
 		$job=$base->paramsAry['job'];
 		$formProfileId=$base->paramsAry['formprofileid'];
 		$query="select * from formelementprofileview where formprofileid=$formProfileId";
-		$workAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
+		$workAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
 		$dbControlsAry=array('dbtablename'=>'formelementprofile');
 		$writeRowsAry=array();
 		foreach ($workAry as $ctr=>$elementAry){
@@ -1941,15 +1941,15 @@ class operationPlugin001Object {
 			$writeRowsAry[$ctr]=$elementAry;
 		}
 		$dbControlsAry['writerowsary']=$writeRowsAry;
-		$base->dbObj->writeToDb($dbControlsAry,&$base);
+		$base->DbObj->writeToDb($dbControlsAry,&$base);
 	}
 //===================================================
 	function buildImageStats($base){
 //- get input
 //echo "xxxf0";exit();
-		$base->fileObj->initLog('buildimagestats.log',&$base);
+		$base->FileObj->initLog('buildimagestats.log',&$base);
 		$startTime=time();
-		$base->fileObj->writeLog('buildimagestats.log','start image stats build',&$base);
+		$base->FileObj->writeLog('buildimagestats.log','start image stats build',&$base);
 		$newTimeOut=300;
 		ini_set('max_execution_time', $newTimeOut);
 		$sendData=$base->paramsAry['senddata'];
@@ -1962,7 +1962,7 @@ class operationPlugin001Object {
 			$getStuffAry[$aName]=$aValue;
 		}
 //- see if just one directory or a whole client
-		//$base->debugObj->printDebug($getStuffAry,1,'xxxf');exit();//xxxf
+		//$base->DebugObj->printDebug($getStuffAry,1,'xxxf');exit();//xxxf
 		if (array_key_exists('jeffclientdirectory',$getStuffAry)){
 			$oneDirectory=true;
 			$jeffClientDirectory=$getStuffAry['jeffclientdirectory'];
@@ -1972,10 +1972,10 @@ class operationPlugin001Object {
 		$jeffClientProfileId=$getStuffAry['jeffclientprofileid'];
 		$query="select * from jeffclientprofile where jeffclientprofileid=$jeffClientProfileId";
 		$passAry=array();
-		$clientAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
+		$clientAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
 //- setup paths
 		$clientKeyName=$clientAry[0]['jeffclientkeyname'];
-		$systemAry=$base->clientObj->getSystemData(&$base);
+		$systemAry=$base->ClientObj->getSystemData(&$base);
 		$baseLocal=$systemAry['baselocal'];
 		$baseImage="$baseLocal/images/$clientKeyName";
 		$rawBaseImage="$baseLocal/rawimages/$clientKeyName";
@@ -1985,54 +1985,54 @@ class operationPlugin001Object {
 		//$query="delete from jeffclientimagedetailprofile where jeffclientimageprofileid in(select jeffclientimageprofileid $jeffClientProfileId";
 		$thisTime=time();
 		$diffTime=$thisTime-$startTime;
-		$base->fileObj->writeLog('buildimagestats.log',"$diffTime: I. ============ remove old info from jeffclientimagedetailprofile(images) ============",&$base);
+		$base->FileObj->writeLog('buildimagestats.log',"$diffTime: I. ============ remove old info from jeffclientimagedetailprofile(images) ============",&$base);
 		//xxxf22 - this needs to have: and with jeffclientdirectory = 'xxx/xxx/xxx'
 		$innerQuery="select jeffclientdirectoryprofileid from jeffclientdirectoryprofile where jeffclientprofileid=$jeffClientProfileId";
 		if ($oneDirectory){$innerQuery.=" and jeffclientdirectory = '$jeffClientDirectory'";}
 		$query="delete from jeffclientimageprofile where jeffclientdirectoryprofileid in ($innerQuery)";
 		$thisTime=time();
 		$diffTime=$thisTime-$startTime;
-		$base->fileObj->writeLog('buildimagestats.log',"$diffTime: done",&$base);
+		$base->FileObj->writeLog('buildimagestats.log',"$diffTime: done",&$base);
 		//echo "query: $query\n";//xxxxd
-		$result=$base->dbObj->queryTable($query,'delete',&$base);
+		$result=$base->DbObj->queryTable($query,'delete',&$base);
 //
 //II. ========== remove old info from jeffclientdirectoryprofile ==========
 //
 		$thisTime=time();
 		$diffTime=$thisTime-$startTime;
-		$base->fileObj->writeLog('buildimagestats.log',"$diffTime: II. ========== remove old info from jeffclientimageprofile ==========",&$base);
+		$base->FileObj->writeLog('buildimagestats.log',"$diffTime: II. ========== remove old info from jeffclientimageprofile ==========",&$base);
 		//xxxf22 - this needs to have : and wih jeffclientdirectory = 'xxx/xxx/xxx'
 		$query="delete from jeffclientdirectoryprofile where jeffclientprofileid=$jeffClientProfileId";
 		if ($oneDirectory){$query.=" and jeffclientdirectory='$jeffClientDirectory'";}
-		$result=$base->dbObj->queryTable($query,'delete',&$base);
+		$result=$base->DbObj->queryTable($query,'delete',&$base);
 		//echo "query: $query, xxxf0 early stop";exit();//xxxf
 		$thisTime=time();
 		$diffTime=$thisTime-$startTime;
-		$base->fileObj->writeLog('buildimagestats.log',"$diffTime: done",&$base);
+		$base->FileObj->writeLog('buildimagestats.log',"$diffTime: done",&$base);
 		//exit();//xxxd
 //
 // III. ========== update jeffclientimageprofile with directories and their totals ==========
 //
-		$base->fileObj->writeLog('buildimagestats.log',"$diffTime: III. ========== update jeffclientimageprofile with directories and their totals ==========",&$base);
+		$base->FileObj->writeLog('buildimagestats.log',"$diffTime: III. ========== update jeffclientimageprofile with directories and their totals ==========",&$base);
 //III. a. --- rawimages/<client> directory totals
-		$base->fileObj->writeLog('buildimagestats.log',"$diffTime: III. a. --- raw directories",&$base);		
+		$base->FileObj->writeLog('buildimagestats.log',"$diffTime: III. a. --- raw directories",&$base);		
 		$bashCommand="/home/jeff/bin/getimagedirectorytotals.bsh $rawBaseImage";
 		if ($oneDirectory){$bashCommand.="/$jeffClientDirectory";}
 		$passAry['bashcommand']=$bashCommand;
 		$thisTime=time();
 		$diffTime=$thisTime-$startTime;
-		$base->fileObj->writeLog('buildimagestats.log',"$diffTime: run bash command: getimagedata.bsh",&$base);
-		$passAry=$base->fileObj->runBashCommand($passAry,&$base);
+		$base->FileObj->writeLog('buildimagestats.log',"$diffTime: run bash command: getimagedata.bsh",&$base);
+		$passAry=$base->FileObj->runBashCommand($passAry,&$base);
 		$thisTime=time();
 		$diffTime=$thisTime-$startTime;
-		$base->fileObj->writeLog('buildimagestats.log',"$diffTime: done",&$base);
+		$base->FileObj->writeLog('buildimagestats.log',"$diffTime: done",&$base);
 		$rawRowsAry=array();
 		$outputAry=$passAry['outputary'];
 		$theLen=count($outputAry);
 		//print_r($outputAry);//xxxf
 		$thisTime=time();
 		$diffTime=$thisTime-$startTime;
-		$base->fileObj->writeLog('buildimagestats.log',"$diffTime: loop through each output line from bash string",&$base);
+		$base->FileObj->writeLog('buildimagestats.log',"$diffTime: loop through each output line from bash string",&$base);
 		foreach ($outputAry as $ctr=>$valueString){
 			$valueAry=explode(',',$valueString);
 			$thePath_raw=trim($valueAry[0]);
@@ -2056,27 +2056,27 @@ class operationPlugin001Object {
 		}
 		$thisTime=time();
 		$diffTime=$thisTime-$startTime;
-		$base->fileObj->writeLog('buildimagestats.log',"$diffTime: done",&$base);
+		$base->FileObj->writeLog('buildimagestats.log',"$diffTime: done",&$base);
 // III. b. --- images/<client> directory totals
-		$base->fileObj->writeLog('buildimagestats.log',"$diffTime: III. b. --- main directories",&$base);
+		$base->FileObj->writeLog('buildimagestats.log',"$diffTime: III. b. --- main directories",&$base);
 		$thisTime=time();
 		$diffTime=$thisTime-$startTime;
-		$base->fileObj->writeLog('buildimagestats.log',"$diffTime: run bash command getimagedata.bsh",&$base);
+		$base->FileObj->writeLog('buildimagestats.log',"$diffTime: run bash command getimagedata.bsh",&$base);
 		$bashCommand="/home/jeff/bin/getimagedirectorytotals.bsh $baseImage";
 		$firstChar=substr($jeffClientDirectory,0,1);
 		if ($firstChar != '/'){$jeffClientDirectory='/'.$jeffClientDirectory;}
 		if ($oneDirectory){$bashCommand.="/$jeffClientDirectory";}
 		$passAry['bashcommand']=$bashCommand;
-		$passAry=$base->fileObj->runBashCommand($passAry,&$base);
+		$passAry=$base->FileObj->runBashCommand($passAry,&$base);
 		$thisTime=time();
 		$diffTime=$thisTime-$startTime;
-		$base->fileObj->writeLog('buildimagestats.log',"$diffTime: done",&$base);
+		$base->FileObj->writeLog('buildimagestats.log',"$diffTime: done",&$base);
 		$writeRowsAry=array();
 		$totalImageCnt=0;
 		$totalImageSize=0;
 		$thisTime=time();
 		$diffTime=$thisTime-$startTime;
-		$base->fileObj->writeLog('buildimagestats.log',"$diffTime: loop through its output",&$base);
+		$base->FileObj->writeLog('buildimagestats.log',"$diffTime: loop through its output",&$base);
 		$outputAry=$passAry['outputary'];
 		foreach ($outputAry as $ctr=>$valueString){
 			$valueAry=explode(',',$valueString);
@@ -2116,46 +2116,46 @@ class operationPlugin001Object {
 		}
 		$thisTime=time();
 		$diffTime=$thisTime-$startTime;
-		$base->fileObj->writeLog('buildimagestats.log',"$diffTime: done",&$base);
+		$base->FileObj->writeLog('buildimagestats.log',"$diffTime: done",&$base);
 		$dbControlsAry=array('dbtablename'=>'jeffclientdirectoryprofile');
 		$dbControlsAry['writerowsary']=$writeRowsAry;
-		$base->dbObj->writeToDb($dbControlsAry,&$base);
+		$base->DbObj->writeToDb($dbControlsAry,&$base);
 //
 // IV. ========== update jeffclientprofile with directory totals ==========
 //
-		$base->fileObj->writeLog('buildimagestats.log',"$diffTime: IV. ========== update jeffclientprofile with directory totals ==========",&$base);
+		$base->FileObj->writeLog('buildimagestats.log',"$diffTime: IV. ========== update jeffclientprofile with directory totals ==========",&$base);
 		$clientAry[0]['jeffclientimagecnt']=$totalImageCnt;
 		$clientAry[0]['jeffclientimagesize']=$totalImageSize;
 		$dbControlsAry=array('dbtablename'=>'jeffclientprofile');
 		$dbControlsAry['writerowsary']=$clientAry;
-		//$base->debugObj->printDebug($dbControlsAry,1,'xxxd');
+		//$base->DebugObj->printDebug($dbControlsAry,1,'xxxd');
 		$thisTime=time();
 		$diffTime=$thisTime-$startTime;
-		$base->fileObj->writeLog('buildimagestats.log',"$diffTime: write all data to db",&$base);
-		$base->dbObj->writeToDb($dbControlsAry,&$base);
+		$base->FileObj->writeLog('buildimagestats.log',"$diffTime: write all data to db",&$base);
+		$base->DbObj->writeToDb($dbControlsAry,&$base);
 		$thisTime=time();
 		$diffTime=$thisTime-$startTime;
-		$base->fileObj->writeLog('buildimagestats.log',"$diffTime: done",&$base);
+		$base->FileObj->writeLog('buildimagestats.log',"$diffTime: done",&$base);
 //
 //V. ========== update jeffclientimageprofile with individual image stats ==========
 //
-		$base->fileObj->writeLog('buildimagestats.log',"$diffTime: V. ========== update jeffclientimagedetailprofile with individual image stats ==========",&$base);
+		$base->FileObj->writeLog('buildimagestats.log',"$diffTime: V. ========== update jeffclientimagedetailprofile with individual image stats ==========",&$base);
 		$ctr=0;
 		$query="select * from jeffclientdirectoryprofileview where jeffclientprofileid=$jeffClientProfileId";//xxxf22
 		if ($oneDirectory){$query.=" and jeffclientdirectory='$jeffClientDirectory'";}
 		$passAry=array();
-		$directoryAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
+		$directoryAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
 //- setup column definitions
 		$defsAry=array('jeffclientpermissions','jeffclientfileowner','jeffclientfilegroup','jeffclientfilesize',
 			'jeffclientfiledate','jeffclientfiletime','jeffclientfilename');
-		//$base->debugObj->printDebug($directoryAry,1,'xxxd');exit();
+		//$base->DebugObj->printDebug($directoryAry,1,'xxxd');exit();
 		$thisTime=time();
 		$diffTime=$thisTime-$startTime;
-		$base->fileObj->writeLog('buildimagestats.log',"$diffTime: loop through directory array",&$base);
+		$base->FileObj->writeLog('buildimagestats.log',"$diffTime: loop through directory array",&$base);
 		$fileCnt=0;
 		$dirCnt=0;
 		$imageCnt=0;
-		//$base->debugObj->printDebug($directoryAry,1,'xxxf');exit();
+		//$base->DebugObj->printDebug($directoryAry,1,'xxxf');exit();
 //- loop through each directory
 		foreach ($directoryAry as $ctr=>$theDirAry){
 			$dirCnt++;
@@ -2163,23 +2163,23 @@ class operationPlugin001Object {
 			$theDir=$theDirAry['jeffclientdirectory'];
 			$thisTime=time();
 			$diffTime=$thisTime-$startTime;
-			//$base->fileObj->writeLog('buildimagestats.log',"$diffTime: ... run getimagedetaildata.bsh on: $rawBaseImage/$theDir",&$base);
+			//$base->FileObj->writeLog('buildimagestats.log',"$diffTime: ... run getimagedetaildata.bsh on: $rawBaseImage/$theDir",&$base);
 			$jeffClientDirectoryProfileId=$theDirAry['jeffclientdirectoryprofileid'];
 //- get raw image file stats
 			$rawFullPath=$rawBaseImage.'/'.$theDir;
 			$bashCommand="/home/jeff/bin/getimagedetaildata.pl $rawFullPath";
-			$base->fileObj->writeLog('buildimagestats.log',"run $bashCommand",&$base);
+			$base->FileObj->writeLog('buildimagestats.log',"run $bashCommand",&$base);
 			$passAry['bashcommand']=$bashCommand;
-			$passAry=$base->fileObj->runBashCommand($passAry,&$base);
+			$passAry=$base->FileObj->runBashCommand($passAry,&$base);
 			//echo "bashcommand: $bashCommand\n";//xxxf
-			//$base->debugObj->printDebug($passAry,1,'xxxf');exit();
+			//$base->DebugObj->printDebug($passAry,1,'xxxf');exit();
 //- get destination file stats and reformat for easy access
 			$destFullPath=$baseImage.'/'.$theDir;
 			$bashCommand="/home/jeff/bin/getimagedetaildata.pl $destFullPath";
 			//echo " bashcommand: $bashCommand<br>";//xxxf
-			$base->fileObj->writeLog('buildimagestats.log',"run $bashCommand",&$base);
+			$base->FileObj->writeLog('buildimagestats.log',"run $bashCommand",&$base);
 			$destPassAry=array('bashcommand'=>$bashCommand);
-			$destPassAry=$base->fileObj->runBashCommand($destPassAry,&$base);
+			$destPassAry=$base->FileObj->runBashCommand($destPassAry,&$base);
 			$destFileAry=array();
 			foreach ($destPassAry['outputary'] as $dmyctr=>$fileStrg){
 				$fileAry=explode(',',$fileStrg);
@@ -2198,7 +2198,7 @@ class operationPlugin001Object {
 				$workAry=$passAry['outputary'];
 				foreach ($workAry as $ctr=>$fileString){
 					$wrkCnt++;
-					$base->fileObj->writeLog('buildimagestats.log',"$diffTime: $wrkCnt) $fileString",&$base);
+					$base->FileObj->writeLog('buildimagestats.log',"$diffTime: $wrkCnt) $fileString",&$base);
 					$fileString=str_replace("%sp%"," ",$fileString);
 					$fileString=trim($fileString);
 					$fileStringAry=explode(',',$fileString);
@@ -2222,11 +2222,11 @@ class operationPlugin001Object {
 						if ($fileSuffix == 'png' || $fileSuffix == 'bmp' || $fileSuffix == 'jpg' || $fileSuffix == 'tiff'){
 							$thisTime=time();
 							$diffTime=$thisTime-$startTime;
-							$base->fileObj->writeLog('buildimagestats.log',"$diffTime: ... do image stats on $fileName",&$base);
+							$base->FileObj->writeLog('buildimagestats.log',"$diffTime: ... do image stats on $fileName",&$base);
 							$imageCnt++;
-							$success=$base->utlObj->openImageBuffer(0, &$base);
-							$success=$base->utlObj->readImage(0, $rawFilePath, &$base);// filepath should be to images here
-							$imageStatsAry=$base->utlObj->getImageStats(0,&$base);
+							$success=$base->UtlObj->openImageBuffer(0, &$base);
+							$success=$base->UtlObj->readImage(0, $rawFilePath, &$base);// filepath should be to images here
+							$imageStatsAry=$base->UtlObj->getImageStats(0,&$base);
 							$imageWidth=$imageStatsAry['imagewidth'];
 							$imageHeight=$imageStatsAry['imageheight'];
 							//echo "filepath: $rawFilePath, imagewidth: $imageWidth, imageheight: $imageHeight\n";exit();//xxxf
@@ -2234,7 +2234,7 @@ class operationPlugin001Object {
 						else {
 							$thisTime=time();
 							$diffTime=$thisTime-$startTime;
-							$base->fileObj->writeLog('buildimagestats.log',"$diffTime: ... not an image: $fileName",&$base);
+							$base->FileObj->writeLog('buildimagestats.log',"$diffTime: ... not an image: $fileName",&$base);
 							$fileCnt++;
 							$imageWidth=0;
 							$imageHeight=0;
@@ -2285,10 +2285,10 @@ class operationPlugin001Object {
 						if ($fileSuffix == 'png' || $fileSuffix == 'bmp' || $fileSuffix == 'jpg' || $fileSuffix == 'tiff'){
 							$thisTime=time();
 							$diffTime=$thisTime-$startTime;
-							$base->fileObj->writeLog('buildimagestats.log',"$diffTime: ... do image stats on $fileName",&$base);
-							$success=$base->utlObj->openImageBuffer(0, &$base);
-							$success=$base->utlObj->readImage(0, $destFilePath, &$base);
-							$imageStatsAry=$base->utlObj->getImageStats(0,&$base);
+							$base->FileObj->writeLog('buildimagestats.log',"$diffTime: ... do image stats on $fileName",&$base);
+							$success=$base->UtlObj->openImageBuffer(0, &$base);
+							$success=$base->UtlObj->readImage(0, $destFilePath, &$base);
+							$imageStatsAry=$base->UtlObj->getImageStats(0,&$base);
 							$imageWidth=$imageStatsAry['imagewidth'];
 							$imageHeight=$imageStatsAry['imageheight'];
 							$rowAry['jeffclientimagewidthnew']=$imageWidth;
@@ -2300,20 +2300,20 @@ class operationPlugin001Object {
 				}
 				$dbControlsAry=array('dbtablename'=>'jeffclientimageprofile');
 				$dbControlsAry['writerowsary']=$writeRowsAry;
-				//$base->debugObj->printDebug($dbControlsAry,1,'xxxf');exit();//xxxf
-				$success=$base->dbObj->writeToDb($dbControlsAry,&$base);
-				//$base->errorObj->printAllErrors(&$base);//xxxf
+				//$base->DebugObj->printDebug($dbControlsAry,1,'xxxf');exit();//xxxf
+				$success=$base->DbObj->writeToDb($dbControlsAry,&$base);
+				//$base->ErrorObj->printAllErrors(&$base);//xxxf
 			}
 		}
 		$thisTime=time();
 		$diffTime=$thisTime-$startTime;
-		$base->fileObj->writeLog('buildimagestats.log',"$diffTime: done looping through all directories and exitting",&$base);
+		$base->FileObj->writeLog('buildimagestats.log',"$diffTime: done looping through all directories and exitting",&$base);
 		ini_set('max_execution_time', 60);
 		echo "okmsg| directories: $dirCnt, images: $imageCnt, other files: $fileCnt";
 	}
 //==================================================
 	function buildCssDisplay($base){
-		//$base->debugObj->printDebug($base->paramsAry,1,'xxxd');
+		//$base->DebugObj->printDebug($base->paramsAry,1,'xxxd');
 		$cssPrefix=$base->paramsAry['prefix'];
 		$jobProfileId=$base->paramsAry['jobprofileid'];
 		$errorMsgName=$base->paramsAry['errormsgname'];
@@ -2330,9 +2330,9 @@ class operationPlugin001Object {
 				$query="select * from csselementprofileview where jobprofileid=$jobProfileId and prefix='$cssPrefix' order by cssclass, cssid, htmltag, csselementproperty";
 		}
 		$passAry=array();
-		$workAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
+		$workAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
 		//echo "query: $query<br>";//xxxd
-		//$base->debugObj->printDebug($workAry,1,'xxxd');
+		//$base->DebugObj->printDebug($workAry,1,'xxxd');
 		$displayStrg="==========$cssPrefix==========<br><br>";
 		$displayStrg.="<b>prefix, class, id, html</b><br>";
 		$oldCssPrefix=null;
@@ -2363,19 +2363,19 @@ class operationPlugin001Object {
 		//$pos=strpos($displayStrg,'maindisplayimageheaderleft',0);
 		//$theLen=strlen($displayStrg);
 		//echo "xxxd pos: $pos, len: $theLen<br>";//xxxd
-		$base->errorObj->saveError($errorMsgName,$displayStrg,&$base);
-		//$tst=$base->errorObj->retrieveError($errorMsgName,&$base);
+		$base->ErrorObj->saveError($errorMsgName,$displayStrg,&$base);
+		//$tst=$base->ErrorObj->retrieveError($errorMsgName,&$base);
 		//echo $tst;
 	}
 	//==================================================
 	function buildCssDisplayV2($base){
-		//$base->debugObj->printDebug($base->paramsAry,1,'xxxd');
+		//$base->DebugObj->printDebug($base->paramsAry,1,'xxxd');
 		$cssPrefix=$base->paramsAry['cssprefix'];
 		$checkCssPrefix=$cssPrefix;
 		$jobProfileId=$base->paramsAry['jobprofileid'];
 		$reportLoadId=$base->paramsAry['reportloadid'];
-		$base->utlObj->breakOutSendData(&$base);
-		//$base->debugObj->printDebug($base->paramsAry,1,'xxxf');exit();
+		$base->UtlObj->breakOutSendData(&$base);
+		//$base->DebugObj->printDebug($base->paramsAry,1,'xxxf');exit();
 		$space="&nbsp;";
 		$space5=$space.$space.$space.$space.$space;
 		$space10=$space5.$space5;
@@ -2390,9 +2390,9 @@ class operationPlugin001Object {
 				$query="select * from csselementprofileview where jobprofileid=$jobProfileId and prefix='$cssPrefix' order by cssclass, cssid, htmltag, csselementproperty";
 		}
 		$passAry=array();
-		$workAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
+		$workAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
 		//echo "query: $query<br>";//xxxd
-		//$base->debugObj->printDebug($workAry,1,'xxxd');
+		//$base->DebugObj->printDebug($workAry,1,'xxxd');
 		$displayStrg="==========$cssPrefix==========<br><br>";
 		$displayStrg.="<table style=\"text-align:left\"><tr><th>prefix</th><th>class</th><th>id</th><th>html</th><th>property</th><th>value</th></tr>";
 		$oldCssPrefix=null;
@@ -2437,8 +2437,8 @@ class operationPlugin001Object {
 		}
 		//echo "query: $query";exit();//xxxf
 		$passAry=array();
-		$workAry=$base->dbObj->queryTableRead($query,$passAry,&$base);
-		//$base->debugObj->printDebug($workAry,1,'xxxd');
+		$workAry=$base->DbObj->queryTableRead($query,$passAry,&$base);
+		//$base->DebugObj->printDebug($workAry,1,'xxxd');
 		$displayStrg.="<table style=\"text-align:left\"><tr><th>prefix</th><th>class</th><th>id</th><th>html</th><th>event</th><th>action</th></tr>";
 		$oldCssPrefix=null;
 		$oldCssClass=null;
@@ -2472,12 +2472,12 @@ class operationPlugin001Object {
 		$displayStrg.="</table><br><br>";
 //- end
 		echo "okupd|$reportLoadId|$displayStrg";
-		//$tst=$base->errorObj->retrieveError($errorMsgName,&$base);
+		//$tst=$base->ErrorObj->retrieveError($errorMsgName,&$base);
 		//echo $tst;
 	}
 //==================================================
 	function buildNewContainer($base){
-		//$base->debugObj->printDebug($base->paramsAry,1,'xxxf');//xxxf
+		//$base->DebugObj->printDebug($base->paramsAry,1,'xxxf');//xxxf
 		$containerName=$base->paramsAry['containername'];
 		$typeOfContainer=$base->paramsAry['typeofcontainer'];
 		$jobProfileId=$base->paramsAry['jobprofileid'];
@@ -2509,7 +2509,7 @@ class operationPlugin001Object {
 				$dbControlsAry=array();
 				$dbControlsAry['dbtablename']='containerprofile';
 				$dbControlsAry['writerowsary']=array($theRow);
-				$base->dbObj->writeToDb($dbControlsAry,&$base);
+				$base->DbObj->writeToDb($dbControlsAry,&$base);
 			}
 		}
 	}
@@ -2518,7 +2518,7 @@ class operationPlugin001Object {
 		//echo 'xxxf: in buildhealthactiontable';
 //- get current date and time
 		$passAry=array('thedate'=>'today');
-		$nowTimeAry=$base->utlObj->getDateInfo($passAry,&$base);
+		$nowTimeAry=$base->UtlObj->getDateInfo($passAry,&$base);
 		$nowDay=$nowTimeAry['mday'];
 		$nowYear=$nowTimeAry['year'];
 		$nowMonth=$nowTimeAry['mon'];
@@ -2528,9 +2528,9 @@ class operationPlugin001Object {
 		//echo "thedate: $nowDate\n";
 //- get action profile file
 		$query="select * from healthactionview where actionyear=$nowYear and actionmonth=$nowMonth and actionDay=$nowDay and actionperformed=false";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array('delimit1'=>'healtheventprofileid','delimit2'=>'actionhour','delimit3'=>'actionminute');
-		$actionAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$actionAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 /*
 		foreach ($actionAry as $one=>$two){
 			echo "$one: $two\n";
@@ -2548,9 +2548,9 @@ class operationPlugin001Object {
 */
 //- get scheduleprofile file
 		$query="select * from scheduleeventprofileview";
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array('delimit1'=>'scheduletype','delimit2'=>'schedulehour','delimit3'=>'scheduleminute');
-		$scheduleAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+		$scheduleAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 		$nowHour=19;
 		$nowMinute=32;
 		foreach ($scheduleAry as $scheduleType=>$array1){
@@ -2571,14 +2571,14 @@ class operationPlugin001Object {
 					break;
 				case 'everyotherdayspecifictime':
 					if ($lastScheduleDate == null){
-						$lastScheduleDate=$base->utlObj->getTodaysDate(&$base);
-						$lastScheduleDate_internal=$base->utlObj->returnFormattedData($lastScheduleDate,'date','internal');
+						$lastScheduleDate=$base->UtlObj->getTodaysDate(&$base);
+						$lastScheduleDate_internal=$base->UtlObj->returnFormattedData($lastScheduleDate,'date','internal');
 						$theAry['lastscheduledate']=$lastScheduleDate;
 						$dbControlsAry=array('dbtablename'=>'scheduleeventprofile');
 						$dbControlsAry['writerowsary'][]=$theAry;
-						$base->dbObj->writeToDb($dbControlsAry,&$base);
+						$base->DbObj->writeToDb($dbControlsAry,&$base);
 					}
-					$noDays=$base->utlObj->getNoDays($lastScheduleDate,$nowDate,&$base);
+					$noDays=$base->UtlObj->getNoDays($lastScheduleDate,$nowDate,&$base);
 					if ($noDays>=1){$okToContinue=true;}
 					break;
 			}
@@ -2610,7 +2610,7 @@ class operationPlugin001Object {
 				$newActionEntryAry['actionperformed']='false';
 				$dbControlsAry=array('dbtablename'=>'healthaction');
 				$dbControlsAry['writerowsary'][0]=$newActionEntryAry;
-				$base->dbObj->writeToDb($dbControlsAry,&$base);
+				$base->DbObj->writeToDb($dbControlsAry,&$base);
 			}
 		}
 		}
@@ -2641,7 +2641,7 @@ class operationPlugin001Object {
 		$writeRowsAry=array();
 		$writeRowsAry[]=$rowUpdate;
 		$dbControlsAry=array('dbtablename'=>'thingstodo','writerowsary'=>$writeRowsAry);
-		$base->dbObj->writeToDb($dbControlsAry,&$base);
+		$base->DbObj->writeToDb($dbControlsAry,&$base);
 	}
 //==================================================
 	function buildJobStatTotals($base){
@@ -2678,7 +2678,7 @@ class operationPlugin001Object {
 		$endDate=$workAry['enddateid'];
 		//foreach ($workAry as $name=>$value){echo "$name: $value\n";}
 		$passAry=array('thedate'=>'today');
-		$thisDateAry=$base->utlObj->getDateInfo($passAry,&$base);
+		$thisDateAry=$base->UtlObj->getDateInfo($passAry,&$base);
 		$wDayNo=$thisDateAry['wday'];
 		$mDayNo=$thisDateAry['mday'];
 		$yearNo=$thisDateAry['year'];
@@ -2693,7 +2693,7 @@ class operationPlugin001Object {
 				$startDateUse=$monthNo.'/1/'.$yearNo;
 				break;
 			case 'weekbegin':
-				$startDateUse=$base->utlObj->adjustTodayDate($wDayNo,&$base);
+				$startDateUse=$base->UtlObj->adjustTodayDate($wDayNo,&$base);
 				break;
 			case 'now':
 				$startDateUse=$monthNo.'/'.$mDayNo.'/'.$yearNo;
@@ -2711,7 +2711,7 @@ class operationPlugin001Object {
 				$endDateUse=$monthNo.'/1/'.$yearNo;
 				break;
 			case 'weekbegin':
-				$endDateUse=$base->utlObj->adjustTodayDate($wDayNo,&$base);
+				$endDateUse=$base->UtlObj->adjustTodayDate($wDayNo,&$base);
 				break;
 			case 'now':
 				$endDateUse=$monthNo.'/'.$mDayNo.'/'.$yearNo;
@@ -2722,15 +2722,15 @@ class operationPlugin001Object {
 		//echo "startdateuse: $startDateUse, enddateuse: $endDateUse\n";//xxxf
 		$query="select * from jobstatsview where (jobstatsdate >= '$startDateUse' and jobstatsdate <= '$endDateUse') and companyprofileid = $companyProfileId $jobStatNameInsert $jobStatNameSortInsert";
 		//echo "$query,,,,,,\n";exit();//xxxf
-		$result=$base->dbObj->queryTable($query,'read',&$base);
+		$result=$base->DbObj->queryTable($query,'read',&$base);
 		$passAry=array();
-		$workAry=$base->utlObj->tableToHashAryV3($result,$passAry,&$base);
+		$workAry=$base->UtlObj->tableToHashAryV3($result,$passAry,&$base);
 		$theDisplayStrg=NULL;
 		$totalWorkAry=array();
 		$cnt=count($workAry);
 		foreach ($workAry as $ctr=>$valueAry){
 			$theDate_raw=$valueAry['jobstatsdate'];
-			$theDate=$base->utlObj->convertDate($theDate_raw,'date1',&$base);
+			$theDate=$base->UtlObj->convertDate($theDate_raw,'date1',&$base);
 			$theCnt=$valueAry['jobstatscnt'];
 			//echo "typeofreport: $typeOfReport, ";//xxxf
 			switch ($typeOfReport){
@@ -2739,9 +2739,9 @@ class operationPlugin001Object {
 					break;
 				default:
 					switch ($typeOfReport){
-						case 'weekly':$useDate=$base->utlObj->getLastDayOfWeek($theDate,&$base);break;
-						case 'mnthly':$useDate=$base->utlObj->getLastDayOfMonth($theDate,&$base);break;
-						case 'yrly':$useDate=$base->utlObj->getLastDayOfYear($theDate,&$base);break;
+						case 'weekly':$useDate=$base->UtlObj->getLastDayOfWeek($theDate,&$base);break;
+						case 'mnthly':$useDate=$base->UtlObj->getLastDayOfMonth($theDate,&$base);break;
+						case 'yrly':$useDate=$base->UtlObj->getLastDayOfYear($theDate,&$base);break;
 						default:
 							echo "error in typeofreport: $typeOfReport!!!\n";
 					}
@@ -2751,7 +2751,7 @@ class operationPlugin001Object {
 					$totalWorkAry[$useDate]=$theCnt;
 			}
 		}
-		//$base->debugObj->printDebug($totalWorkAry,1,'xxxf');//xxxf22
+		//$base->DebugObj->printDebug($totalWorkAry,1,'xxxf');//xxxf22
 			$totalWorkAryCnt=count($totalWorkAry);
 			if ($totalWorkAryCnt<=5){$noCols=1;}
 			else if ($totalWorkAryCnt<=10){$noCols=2;}
@@ -2801,22 +2801,22 @@ class operationPlugin001Object {
 	}
 //==================================================
 	function insertImageToAlbum($base){
-		//$base->debugObj->printDebug($base->paramsAry,1,'xxxf');
-		$base->fileObj->writeLog('insertimage',"xxxf0 enter operationPlugin001Obj.insertImageToAlbum",&$base);
+		//$base->DebugObj->printDebug($base->paramsAry,1,'xxxf');
+		$base->FileObj->writeLog('insertimage',"xxxf0 enter operationPlugin001Obj.insertImageToAlbum",&$base);
 		$bang='&#33;';
 		$colon='&#58;';
 		$errorFlg=false;
 		//- get image info
 		$transferName=$base->paramsAry['transfername'];
-		$base->fileObj->writeLog('insertimage',"xxxf0.2 start waiting for FILES[$transferName][error] to be less than 1",&$base);
+		$base->FileObj->writeLog('insertimage',"xxxf0.2 start waiting for FILES[$transferName][error] to be less than 1",&$base);
 		for ($waitLp=0;$waitLp<50;$waitLp++){
 			$errorFlg=$_FILES[$transferName]['error'];
 			if ($errorFlg<1){break;}
 			sleep(1);
 		}
-		$base->fileObj->writeLog('insertimage',"xxxf0.3 done waiting for FILES[$transferName][error] to be less than 1, errorflg: $errorFlg",&$base);
+		$base->FileObj->writeLog('insertimage',"xxxf0.3 done waiting for FILES[$transferName][error] to be less than 1, errorflg: $errorFlg",&$base);
 		$theName=$_FILES[$transferName]['name'];
-		$base->fileObj->writeLog('insertimage',"xxxf0.4 the file upload name is: $theName",&$base);
+		$base->FileObj->writeLog('insertimage',"xxxf0.4 the file upload name is: $theName",&$base);
 		$onlyTheNameAry=explode('.',$theName);
 		$onlyTheName=$onlyTheNameAry[0];
 		$onlyTheSuffix=$onlyTheNameAry[1];
@@ -2830,7 +2830,7 @@ class operationPlugin001Object {
 		$theSize=$_FILES[$transferName]['size'];
 		$theType=$_FILES[$transferName]['type'];
 		$tmpFilePath=$_FILES[$transferName]['tmp_name'];
-		$base->fileObj->writeLog('insertimage',"xxxf1 transfername: $transferName, size: $theSize, type: $theType, tmpfilepath: $tmpFilePath",&$base);
+		$base->FileObj->writeLog('insertimage',"xxxf1 transfername: $transferName, size: $theSize, type: $theType, tmpfilepath: $tmpFilePath",&$base);
 		//- album image is going into
 		$albumProfileId=$base->paramsAry['albumprofileid'];
 		$printStrg="$theName<br>";
@@ -2838,20 +2838,20 @@ class operationPlugin001Object {
 		if ($isImage){
 		if ($albumProfileId != null){
 			$query="select * from albumprofileview where albumprofileid=$albumProfileId";
-			$result=$base->dbObj->queryTable($query,'read',&$base);
+			$result=$base->DbObj->queryTable($query,'read',&$base);
 			$passAry=array();
-			$useAlbumAry=$base->utlObj->tableToHashAryV3($result,$passAry);
+			$useAlbumAry=$base->UtlObj->tableToHashAryV3($result,$passAry);
 			$albumImageSettings=$useAlbumAry[0]['albumimagesettings'];
 			$albumImageLength=$useAlbumAry[0]['albumimagelength'];
 			$destinationDir=$useAlbumAry[0]['albumdirectory'];
 			//$printStrg.="destinationdir: $destinationDir<br>";//xxxf
 			if ($destinationDir != null){
-				$localPath=$base->clientObj->getBasePath(&$base);
+				$localPath=$base->ClientObj->getBasePath(&$base);
 				$destinationPath=$localPath.'//'.$destinationDir.'//'.$theName;
 				//$printStrg.="destination path$colon $destinationPath<br>";
-				$base->fileObj->writeLog('insertimage',"xxxf2 start upload tmpfilepath: $tmpFilePath, destpath: $destinationPath",&$base);
+				$base->FileObj->writeLog('insertimage',"xxxf2 start upload tmpfilepath: $tmpFilePath, destpath: $destinationPath",&$base);
 				$successRtn=@move_uploaded_file($tmpFilePath,$destinationPath);//xxxf22
-				$base->fileObj->writeLog('insertimage',"xxxf3 Done upload successrtn: $successRtn",&$base);
+				$base->FileObj->writeLog('insertimage',"xxxf3 Done upload successrtn: $successRtn",&$base);
 				if (!$successRtn){
 					$errorFlg=true;
 					if ($theSize==0){
@@ -2886,12 +2886,12 @@ class operationPlugin001Object {
 							$printStrg.="invalid albumimagesettings$colon $albumImageSettings<br>";
 						}
 						if ($doit){
-							$base->fileObj->writeLog('insertimage',"xxxf4 reduce size of image width: $imageWidth, height: $imageHeight",&$base);
+							$base->FileObj->writeLog('insertimage',"xxxf4 reduce size of image width: $imageWidth, height: $imageHeight",&$base);
 							$imageWork->thumbnailImage($imageWidth, $imageHeight);
 							$newImageWidth=$imageWork->getImageWidth();
             				$newImageHeight=$imageWork->getImageHeight();
             				$printStrg.="new width$colon $newImageWidth, new height$colon $newImageHeight<br>";//xxxf
-            				$base->fileObj->writeLog('insertimage',"xxxf5 write image",&$base);
+            				$base->FileObj->writeLog('insertimage',"xxxf5 write image",&$base);
             				$imageWork->writeImage();
             				$imageWork->destroy();
             				//xxxf - dont we have to write it? destroy it?
@@ -2910,10 +2910,10 @@ class operationPlugin001Object {
 					$dbControlsAry=array('dbtablename'=>'pictureprofile');
 					$writeRowsAry=array($newImageAry);
 					$dbControlsAry['writerowsary']=$writeRowsAry;
-					//$base->debugObj->printDebug($dbControlsAry,1,'xxxf');
-					$theSuccess=$base->dbObj->writeToDb($dbControlsAry,&$base);
+					//$base->DebugObj->printDebug($dbControlsAry,1,'xxxf');
+					$theSuccess=$base->DbObj->writeToDb($dbControlsAry,&$base);
 //- reorder the album here
-					$base->utlObj->reorderAlbumInt($albumProfileId,5,&$base);
+					$base->UtlObj->reorderAlbumInt($albumProfileId,5,&$base);
 					if ($theSuccess){
 						$printStrg.="Successful upload and placed at END OF ALBUM$bang<br>";
 					}
@@ -2933,7 +2933,7 @@ class operationPlugin001Object {
 		}
 		echo "<script language=\"javascript\" type=\"text/javascript\">";
 		//echo "window.top.window.alert('$printStrg');";
-		echo "window.top.window.menuObj.runBatchV2('";
+		echo "window.top.window.MenuObj.runBatchV2('";
 		echo "gcfss?:clientadminalbumv2?!albumtr_albumprofileid_uservalue?!albumhdcontentid?!albumprofileid?!uservalue??w??";
 		echo "ldv?:updatemessageid?!$printStrg');";
 		echo "</script>";
