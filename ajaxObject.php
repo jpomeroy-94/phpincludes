@@ -1,5 +1,6 @@
 <?php
 class ajaxObject {
+	//test insert from branch jquery
 	//dont use this
 	var $statusMsg;
 	var $callNo = 0;
