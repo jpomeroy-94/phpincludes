@@ -36,6 +36,18 @@ class PluginObject {
 		}
 		if ($pluginName != "none"){
 			$PluginObject=$base->pluginProfileAry['operation'][$pluginName]['pluginobject'];
+			//objects have to have capitalized first letter
+			$firstLetter=substr($PluginObject,0,1);
+			$firstLetterNo=ord($firstLetter);
+			if ($firstLetterNo>=97 && $firstLetterNo<=122){
+				$firstLetterNo=$firstLetterNo-32;
+				$firstLetter=chr($firstLetterNo);
+				$objectLength=strlen($PluginObject);
+				$objectLength--;
+				$PluginObjectSuffix=substr($PluginObject,1,$objectLength);
+				$PluginObject=$firstLetter.$PluginObjectSuffix;
+			}
+			
 			$pluginMethod=$base->pluginProfileAry['operation'][$pluginName]['pluginmethod'];
 			if (($PluginObject != "") && ($pluginMethod != "")){
 				//echo "pl: run $PluginObject, $pluginMethod<br>";//xxxd
@@ -74,6 +86,18 @@ class PluginObject {
 			//$base->DebugObj->printDebug($paramFeed,1,'xxx');
 			$pluginType='tag';
 			$PluginObject=$base->pluginProfileAry[$pluginType][$pluginName]['pluginobject'];
+			$firstLetter=substr($PluginObject,0,1);
+
+			$firstLetterNo=ord($firstLetter);
+			if ($firstLetterNo>=97 && $firstLetterNo<=122){
+				$firstLetterNo=$firstLetterNo-32;
+				$firstLetter=chr($firstLetterNo);
+				$objectLength=strlen($PluginObject);
+				$objectLength--;
+				$PluginObjectSuffix=substr($PluginObject,1,$objectLength);
+				$PluginObject=$firstLetter.$PluginObjectSuffix;
+			}
+
 			$pluginMethod=$base->pluginProfileAry[$pluginType][$pluginName]['pluginmethod'];
 			//print "obj: $PluginObject, method: $pluginMethod<br>";
 			if (($PluginObject != "") && ($pluginMethod != "")){
