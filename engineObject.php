@@ -75,7 +75,7 @@ class engineObject{
 		$this->InitObj = new InitObject();
 		$this->FileObj = new FileObject();
 		$this->DbObj = new DbObject(&$this);
-		$this->UtlObj = new utilObject();
+		$this->UtlObj = new UtilObject();
 		$this->PluginObj = new PluginObject();
 		$this->XmlObj = new XmlObject();
 //- start generic plugins

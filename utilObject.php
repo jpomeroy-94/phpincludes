@@ -1,10 +1,10 @@
 <?php
-class utilObject {
+class UtilObject {
 	var $statusMsg;
 	var $callNo = 0;
 	var $imageBuffers=array();
 //=========================================
-	function utilObject() {
+	function UtilObject() {
 		$this->incCalls();
 		$this->statusMsg='util Object is fired up and ready for work!';
 	}

@@ -138,17 +138,17 @@ class TagPlugin001Object {
 		$returnAry[]="<script type=\"text/javascript\">\n";
 		$returnAry[]="AjaxObj = new AjaxObject;\n";
 		$returnAry[]="UserObj = new UserObject;\n";
-		$returnAry[]="utilObj = new utilObject;\n";
+		$returnAry[]="UtilObj = new UtilObject;\n";
 		//$returnAry[]="alert ('init container');//xxxf\n";//xxxf
 		$returnAry[]="ContainerObj = new ContainerObject();\n";
 		//$returnAry[]="alert ('end init container');//xxxf\n";
 		$returnAry[]="TableObj = new TableObject();\n";
-		$returnAry[]="yuiObj = new yuiObject;\n";
+		$returnAry[]="YuiObj = new YuiObject;\n";
 		$returnAry[]="MenuObj = new MenuObject;\n";
 		$returnAry[]="CalendarObj = new CalendarObject();\n";
 		$returnAry[]="FormObj = new FormObject();\n";
-		$returnAry[]="imageObj = new imageObject();\n";
-		$returnAry[]="albumObj = new albumObject();\n";
+		$returnAry[]="ImageObj = new ImageObject();\n";
+		$returnAry[]="AlbumObj = new AlbumObject();\n";
 		$returnAry[]="</script>\n";
 		return $returnAry;
 	}

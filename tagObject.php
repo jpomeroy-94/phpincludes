@@ -1154,7 +1154,7 @@ class TagObject {
 		$returnAry[]="var serverUrl='$htmlLocal';\n";
 		//$returnAry[]="alert('doing init');\n";
 		$returnAry[]='//------------------- util'."\n";
-		$returnAry[]='var utilObj = new utilObject;'."\n";
+		$returnAry[]='var UtilObj = new UtilObject;'."\n";
 //---------------------------------------- containers
 		$returnAry[]='//--------------------containers'."\n";
 		$containerJsAry=$base->ContainerObj->getContainerJs(&$base);
@@ -1177,7 +1177,7 @@ class TagObject {
 		}
 //------------------------------------- yui object
 	$returnAry[]='//----------------------- yui'."\n";
-	$returnAry[]='var yuiObj = new yuiObject;'."\n";
+	$returnAry[]='var YuiObj = new YuiObject;'."\n";
 //------------------------------------- js web table data fields 
 		$returnAry[]='//-----------setup for table'."\n";
 		$tableJsAry=$base->TableObj->getTableJs(&$base);
