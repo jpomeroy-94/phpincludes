@@ -157,6 +157,7 @@ class HtmlObject {
 				//echo "xxxf: $returnAry[$lp]...";
 				$returnAry[$lp]=str_replace("menuObj", "MenuObj", $returnAry[$lp]);
 				$returnAry[$lp]=str_replace("yuiObj", "YuiObj",$returnAry[$lp]);
+				$returnAry[$lp]=str_replace("tableObj", "TableObj",$returnAry[$lp]);
 				//echo " $returnAry[$lp]<br>";
 			}
 			//xxxf666 end temporary fix
