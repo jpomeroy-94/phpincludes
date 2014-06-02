@@ -88,16 +88,16 @@ class HtmlObject {
 					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/prototype-1.6.1.js"></script>'."\n";
 					$htmlAry_print[]='<script type="text/javascript" src="/yui/build/yui/yui-min.js"></script>'."\n";
 					//- my stuff
-					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/CalendarObject.js"></script>'."\n";
-					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/FormObject.js"></script>'."\n";
-					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/MenuObject.js"></script>'."\n";
-					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/ContainerObject.js"></script>'."\n";
-					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/TableObject.js"></script>'."\n";
+					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/calendarObject.js"></script>'."\n";
+					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/formObject.js"></script>'."\n";
+					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/menuObject.js"></script>'."\n";
+					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/containerObject.js"></script>'."\n";
+					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/tableObject.js"></script>'."\n";
 					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/ajax.js"></script>'."\n";
 					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/utilObject.js"></script>'."\n";
 					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/yuiObject.js"></script>'."\n";
 					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/imageObject.js"></script>'."\n";
-					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/UserObject.js"></script>'."\n";
+					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/userObject.js"></script>'."\n";
 					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/albumObject.js"></script>'."\n";
 					//- jquery
 					//$htmlAry_print[]='<script type="text/javascript" src="includes.js/jquery-1.7.1.js"></script>'."\n";
@@ -134,6 +134,7 @@ class HtmlObject {
 	function convertHtmlLine($htmlLine, $base){
 		$base->DebugObj->printDebug("HtmlObj:convertHtmlLine($htmlLine,'base')",0);
 		//echo "htmlobj: xxxd2 htmlline: $htmlLine<br>";//xxxd66
+		
 		$returnAry=array();
 		$insertCodeAry=$base->UtlObj->extractInsertCode($htmlLine);
 		$pluginName=$insertCodeAry['insertcode'];
@@ -149,6 +150,16 @@ class HtmlObject {
 			//echo "htmlobj: run pluginname: $pluginName<br>";//xxxd666
 			$returnAry=$base->PluginObj->runTagPlugin($pluginName,$paramFeed,&$base);
 			//echo "htmlobj: back from it";//xxxd666
+			
+			//xxxf666 temporary fix for capital objects problem
+			$theCnt=count($returnAry);
+			for ($lp=0;$lp<$theCnt;$lp++){
+				//echo "xxxf: $returnAry[$lp]...";
+				$returnAry[$lp]=str_replace("menuObj", "MenuObj", $returnAry[$lp]);
+				$returnAry[$lp]=str_replace("yuiObj", "YuiObj",$returnAry[$lp]);
+				//echo " $returnAry[$lp]<br>";
+			}
+			//xxxf666 end temporary fix
 		}
 		$base->DebugObj->printDebug("-rtn:convertHtmlLine",0); //xx (f)
 		//echo "htmlobj: xxxd2-end<br>";//xxxd666
