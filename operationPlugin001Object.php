@@ -1,5 +1,5 @@
 <?php
-class operationPlugin001Object {
+class OperationPlugin001Object {
 	var $statusMsg;
 	var $callNo = 0;
 	var $delim = '!!';

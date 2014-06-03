@@ -15,7 +15,7 @@ class engineObject{
 	var $PluginObj;
 	var $Plugin001Obj;
 	var $Plugin002Obj;
-	var $operationPlugin001Obj;
+	var $OperationPlugin001Obj;
 	var $OperPlugin002Obj;
 	var $FormElementObj;
 	var $ErrorObj;
@@ -81,7 +81,7 @@ class engineObject{
 //- start generic plugins
 		$this->Plugin001Obj = new Plugin001Object();
 		$this->Plugin002Obj = new Plugin002Object(&$this);
-		$this->operationPlugin001Obj = new operationPlugin001Object(&$this);
+		$this->OperationPlugin001Obj = new OperationPlugin001Object(&$this);
 		$this->OperPlugin002Obj = new OperPlugin002Object(&$this);
 //- start user object if not there
 		session_start();

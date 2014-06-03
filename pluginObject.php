@@ -12,6 +12,7 @@ class PluginObject {
 //======================================= 
 	function runOperationPlugin($operationAry,$base){
 		$base->DebugObj->printDebug("PluginObj:runOperationPlugin($operationAry,'base')",0);
+		//echo "xxxf";
 		//xxxd else above
 		$operationName=$operationAry['operationname'];
 		switch ($operationName){
@@ -35,6 +36,7 @@ class PluginObject {
 				$pluginName='error';
 		}
 		if ($pluginName != "none"){
+			//echo "xxxf2";
 			$PluginObject=$base->pluginProfileAry['operation'][$pluginName]['pluginobject'];
 			//objects have to have capitalized first letter
 			$firstLetter=substr($PluginObject,0,1);
@@ -50,6 +52,7 @@ class PluginObject {
 			
 			$pluginMethod=$base->pluginProfileAry['operation'][$pluginName]['pluginmethod'];
 			if (($PluginObject != "") && ($pluginMethod != "")){
+				//echo "xxxf3";
 				//echo "pl: run $PluginObject, $pluginMethod<br>";//xxxd
 //- setup useotherdb
 				$useOtherDb=$base->UtlObj->returnFormattedData($base->jobProfileAry['jobuseotherdb'],'boolean','internal',&$base);
@@ -61,8 +64,11 @@ class PluginObject {
 				if ($useOtherDb){$base->DbObj->setUseOtherDbNoReset(&$base);}
 				$base->UtlObj->appendValue('debug',"PluginObj,runOperationPlugin: run $PluginObject, $pluginMethod useotherdb: $useOtherDb<br>",&$base);
 				$base->FileObj->writeLog('writedbfromajaxsimple',"PluginObj) run $PluginObject($pluginMethod)",&$base);
+				
 				if ($hasReturn){
+				
 					$returnAry=$base->$PluginObject->$pluginMethod(&$base);
+				
 					return $returnAry;
 				}
 				else {
