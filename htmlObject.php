@@ -181,11 +181,14 @@ class HtmlObject {
 		$imageClass=$urlAry['htmlelementclass'];
 		if ($imageClass != NULL){$imageClassInsert="class=\"$imageClass\"";}
 		else {$imageClassInsert=NULL;}
+		//echo "eventattributes: $eventAttributes<br>";//xxxf
 		if ($eventAttributes != NULL){
 			$eventAttributes_html=$base->UtlObj->returnFormattedData($eventAttributes,'varchar','html',&$base);
+			//echo "eventattributes_html: $eventAttributes_html<br>";
 			$eventAttributesInsert=$eventAttributes_html;
 		}
 		else {$eventAttributesInsert=NULL;}
+		//echo "$eventAttributesInsert";exit();//xxxf
 		//-
 		$imageUseMap=$urlAry['imageusemap'];
 		//echo "imageusemap: $imageUseMap";//xxx

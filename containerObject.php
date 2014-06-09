@@ -244,6 +244,7 @@ class ContainerObject {
 		$containerElementSeparator=$containerElementAry['containerelementseparator'];
 		$containerElementLocation=$containerElementAry['containerelementlocation'];
 		$containerElementEvent=$containerElementAry['containerelementevent'];
+		$containerElementFedId=$containerElementAry['containerelementfedid'];
 		if ($containerElementLocation=='content' || $containerElementLocation==''){$inContent=true;}
 		else {
 			$inContent=false;
@@ -382,6 +383,7 @@ class ContainerObject {
 				//- can go into header/content/footer
 				$paramFeed=array('param_1'=>$containerElementName);
 				$paramFeed['events']=$containerElementEvent;
+				$paramFeed['useid']=$containerElementFedId;
 				//echo "runname: $containerElementType<br>";//xxx
 				//$base->DebugObj->printDebug($paramFeed,1,'xxxd');
 				$subReturnAry=$base->Plugin002Obj->insertImg($paramFeed,&$base);

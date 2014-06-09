@@ -3132,10 +3132,11 @@ class Plugin002Object {
 		$base->DebugObj->printDebug("-rtn:insertmap"); //xx
 		return $returnAry;
 	}
-//=======================================
+//======================================= xxxf666 work in process
 	function insertImg($paramFeed,$base){
 		$base->DebugObj->printDebug("insertImg('base')",0); //xx
 		$imageName=$paramFeed['param_1'];
+		$useId=$paramFeed['useid'];
 		$urlAry=array();
 		//echo "name: $imageName<br>";//xxx
 		$imageAry=$base->imageProfileAry[$imageName];
@@ -3148,6 +3149,7 @@ class Plugin002Object {
 		$urlAry['htmlelementimagename']=$imageName;
 		$urlAry['imagealt']=$imageAlt;
 		$urlAry['htmlelementclass']=$imageAry['imageclass'];
+
 //- events
 		$eventFromOther=$paramFeed['events'];
 		$eventFromImg=$imageAry['imageevents'];
@@ -3159,6 +3161,8 @@ class Plugin002Object {
 		$imageClass=$imageAry['imageclass'];
 //- image id
     	$imageId=$imageAry['imageid'];
+		if ($useId != null){$imageId=$useId;}
+		    	
     	if ($imageId == NULL){$imageIdInsert=NULL;}
     	else{$imageIdInsert="id=\"$imageId\"";}
 //- imagetitle id
@@ -3167,8 +3171,10 @@ class Plugin002Object {
 //- imagecaption
     	if ($imageId == NULL){$imageCaptionIdInsert=NULL;}
     	else{$imageCaptionIdInsert="id=\"$imageId".'caption'."\"";}
-//-
+//- image id
+
 		$urlAry['imageid']=$imageId;
+		
 		if ($imageClass != NULL){$imageClassInsert="class=\"$imageClass\"";}
 		else {$imageClassInsert=NULL;}
 		$imageType=$imageAry['imagetype'];
@@ -3176,6 +3182,10 @@ class Plugin002Object {
 		if ($imageTitle==NULL){$imageTitle=$imageName;}
 		$imageText=$imageAry['imagetext'];
 		$imageAry_html=$base->HtmlObj->buildOldImg($urlAry,&$base);
+		//echo "xxxf";
+		//$base->DebugObj->printDebug($imageAry_html,1,'xxxf');
+		//echo "xxxf1";
+		//exit();
 		$returnAry=array();
 		switch ($imageType){
 			case 'image':
