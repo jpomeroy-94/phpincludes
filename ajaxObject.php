@@ -280,7 +280,7 @@ function writeDbFromAjaxSimple($base){
 				$writeRowsAry[]=$dataRowAry;
 			}
 			$dbControlsAry['writerowsary']=$writeRowsAry;
-			//$base->DebugObj->printDebug($dbControlsAry,1,'xxxd');
+			$base->DebugObj->printDebug($dbControlsAry,1,'xxxf');
 			$base->DbObj->writeToDb($dbControlsAry,&$base);
 			$checkStrg=$base->ErrorObj->retrieveAllErrors(&$base);
 			$base->FileObj->writeLog('ajax','checkstrg: '+$checkStrg,&$base);//xxxd

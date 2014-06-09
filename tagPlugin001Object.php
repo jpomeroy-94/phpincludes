@@ -589,7 +589,12 @@ class TagPlugin001Object {
 				$eventType = $eventsAry [$lp] ['csseventtype'];
 				$eventProgram = $eventsAry [$lp] ['csseventprogram'];
 				$eventCode = $eventsAry [$lp] ['csseventcode'];
-				$delegationBl = $eventsAry[$lp]['csseventdelegation'];
+				//echo "xxxf0";
+				$eventDelegation_raw = $eventsAry[$lp]['csseventdelegation'];
+				//$base->DebugObj->printDebug($eventsAry[$lp],1,'xxxf',&$base);
+				//echo "delegationblraw: $eventDelegation_raw<br>";
+				$eventDelegation = $base->UtlObj->returnFormattedData ( $eventDelegation_raw, 'boolean', 'internal' );
+				//echo "delegationBl: $eventDelegation<br>";
 				if ($eventCode == '') {
 					$eventCode = 'menu';
 				}
@@ -607,8 +612,9 @@ class TagPlugin001Object {
 					switch ($eventCode) {
 						case 'menu' :
 							if ($eventDelegation){
-								$newLine=str_replace( 'INSERTSELECTOR', $idSelector, $delegatedMenuLine );
-								$newLine=str_replace('INSERTHTML',htmlTag, $newLine);
+								//echo "xxxf0";
+								$newLine=str_replace( 'INSERTSELECTOR', $id, $delegatedMenuLine );
+								$newLine=str_replace('INSERTHTML',$htmlTag, $newLine);
 							} else {
 								$newLine = str_replace ( 'INSERTSELECTOR', $idSelector, $directMenuLine );
 							}
@@ -629,13 +635,14 @@ class TagPlugin001Object {
 					switch ($eventCode) {
 						case 'menu' :
 							if ($eventDelegation){
-								$newLine=str_replace( 'INSERTSELECTOR', $classSelector, $delegatedMenuLine );
-								$newLine=str_replace('INSERTHTML',htmlTag, $newLine);
+								$newLine=str_replace( 'INSERTSELECTOR', $class, $delegatedMenuLine );
+								$newLine=str_replace('INSERTHTML',$htmlTag, $newLine);
 							} else {
 								$newLine = str_replace ( 'INSERTSELECTOR', $classSelector, $directMenuLine );
 							}
 							$newLine = str_replace ( 'INSERTEVENT', $eventType, $newLine );
 							$newLine = str_replace ( 'INSERTCODES', $eventProgram, $newLine );
+							//echo "newline: $newLine<br>";//xxxf
 							break;
 						default :
 							// echo "bline: $directLine<br>";
