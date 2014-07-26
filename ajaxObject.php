@@ -280,7 +280,7 @@ function writeDbFromAjaxSimple($base){
 				$writeRowsAry[]=$dataRowAry;
 			}
 			$dbControlsAry['writerowsary']=$writeRowsAry;
-			$base->DebugObj->printDebug($dbControlsAry,1,'xxxf');
+			//$base->DebugObj->printDebug($dbControlsAry,1,'xxxf');
 			$base->DbObj->writeToDb($dbControlsAry,&$base);
 			$checkStrg=$base->ErrorObj->retrieveAllErrors(&$base);
 			$base->FileObj->writeLog('ajax','checkstrg: '+$checkStrg,&$base);//xxxd
@@ -324,6 +324,7 @@ function writeDbFromAjaxSimple($base){
 				$base->UtlObj->sendMail($formEmail,$theEmailSubject,$theEmailMessage,&$base);
 			}
 		}
+		//$base->FileObj->writeLog('writedbfromajaxsimple',"$statusKey|$statusMsg|upd:$updStrg|email:$emailStuff",&$base);
 		echo "$statusKey|$statusMsg|upd:$updStrg|email:$emailStuff";
 	}
 //==========================================================================

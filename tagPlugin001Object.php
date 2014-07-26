@@ -571,9 +571,9 @@ class TagPlugin001Object {
 		$preLine = "<!--- start jquery -->\n";
 		$endLine = "<!--- end jquery --->\n";
 		$theMainLine = "$preLine<script type=\"text/javascript\">\njQuery.noConflict();\njQuery(document).ready(function(){\nINSERTJQUERYBODY});\n</script>\n$endLine";
-		$directMenuLine = "jQuery('INSERTSELECTOR').INSERTEVENT(function(event){\n\t\tevent.preventDefault();\n\t\tMenuObj.runBatchV2('INSERTCODES');\n\t})\n";
+		$directMenuLine = "jQuery('INSERTSELECTOR').INSERTEVENT(function(event){\n\t\tevent.preventDefault();\n\t\tMenuObj.runBatchV2('INSERTCODES');\n\t});\n";
 		$directLine = "\tjQuery(\"INSERTSELECTOR\").INSERTEVENT();\n";
-		$delegatedMenuLine = "jQuery('INSERTSELECTOR').on('INSERTEVENT','INSERTHTML',function(event){\n\t\tevent.preventDefault();\n\t\tMenuObj.runBatchV2('INSERTCODES');\n\t})\n";
+		$delegatedMenuLine = "jQuery('INSERTSELECTOR').on('INSERTEVENT','INSERTHTML',function(event){\n\t\tevent.preventDefault();\n\t\tMenuObj.runBatchV2('INSERTCODES');\n\t});\n";
 		$theLines = "";
 		// $base->DebugObj->printDebug($paramFeed,1,'xxxf');exit();
 		$prefixSelector = $paramFeed ['param_1'];
@@ -613,8 +613,8 @@ class TagPlugin001Object {
 						case 'menu' :
 							if ($eventDelegation){
 								//echo "xxxf0";
-								$newLine=str_replace( 'INSERTSELECTOR', $id, $delegatedMenuLine );
-								$newLine=str_replace('INSERTHTML',$htmlTag, $newLine);
+								$newLine=str_replace( 'INSERTSELECTOR','#mainbodyid', $delegatedMenuLine );
+								$newLine=str_replace('INSERTHTML',$htmlTag.'[id='.$id.']', $newLine);
 							} else {
 								$newLine = str_replace ( 'INSERTSELECTOR', $idSelector, $directMenuLine );
 							}
@@ -635,8 +635,8 @@ class TagPlugin001Object {
 					switch ($eventCode) {
 						case 'menu' :
 							if ($eventDelegation){
-								$newLine=str_replace( 'INSERTSELECTOR', $class, $delegatedMenuLine );
-								$newLine=str_replace('INSERTHTML',$htmlTag, $newLine);
+								$newLine=str_replace( 'INSERTSELECTOR', '#mainbodyid', $delegatedMenuLine );
+								$newLine=str_replace('INSERTHTML',$htmlTag.'[class='.$class.']', $newLine);
 							} else {
 								$newLine = str_replace ( 'INSERTSELECTOR', $classSelector, $directMenuLine );
 							}
