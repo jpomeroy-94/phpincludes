@@ -86,7 +86,8 @@ class HtmlObject {
 					}
 					//- prototype and yui
 					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/prototype-1.6.1.js"></script>'."\n";
-					$htmlAry_print[]='<script type="text/javascript" src="/yui/build/yui/yui-min.js"></script>'."\n";
+					//$htmlAry_print[]='<script type="text/javascript" src="/yui/build/yui/yui-min.js"></script>'."\n";
+					$htmlAry_print[]='<script src="http://yui.yahooapis.com/3.17.2/build/yui/yui-min.js"></script>'."\n";
 					//- my stuff
 					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/calendarObject.js"></script>'."\n";
 					$htmlAry_print[]='<script type="text/javascript" src="/includes.js/formObject.js"></script>'."\n";
@@ -107,7 +108,7 @@ class HtmlObject {
 					//xxxf below causes an abort in ContainerObj.loadCss(sp?)
 					//below caused aborts with old way of updating css
 					$htmlAry_print[]='<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.0/themes/base/jquery-ui.css" />'."\n";
-					$htmlAry_print[]='<script type="text/javascript"> jQuery.noConflict();</script>'."\n";
+					//$htmlAry_print[]='<script type="text/javascript"> jQuery.noConflict();</script>'."\n";
 					//- cant get to work $htmlAry_print[]='<script type="text/javascript" src="/includes.js/AjaxObject.js"></script>'."\n";
 				} // end if (strpos
 				else {$htmlAry_print[]="$htmlLineSt";}
