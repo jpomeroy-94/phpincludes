@@ -775,7 +775,7 @@ class OperPlugin002Object {
 		$base->FileObj->writeLog ( 'updatecsv', "xxxd2 senddataary: $strg", &$base );
 		$csvPath = $sendDataAry ['csvfilepathid'];
 		$csvCode = $sendDataAry ['csvtypeid'];
-		$csvLoadId = $sendDataAry ['csvloadid'];
+		$csvLoadId = $sendDataAry ['csvloadidid'];
 		//$base->FileObj->writeLog ( 'updatecsv', "xxxd2: csvpath: $csvPath, csvcode: $csvCode, csvloadidid: $csvLoadId", &$base ); // xxxd
 		$strg = '';
 		// foreach ($base->sentenceProfileAry['uploadfielddefs'] as $name=>$value){$strg.="$name($value)";}
